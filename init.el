@@ -80,6 +80,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-tooltip ((t (:background "#30304e"))))
+ '(company-tooltip-annotation ((t (:foreground "#e3cfcf"))))
+ '(company-tooltip-annotation-selection ((t (:inherit company-tooltip-annotation :foreground "#c2f0c2"))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-common :foreground "#ff9d9d"))))
+ '(company-tooltip-selection ((t (:extend t :background "#181522"))))
  '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
  '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
  '(isearch ((t (:background "lightslateblue" :foreground "black"))))
@@ -551,6 +556,13 @@
  '(flycheck-mode-line-prefix "  ")
  '(global-display-fill-column-indicator-mode t)
  '(kill-whole-line t)
+ '(lsp-java-configuration-maven-user-settings "/home/egugwen/.m2/settings.xml")
+ '(lsp-java-configuration-runtimes [])
+ '(lsp-java-import-gradle-enabled nil)
+ '(lsp-java-save-actions-organize-imports t)
+ '(lsp-java-vmargs
+   '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx4G" "-Xms100m"))
+ '(lsp-lens-enable nil)
  '(mode-line-compact 'long)
  '(mode-line-format
    '(" " " %l:%C(%p)"
