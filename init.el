@@ -1,17 +1,22 @@
-
+;;; package --- Summary"
+;;; Commentary:
+;; ///////////////////////////////////////////////////////////////////////////////
+;; PART1: Basic Configurations
+;; ///////////////////////////////////////////////////////////////////////////////
 ;; Added by Package.el.  This must come before configurations of
 ;; installed packages.  Don't delete this line.  If you don't want it,
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
+;;; Code:
 (package-initialize)
 
 ;; basic options configuration
 ;; disable defatul startup messages, show scratch file instead
-(setq inhibit-startup-message t) 
+(setq inhibit-startup-message t)
 (setq visible-bell t)
 
 ;; disable scroll-bar, tool-bar, tooltip, and menu bar
-(scroll-bar-mode -1) 
+(scroll-bar-mode -1)
 (tool-bar-mode -1)
 (tooltip-mode -1)
 (menu-bar-mode -1)
@@ -19,9 +24,6 @@
 ;; auto-reload change from disk
 (global-auto-revert-mode t)
 (turn-on-auto-revert-mode)
-
-;; disable warning
-(setq warning-minimum-level :emergency)
 
 ;; enable winner-mode
 (winner-mode)
@@ -34,12 +36,14 @@
 (add-hook 'java-mode-hook
 		  (lambda()
 			(progn
-			 (setq fill-column 120))
-			 (setq tab-width 4)))
+			  (setq fill-column 120))
+			(setq tab-width 4)))
 (add-hook 'python-mode-hook (lambda () (setq fill-column 79)))
 (add-hook 'org-mode (lambda () (setq fill-column -1)))
-(add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-(add-hook 'java-mode-hook #'rainbow-delimiters-mode)
+(add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
+;; automatically switch to org-mode for .org files
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
 
 ;; customize highlight in man pages
 (require 'man)
@@ -53,18 +57,16 @@
 ;; show cursorline
 (global-hl-line-mode 1)
 
-;; show line number
+;;; -- show line number ---
 (column-number-mode)
 (global-display-line-numbers-mode 1)
-;; relative number
-(setq display-line-numbers-type 'relative)
 (set-face-attribute 'line-number-current-line nil :background "#231f32" :foreground "#ffb733")
 ;; disable line number in some modes
 (dolist (mode '(org-mode-hook
-		term-mode-hook
-		shell-mode-hook
-		treemacs-mode-hook
-		eshell-mode-hook))
+				 term-mode-hook
+				 shell-mode-hook
+				 treemacs-mode-hook
+				 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 ;; highlight matches parentheses
@@ -79,9 +81,23 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
+ '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
  '(isearch ((t (:background "lightslateblue" :foreground "black"))))
  '(isearch-group-1 ((t (:background "gainsboro" :foreground "black"))))
  '(isearch-group-2 ((t (:background "bisque" :foreground "black"))))
+ '(lsp-headerline-breadcrumb-path-face ((t (:background "#8585ff" :foreground "#231f32"))))
+ '(lsp-headerline-breadcrumb-separator-face ((t (:background "#8585ff" :foreground "#231f32" :height 0.8))))
+ '(lsp-headerline-breadcrumb-symbols-face ((t (:inherit font-lock-doc-face :background "#8055cc" :foreground "#231f32" :weight bold))))
+ '(rainbow-delimiters-base-face ((t (:inherit default))))
+ '(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face :foreground "#a8a8a8"))))
+ '(rainbow-delimiters-depth-2-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffe4b3"))))
+ '(rainbow-delimiters-depth-3-face ((t (:inherit rainbow-delimiters-base-face :foreground "#d1c0ba"))))
+ '(rainbow-delimiters-depth-4-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffffb7"))))
+ '(rainbow-delimiters-depth-5-face ((t (:inherit rainbow-delimiters-base-face :foreground "#e3cfcf"))))
+ '(rainbow-delimiters-depth-6-face ((t (:inherit rainbow-delimiters-base-face :foreground "#c2f0c2"))))
+ '(rainbow-delimiters-depth-7-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffd3d3"))))
+ '(rainbow-delimiters-depth-8-face ((t (:inherit rainbow-delimiters-base-face :foreground "#8585ff"))))
+ '(rainbow-delimiters-depth-9-face ((t (:inherit rainbow-delimiters-base-face :foreground "#b7ffff"))))
  '(sml/col-number ((t (:foreground "moccasin"))))
  '(sml/git ((t (:foreground "#84b384"))))
  '(sml/line-number ((t (:foreground "moccasin" :inverse-video nil))))
@@ -98,20 +114,19 @@
 ;; tab-bar customization
 ;;(tab-bar-mode 1)
 (setq tab-bar-close-button-show nil
-      tab-bar-new-button-show nil
-      tab-bar-show 1
-      tab-bar-tab-hints t
-      tab-bar-new-tab-choice "~/.emacs.d/init.el"
-      tab-bar-separator ""
-      tab-bar-button-margin '(5 . 2)
-      )
+	  tab-bar-show 1
+	  tab-bar-tab-hints t
+	  tab-bar-new-tab-choice "~/.emacs.d/init.el"
+	  tab-bar-separator ""
+	  tab-bar-button-margin '(5 . 2)
+	  )
 '(tab-bar ((t (:inherit mode-line))))
 
 ;; tab line mode customization
 ;; (global-tab-line-mode t)
 ;; (setq tab-line-new-button-show nil)  ;; do not show add-new button
 ;; (setq tab-line-close-button-show nil)  ;; do not show close button
-;; (setq tab-line-separator "")  ;; set it to empty
+;; (setq tab-line-separator " > ")
 ;; ;; tab color settings
 ;; (set-face-attribute 'tab-line nil ;; background behind tabs
 ;;       :background "gray40"
@@ -139,18 +154,13 @@
 ;; packages
 (require 'package)
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")
-                         ("elpa" . "https://elpa.gnu.org/packages/")))
+						 ("org" . "https://orgmode.org/elpa/")
+						 ("elpa" . "https://elpa.gnu.org/packages/")))
 
 
 
 ;; remove dashes in mode line
 (setq-default mode-line-end-spaces nil)
-
-;; helm: http://tuhdo.github.io/helm-intro.html
-;; also has compiling error
-;;(straight-use-package 'helm)
-;;(helm-mode 1)
 
 ;; self-customized mode line
 ;; 1) size
@@ -175,49 +185,70 @@
 ;;         `((space :align-to (- (+ right right-fringe right-margin)
 ;;                               ,(+ 3 (string-width mode-name)))))))
 
+;;///////////////////////////////////////////////////////////////////////////////
+;; PART2: Package Management
+;;///////////////////////////////////////////////////////////////////////////////
+;; use-package
+(eval-when-compile
+  (add-to-list 'load-path "/repo/egugwen/github/use-package")
+  (require 'use-package))
+(setq use-package-always-ensure t)
+
 ;; straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 6))
+		(expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+	  (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
+	(with-current-buffer
+	  (url-retrieve-synchronously
+		"https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+		'silent 'inhibit-cookies)
+	  (goto-char (point-max))
+	  (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
+;; causeing problem: Debugger entered--Lisp error: (file-missing "/home/egugwen/.emacs.d/straight/build/el-patch/el-patch.el"
+;;(straight-use-package 'el-patch)
+
+;;///////////////////////////////////////////////////////////////////////////////
+;; PART3: Package Installation and Configuration
+;;///////////////////////////////////////////////////////////////////////////////
 
 ;; doom-themes
-;;(use-package doom-themes
-;;  :straight t)
-;; doom-themes
+(use-package doom-themes
+			 :straight t)
 ;; native-compiler-error
-;;(use-package doom-modeline
-;; :straight t
-;; :ensure t
-;; :init (doom-modeline-mode 1)
-;; )
+(use-package doom-modeline
+			 :straight t
+			 :ensure t
+			 :init (doom-modeline-mode 1)
+			 )
+
+;; helm: http://tuhdo.github.io/helm-intro.html
+;; also has compiling error
+(use-package helm
+  :straight t
+  :init
+  (helm-mode 1))
 
 ;;evil
-;;(use-package evil
-;;  :straight t)
+(use-package evil
+			 :straight t)
 
 ;; -- python development environment
 ;; error in process sentinel: elpy-rpc--default-error-callback: peculiar error: "exited abnormally with code 1"
 ;;(use-package elpy
 ;;  :straight t)
 (use-package flycheck
-  :straight t
-  :ensure t
-  :init (global-flycheck-mode) (flycheck-display-error-at-point))
+			 :straight t
+			 :ensure t
+			 :init (global-flycheck-mode) (flycheck-display-error-at-point))
 
 ;; fatal: unable to access 'https://codeberg.org/ideasman42/emacs-py-autopep8.git/
 ;;(use-package py-autopep8
 ;;  :straight t)
 (use-package blacken
-  :straight t)
+			 :straight t)
 ;; due to libgccjit.so: error: error invoking gcc driver, cannot work
 ;;(use-package ein
 ;;  :straight t)
@@ -233,56 +264,65 @@
 ;;(setq python-shell-interpreter "jupyter"
 ;;      python-shell-interpreter-args "console --simple-prompt"
 ;;      python-shell-prompt-detect-failure-warning nil)
-;;(add-to-list 'python-shell-completion-native-disabled-interpreters
+;;(add-to-liOA 'python-shell-completion-native-disabled-interpreters
 ;;             "jupyter")
-
 
 (when (string-match "28." (emacs-version))
   ;; based on json-mode, add function to beautify-json file content and bind to key C-c C-b
   (defun beautify-json ()
-    (interactive)
-    (let ((b (if mark-active (min (point) (mark)) (point-min)))
-	  (e (if mark-active (max (point) (mark)) (point-max))))
-      (shell-command-on-region b e
-			       "python -m json.tool" (current-buffer) t)))
+	(interactive)
+	(let ((b (if mark-active (min (point) (mark)) (point-min)))
+		  (e (if mark-active (max (point) (mark)) (point-max))))
+	  (shell-command-on-region b e
+							   "python -m json.tool" (current-buffer) t)))
   (use-package json-mode
-    :bind (("C-c C-b" . beautify-json))
-    )
+			   :bind (("C-c C-b" . beautify-json))
+			   )
   (use-package ivy
-    :diminish
-    :bind (("C-s" . swiper)
-	   :map ivy-minibuffer-map
-	   ("TAB" . ivy-alt-done)
-	   ("C-l" . ivy-alt-done)
-	   ("C-j" . ivy-next-line)
-	   ("C-k" . ivy-previous-line)
-	   :map ivy-switch-buffer-map
-	   ("C-k" . ivy-previous-line)
-	   ("C-l" . ivy-done)
-	   ("C-d" . ivy-switch-buffer-kill)
-	   :map ivy-reverse-i-search-map
-	   ("C-k" . ivy-previous-line)
-	   ("C-d" . ivy-reverse-i-search-kill))
-    :config
-    (ivy-mode 1))
-  (use-package lsp-mode
-    :straight t
+			   :diminish
+			   :bind (("C-s" . swiper)
+					  :map ivy-minibuffer-map
+					  ("TAB" . ivy-alt-done)
+					  ("C-l" . ivy-alt-done)
+					  ("C-j" . ivy-next-line)
+					  ("C-k" . ivy-previous-line)
+					  :map ivy-switch-buffer-map
+					  ("C-k" . ivy-previous-line)
+					  ("C-l" . ivy-done)
+					  ("C-d" . ivy-switch-buffer-kill)
+					  :map ivy-reverse-i-search-map
+					  ("C-k" . ivy-previous-line)
+					  ("C-d" . ivy-reverse-i-search-kill))
+			   :config
+			   (ivy-mode 1))
+  (use-package  lsp-java
+	:straight t
     :init
-    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-    (setq lsp-keymap-prefix "C-c l")
-    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	   (XXX-mode . lsp)
-	   ;; if you want which-key integration
-	   (lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp)
+    (setq lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms1G")))
+  (use-package lsp-mode
+			   :straight t
+			   :init
+			   (setq lsp-keymap-prefix "C-c l")
+			   (setq lsp-headerline-arrow
+					 #(">" 0 1
+					   (face #1=(:family "Material Icons" :height 1.0 :inherit lsp-headerline-breadcrumb-separator-face)
+							 font-lock-face #1# display
+							 (raise 0.0)
+							 rear-nonsticky t)))
+			   :hook (
+					  (python-mode . lsp)
+					  (java-mode . lsp)
+					  (lsp-mode . lsp-enable-which-key-integration))
+			   :commands lsp)
+  (use-package lsp-ui
+	:straight t
+	)
   )
 (use-package all-the-icons
-  :straight t)
-(use-package dired-hacks
-	:straight (el-patch :type git :host github :repo "Fuco1/dired-hacks"))
-;; which-key
-;;(use-package emacs-which-key
-;;  :straight t)
+			 :straight t)
+;; causing problems
+;;(use-package dired-hacks
+;;             :straight (el-patch :type git :host github :repo "Fuco1/dired-hacks"))
 
 ;; org mode
 ;;(use-package org-roam
@@ -294,37 +334,85 @@
   (visual-line-mode 1))
 (defun emc/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
-        visual-fill-column-center-text t
+		visual-fill-column-center-text t
 		display-fill-column-indicator-column -1)
   (visual-fill-column-mode 1))
 (use-package org-mode
-  :straight t
-  :hook (org-mode . emc/org-mode-setup))
+			 :straight t
+			 :hook (org-mode . emc/org-mode-setup))
+;; don't know why this cannot work with :config of use-package org-mode
+(setq org-agenda-custom-commands
+	  '(("d" "Dashboard"
+		 ((agenda "" ((org-deadline-warning-days 7)))
+		  (todo "NEXT"
+				((org-agenda-overriding-header "Next Tasks")))
+		  (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+
+		("n" "Next Tasks"
+		 ((todo "NEXT"
+				((org-agenda-overriding-header "Next Tasks")))))
+
+		("W" "Work Tasks" tags-todo "+work-email")
+
+		;; Low-effort next actions
+		("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+		 ((org-agenda-overriding-header "Low Effort Tasks")
+		  (org-agenda-max-todos 20)
+		  (org-agenda-files org-agenda-files)))
+
+		("w" "Workflow Status"
+		 ((todo "WAIT"
+				((org-agenda-overriding-header "Waiting on External")
+				 (org-agenda-files org-agenda-files)))
+		  (todo "REVIEW"
+				((org-agenda-overriding-header "In Review")
+				 (org-agenda-files org-agenda-files)))
+		  (todo "PLAN"
+				((org-agenda-overriding-header "In Planning")
+				 (org-agenda-todo-list-sublevels nil)
+				 (org-agenda-files org-agenda-files)))
+		  (todo "BACKLOG"
+				((org-agenda-overriding-header "Project Backlog")
+				 (org-agenda-todo-list-sublevels nil)
+				 (org-agenda-files org-agenda-files)))
+		  (todo "READY"
+				((org-agenda-overriding-header "Ready for Work")
+				 (org-agenda-files org-agenda-files)))
+		  (todo "ACTIVE"
+				((org-agenda-overriding-header "Active Projects")
+				 (org-agenda-files org-agenda-files)))
+		  (todo "COMPLETED"
+				((org-agenda-overriding-header "Completed Projects")
+				 (org-agenda-files org-agenda-files)))
+		  (todo "CANC"
+				((org-agenda-overriding-header "Cancelled Projects")
+				 (org-agenda-files org-agenda-files)))))))
 (setq org-ellipsis " ▾"
 	  org-agenda-files
+	  ;;	  '((substitute-in-file-name
+	  ;;		 "${DJ_REPO_ROOT}/redwood/resources/worknote/wnote.org"))
 	  '("/repo/egugwen/dj/redwood/resources/worknote/wnote.org")
 	  org-agenda-start-with-log-mode t
 	  org-log-done 'time
 	  org-log-into-drawer t
-	  org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+	  org-todo-keywordso
+	  '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
 		(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 (use-package org-bullets
-  :straight t
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-(straight-use-package 'el-patch)
+			 :straight t
+			 :hook (org-mode . org-bullets-mode)
+			 :custom
+			 (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 (use-package visual-fill-column
-  :straight (el-patch :type git :host github :repo "joostkremers/visual-fill-column")
-  :hook (org-mode . emc/org-mode-visual-fill))
+;;             :straight (el-patch :type git :host github :repo "joostkremers/visual-fill-column")
+			 :straight t
+			 :hook (org-mode . emc/org-mode-visual-fill))
 
 (use-package rainbow-delimiters
-	:straight t)
-
-;; Symbol's value as variable is void: git
-;;(straight-use-package
-;; 'emacs-which-key :type git :host github :repo "justbur/emacs-which-key")
+  :straight t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'java-mode-hook #'rainbow-delimiters-mode))
 
 ;; mode line customization (packages: solarized-theme + smart-mode-line)
 ;;(use-package solarized-theme
@@ -344,10 +432,10 @@
 ;;             (moody-replace-mode-line-buffer-identification)
 ;;             (moody-replace-vc-mode)
 ;;             (moody-replace-eldoc-minibuffer-message-function)
-;;	     (customize-set-variable 'moody-mode-line-height 18)
-;;	     (set-face-attribute 'mode-line nil :box nil :foreground "#7e7486")
-;;	     (set-face-attribute 'mode-line-inactive nil :box nil)
-;;	     )
+;;		 (customize-set-variable 'moody-mode-line-height 18)
+;;		 (set-face-attribute 'mode-line nil :box nil :foreground "#7e7486")
+;;		 (set-face-attribute 'mode-line-inactive nil :box nil)
+;;		 )
 
 ;; mode line customization (packages: smart-mode-line, smart-mode-line-powerline-theme)
 (require 'smart-mode-line)
@@ -359,31 +447,21 @@
 (sml/setup)
 
 (defadvice vc-mode-line (after me/vc-mode-line () activate)
-  "Strip backend from the VC information."
-  (when (stringp vc-mode)
-    (let ((vc-text (replace-regexp-in-string "^ Git." "  " vc-mode)))
-      (setq vc-mode vc-text))))
+		   "Strip backend from the VC information."
+		   (when (stringp vc-mode)
+			 (let ((vc-text (replace-regexp-in-string "^ Git." "  " vc-mode)))
+			   (setq vc-mode vc-text))))
 
 ;; nicer vertical border
 (set-face-attribute 'vertical-border nil :background "#231f32" :foreground "#74564c")
 (set-display-table-slot standard-display-table
-                        'vertical-border
-                        (make-glyph-code ?│))
+						'vertical-border
+						(make-glyph-code ?│))
 
-
-(eval-when-compile
-  (add-to-list 'load-path "/repo/egugwen/github/use-package")
-  (require 'use-package))
-(setq use-package-always-ensure t)
 
 ;; --- which-key ---
-;;(eval-when-compile
-;;  (add-to-list 'load-path "/repo/egugwen/github/emacs-which-key")
-;;  (require 'which-key))
-;;(which-key-setup-side-window-right-bottom)
-;;(which-key-mode)
 (use-package which-key
-  :straight t)
+			 :straight t)
 (which-key-setup-side-window-right-bottom)
 (which-key-mode)
 
@@ -414,9 +492,7 @@
 ;;   (setq meghanada-maven-path "mvn")))
 
 ;; compiling error
-;;use-package lsp-java
-;; :straight t
-;; :config (add-hook 'java-mode-hook 'lsp))
+;; Debugger entered--Lisp error: (error "Lisp nesting exceeds `max-lisp-eval-depth'")
 
 ;; auto-completion
 (require 'company)
@@ -425,35 +501,39 @@
 (use-package command-log-mode)
 (add-hook 'LaTeX-mode-hook 'command-log-mode)
 
+(use-package company-box
+  :straight t
+  :hook (company-mode . company-box-mode))
+
 ;; tree-explorer
 (use-package treemacs
-  :straight t)
-(treemacs-git-mode 'deferred)
+  :straight t
+  :config
+  (treemacs-git-mode 'deferred)
+  )
 
 (use-package anzu
-  :straight t)
+			 :straight t)
 
 (use-package all-the-icons-dired
-  :straight t)
+			 :straight t)
 (load "all-the-icons-dired.el")
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 (use-package treemacs-icons-dired
-  :straight t)
+			 :straight t)
 
 (use-package neotree
-  :straight t)
-;;(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-(setq neo-theme 'nerd)
+			 :straight t)
 
 (use-package term
-  :commands term
-  :config
-  (setq explicit-shell-file-name "bash") ;; Change this to zsh, etc
-  ;;(setq explicit-zsh-args '())         ;; Use 'explicit-<shell>-args for shell-specific args
+			 :commands term
+			 :config
+			 (setq explicit-shell-file-name "bash") ;; Change this to zsh, etc
+			 ;;(setq explicit-zsh-args '())         ;; Use 'explicit-<shell>-args for shell-specific args
 
-  ;; Match the default Bash shell prompt.  Update this if you have a custom prompt
-  (setq term-prompt-regexp ""))
+			 ;; Match the default Bash shell prompt.  Update this if you have a custom prompt
+			 (setq term-prompt-regexp ""))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -508,6 +588,22 @@
  '(sml/shorten-modes nil)
  '(sml/show-remote nil)
  '(sml/vc-mode-show-backend t)
+ '(tab-bar-format
+   '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator))
  '(tab-width 4)
  '(undo-no-redo t)
  '(warning-minimum-level :emergency))
+
+;;///////////////////////////////////////////////////////////////////////////////
+;; PART4: Performance Tuning
+;;///////////////////////////////////////////////////////////////////////////////
+(defun ap/garbage-collect ()
+  "Run `garbage-collect' and print stats about memory usage."
+  (interactive)
+  (message (cl-loop for (type size used free) in (garbage-collect)
+					for used = (* used size)
+					for free = (* (or free 0) size)
+					for total = (file-size-human-readable (+ used free))
+					for used = (file-size-human-readable used)
+					for free = (file-size-human-readable free)
+					concat (format "%s: %s + %s = %s\n" type used free total))))
