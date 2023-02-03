@@ -1,5 +1,7 @@
 ;;; package --- Summary"
 ;;; Commentary:
+;; load Spacemacs's initialization file, "~" is equivalent to "$HOME"
+;; (load-file "/repo/egugwen/ws/.spacemacs.d/init.el")
 ;; ///////////////////////////////////////////////////////////////////////////////
 ;; PART1: Basic Configurations
 ;; ///////////////////////////////////////////////////////////////////////////////
@@ -36,21 +38,23 @@
 (add-hook 'java-mode-hook
 		  (lambda()
 			(progn
-			  (setq fill-column 120))
-			(setq tab-width 4)))
+			  (setq fill-column 120)
+			  (setq tab-width 4)
+			  (setq indent-tabs-mode nil))
+			)
+		  )
 (add-hook 'python-mode-hook (lambda () (setq fill-column 79)))
 (add-hook 'org-mode (lambda () (setq fill-column -1)))
 (add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
 ;; automatically switch to org-mode for .org files
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-
+;;(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 ;; customize highlight in man pages
 (require 'man)
 (set-face-attribute 'Man-overstrike nil :inherit font-lock-type-face :bold t)
 (set-face-attribute 'Man-underline nil :inherit font-lock-keyword-face :underline t)
 
-(set-fringe-mode 10)
+(set-fringe-mode '(100 . 0))
 ;; make the left fringe 4 pixels wide and the right disappear
 ;;(fringe-mode '(40 . 0))
 
@@ -86,13 +90,21 @@
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-common :foreground "#ff9d9d"))))
  '(company-tooltip-selection ((t (:extend t :background "#181522"))))
  '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
+ '(git-gutter:deleted ((t (:inherit default :foreground "#e80000" :weight bold))))
  '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
+ '(helm-selection ((t (:inherit hl-line))))
+ '(helm-source-header ((t (:extend t :background "#181522" :foreground "#b7b7ff" :weight bold :height 1.3))))
  '(isearch ((t (:background "lightslateblue" :foreground "black"))))
  '(isearch-group-1 ((t (:background "gainsboro" :foreground "black"))))
  '(isearch-group-2 ((t (:background "bisque" :foreground "black"))))
  '(lsp-headerline-breadcrumb-path-face ((t (:background "#8585ff" :foreground "#231f32"))))
  '(lsp-headerline-breadcrumb-separator-face ((t (:background "#8585ff" :foreground "#231f32" :height 0.8))))
  '(lsp-headerline-breadcrumb-symbols-face ((t (:inherit font-lock-doc-face :background "#8055cc" :foreground "#231f32" :weight bold))))
+ '(magit-blame-hash ((t (:foreground "#656500"))))
+ '(magit-blame-highlight ((t (:extend t :foreground "#2a662a"))))
+ '(org-block ((t (:inherit shadow :extend t :background "#181522"))))
+ '(org-block-begin-line ((t (:inherit org-meta-line :extend t :background "#181522"))))
+ '(org-code ((t (:inherit shadow :background "#181522"))))
  '(rainbow-delimiters-base-face ((t (:inherit default))))
  '(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face :foreground "#a8a8a8"))))
  '(rainbow-delimiters-depth-2-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffe4b3"))))
@@ -218,14 +230,13 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; PART3: Package Installation and Configuration
 ;;///////////////////////////////////////////////////////////////////////////////
-
+;; themes
 ;; doom-themes
 (use-package doom-themes
 			 :straight t)
 ;; native-compiler-error
 (use-package doom-modeline
 			 :straight t
-			 :ensure t
 			 :init (doom-modeline-mode 1)
 			 )
 
@@ -235,6 +246,18 @@
   :straight t
   :init
   (helm-mode 1))
+
+;; git
+;; https://ianyepan.github.io/posts/emacs-git-gutter/
+(use-package git-gutter :straight t
+  :init (git-gutter-mode)
+  :config
+  (setq git-gutter:update-interval 0.02))
+(use-package git-gutter-fringe :straight t
+  :config
+  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
+  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 
 ;;evil
 (use-package evil
@@ -306,8 +329,9 @@
     (setq lsp-java-vmargs '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx2G" "-Xms1G")))
   (use-package lsp-mode
 			   :straight t
-			   :init
+			   :config
 			   (setq lsp-keymap-prefix "C-c l")
+			   (setq lsp-modeline-diagnostics-scope :workspace)
 			   (setq lsp-headerline-arrow
 					 #(">" 0 1
 					   (face #1=(:family "Material Icons" :height 1.0 :inherit lsp-headerline-breadcrumb-separator-face)
@@ -319,10 +343,8 @@
 					  (java-mode . lsp)
 					  (lsp-mode . lsp-enable-which-key-integration))
 			   :commands lsp)
-  (use-package lsp-ui
-	:straight t
-	)
-  )
+  (use-package lsp-ui :straight t)
+  (use-package yasnippet :straight t))
 (use-package all-the-icons
 			 :straight t)
 ;; causing problems
@@ -333,7 +355,6 @@
 ;;(use-package org-roam
 ;;  :straight (el-patch :type git :host github :repo "org-roam/org-roam"))
 (defun emc/org-mode-setup()
-  (org-indent-mode)
   (variable-pitch-mode)
   (auto-fill-mode 0)
   (visual-line-mode 1))
@@ -343,8 +364,10 @@
 		display-fill-column-indicator-column -1)
   (visual-fill-column-mode 1))
 (use-package org-mode
-			 :straight t
-			 :hook (org-mode . emc/org-mode-setup))
+  :straight t
+  :config
+  (org-indent-mode)
+  :hook (org-mode . emc/org-mode-setup))
 ;; don't know why this cannot work with :config of use-package org-mode
 (setq org-agenda-custom-commands
 	  '(("d" "Dashboard"
@@ -450,7 +473,7 @@
 ;;(setq powerline-default-separator-dir '(right . left))
 (setq sml/theme 'dark)
 (sml/setup)
-
+(use-package mood-line :straight t)
 (defadvice vc-mode-line (after me/vc-mode-line () activate)
 		   "Strip backend from the VC information."
 		   (when (stringp vc-mode)
@@ -466,15 +489,28 @@
 
 ;; --- which-key ---
 (use-package which-key
-			 :straight t)
-(which-key-setup-side-window-right-bottom)
-(which-key-mode)
+  :straight t
+  :init
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
 
 ;; set global keys
-(global-set-key (kbd "C-d") 'kill-line)
-(global-set-key (kbd "C-z") 'maximize-window)
+(global-set-key (kbd "C-c b") 'magit-blame)
+(global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
+(global-set-key (kbd "C-c f") 'lsp-format-buffer)
+(global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
+(global-set-key (kbd "C-c q") 'magit-blame-quit)
+(global-set-key (kbd "C-c t") 'treemac)
+(global-set-key (kbd "C-c u") 'untabify)
+(global-set-key (kbd "C-c k") 'kill-line)
+(global-set-key (kbd "C-c w") 'whitespace-mode)
+(global-set-key (kbd "C-c (") 'indent-region)
+(global-set-key (kbd "C-c =") 'maximize-window)
 (global-set-key (kbd "C-M-.") 'xref-find-references)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;; rebind global keys to emacs extensions keys
+(global-set-key (kbd "M-x") 'helm-M-x)
+
 
 ;; java development environment
 ;; install failure
@@ -499,7 +535,9 @@
 ;; compiling error
 ;; Debugger entered--Lisp error: (error "Lisp nesting exceeds `max-lisp-eval-depth'")
 
+;; 
 ;; auto-completion
+;;
 (require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 
@@ -509,8 +547,9 @@
 (use-package company-box
   :straight t
   :hook (company-mode . company-box-mode))
-
+;;
 ;; tree-explorer
+;;
 (use-package treemacs
   :straight t
   :config
@@ -540,6 +579,23 @@
 			 ;; Match the default Bash shell prompt.  Update this if you have a custom prompt
 			 (setq term-prompt-regexp ""))
 
+
+;;
+;; mode-line-format customization functions
+;;
+(defun mood-line--format (left right)
+  "Return a string of `window-width' length containing LEFT and RIGHT, aligned respectively."
+  (let ((reserve (length right)))
+	(concat left
+			" "
+			(propertize " "
+						'display `((space :align-to (- right ,reserve))))
+			right)))
+
+(set-fontset-font t 'unicode (font-spec :family "all-the-icons") nil 'append)
+
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -554,10 +610,18 @@
  '(display-fill-column-indicator t)
  '(display-fill-column-indicator-column t)
  '(flycheck-mode-line-prefix "  ")
+ '(git-gutter:added-sign "▎")
+ '(git-gutter:deleted-sign "▎")
+ '(git-gutter:modified-sign "▎")
  '(global-display-fill-column-indicator-mode t)
+ '(global-git-gutter-mode t)
  '(kill-whole-line t)
+ '(lsp-java-completion-import-order ["java" "javax" "org" "com" "se"])
  '(lsp-java-configuration-maven-user-settings "/home/egugwen/.m2/settings.xml")
  '(lsp-java-configuration-runtimes [])
+ '(lsp-java-format-settings-profile "JCAT code formatter")
+ '(lsp-java-format-settings-url
+   "/repo/egugwen/dj/jcat-common-code-formatter/src/main/resources/jcat-code-formatter.xml")
  '(lsp-java-import-gradle-enabled nil)
  '(lsp-java-save-actions-organize-imports t)
  '(lsp-java-vmargs
@@ -619,3 +683,8 @@
 					for used = (file-size-human-readable used)
 					for free = (file-size-human-readable free)
 					concat (format "%s: %s + %s = %s\n" type used free total))))
+;;///////////////////////////////////////////////////////////////////////////////
+;; Ending
+;;///////////////////////////////////////////////////////////////////////////////
+(provide 'init)
+;;; init.el ends here
