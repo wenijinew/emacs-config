@@ -251,10 +251,10 @@
 (use-package doom-themes
 			 :straight t)
 ;; native-compiler-error
-(use-package doom-modeline
-			 :straight t
-			 :init (doom-modeline-mode 1)
-			 )
+;;(use-package doom-modeline
+;;			 :straight t
+;;			 :init (doom-modeline-mode 1)
+;;			 )
 (use-package multiple-cursors
 			 :straight t)
 
@@ -490,7 +490,7 @@
 ;;(setq powerline-arrow-shape 'curve)
 ;;(setq powerline-default-separator-dir '(right . left))
 (setq sml/theme 'dark)
-(sml/setup)
+;;(sml/setup)
 (use-package mood-line :straight t)
 (defadvice vc-mode-line (after me/vc-mode-line () activate)
 		   "Strip backend from the VC information."
@@ -629,26 +629,26 @@
 ;; copy of mood-line (end)
 
 ;;reset mode-line-format
-(setq-default mode-line-format
-			  '((:eval
-				 (mood-line--format
-				  ;; left segment
-				  (format-mode-line
-				   '(" "
-					 (:eval (mood-line-segment-cursor-position))
-					 (:eval (mood-line-segment-buffer-status))
-					 (:eval (mood-line-segment-buffer-name))
-					 (:eval (mood-line-segment-anzu))))
-				  ;; right segment
-				  (format-mode-line
-					 (:eval (mood-line-segment-eol))
-					 (:eval (mood-line-segment-encoding))
-					 (:eval (mood-line-segment-vc))
-					 (:eval (mood-line-segment-major-mod))
-					 (:eval (mood-line-segment-misc-info))
-					 (:eval (mood-line-segment-checker))
-					 (:eval (mood-line-segment-process))
-					 " ")))))
+;;(setq-default mode-line-format
+;;			  '((:eval
+;;				 (mood-line--format
+;;				  ;; left segment
+;;				  (format-mode-line
+;;				   '(" "
+;;					 (:eval (mood-line-segment-cursor-position))
+;;					 (:eval (mood-line-segment-buffer-status))
+;;					 (:eval (mood-line-segment-buffer-name))
+;;					 (:eval (mood-line-segment-anzu))))
+;;				  ;; right segment
+;;				  (format-mode-line
+;;					 (:eval (mood-line-segment-eol))
+;;					 (:eval (mood-line-segment-encoding))
+;;					 (:eval (mood-line-segment-vc))
+;;					 (:eval (mood-line-segment-major-mod))
+;;					 (:eval (mood-line-segment-misc-info))
+;;					 (:eval (mood-line-segment-checker))
+;;					 (:eval (mood-line-segment-process))
+;;					 " ")))))
 
 ;; investigate fonts
 ;;(set-fontset-font t 'unicode (font-spec :family "all-the-icons") nil 'append)
@@ -700,10 +700,10 @@
    '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx4G" "-Xms100m"))
  '(lsp-lens-enable nil)
  '(mode-line-compact 'long)
- '(mode-line-format
-   '(" " " %l:%C(%p)"
-	 (vc-mode vc-mode)
-	 mode-line-modified mode-line-buffer-identification sml/pre-id-separator "(%I)" mode-line-buffer-identification))
+;; '(mode-line-format
+;;   '(" " " %l:%C(%p)"
+;;	 (vc-mode vc-mode)
+;;	 mode-line-modified mode-line-buffer-identification sml/pre-id-separator "(%I)" mode-line-buffer-identification))
  '(neo-smart-open t)
  '(nxml-child-indent 4)
  '(size-indication-mode t)
@@ -770,15 +770,74 @@
 					for used = (file-size-human-readable used)
 					for free = (file-size-human-readable free)
 					concat (format "%s: %s + %s = %s\n" type used free total))))
-;;///////////////////////////////////////////////////////////////////////////////
-;; Ending
-;;///////////////////////////////////////////////////////////////////////////////
-(provide 'init)
-;;; init.el ends here
 
-(defun mode-line--encoding()
-  "To return encoding."
+;;///////////////////////////////////////////////////////////////////////////////
+;; PART5: Customized Mode Line
+;;///////////////////////////////////////////////////////////////////////////////
+(defgroup w-mode-line nil
+  "I want to have a wonderful mode-line: w-mode-line.
 
+  The w-mode-line consists of several segments:
+  1. left part: head label - left part segments
+  2. right part: right part segments - tail label.
+  The segments are separated by separator label."
+  :group 'mode-line)
+
+(defgroup w-mode-line-faces nil
+  "Yes, it includes all w-mode-line faces."
+  :group 'w-mode-line
+  :group 'faces)
+
+(defgroup w-mode-line-labels '()
+  "Group for mode-line labels."
+  :group 'w-mode-line)
+
+(defface w-mode-line-head
+  '((t (:inherit default :weight normal)))
+  "Face for head of w-mode-line."
+  :group 'w-mode-line-faces
+  )
+
+(defface w-mode-line-encoding
+  '((t (:inherit default :weight normal)))
+  "Face for encoding segment of w-mode-line."
+  :group 'w-mode-line-faces
+  )
+
+(defface w-mode-line-tail
+  '((t (:inherit default :weight normal)))
+  "Face for encoding segment of w-mode-line."
+  :group 'w-mode-line-faces
+  )
+
+(defcustom w-mode-line-head-label "  "
+  "String being used as head label of w-mode-line."
+  :type 'string
+  :group 'w-mode-line-labels)
+
+(defcustom w-mode-line-tail-label "  "
+  "String being used as head label of w-mode-line."
+  :type 'string
+  :group 'w-mode-line-labels)
+
+(defun w-mode-line-seg-head()
+  "To return head segment of w-mode-line."
+  (propertize
+   w-mode-line-head-label
+   'face 'w-mode-line-head))
+
+(w-mode-line-seg-head)
+
+(defun w-mode-line-seg-tail()
+  "To return tail segment of w-mode-line."
+  (propertize
+   w-mode-line-tail-label
+   'face 'w-mode-line-tail))
+
+(w-mode-line-seg-tail)
+
+(defun w-mode-line-seg-encoding()
+  "To return encoding segment."
   (let*
 	((sys (coding-system-plist buffer-file-coding-system))
 	 (sym (plist-get sys :name)))
@@ -786,20 +845,31 @@
    (upcase (symbol-name sym))
    'face 'font-lock-string-face)))
 
-(mode-line--encoding)
+(w-mode-line-seg-encoding)
 
-(setq mode-line-format
-	  '((:eval
-		 (mood-line--format
-		  (format-mode-line
-		   '(""
-			 mode-line-modified
-			 (vc-mode vc-mode)
-			 mode-line-buffer-identification))
+(defun w-mode-line()
+  "Enable w-mode-line."
+  (setq mode-line-format
+		'((:eval
+		   (mood-line--format
+			(format-mode-line
+			 '(" "
+			   (:eval (w-mode-line-seg-head))
+			   mode-line-modified
+			   (vc-mode vc-mode)
+			   mode-line-buffer-identification)
+			 )
 
-		  (format-mode-line
-		   '(
-			 (:eval (mode-line--encoding))
-			 "  ")
-		   ))
-		 )))
+			(format-mode-line
+			 '((:eval (w-mode-line-seg-encoding))
+			   (:eval (w-mode-line-seg-tail))
+			   " ")))))))
+
+(w-mode-line)
+
+;;///////////////////////////////////////////////////////////////////////////////
+;; Ending
+;;///////////////////////////////////////////////////////////////////////////////
+(provide 'init)
+;;; init.el ends here
+
