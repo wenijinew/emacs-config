@@ -84,24 +84,37 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-template-field ((t (:background "#b7b7ff" :foreground "#181522"))))
  '(company-tooltip ((t (:background "#30304e"))))
  '(company-tooltip-annotation ((t (:foreground "#e3cfcf"))))
  '(company-tooltip-annotation-selection ((t (:inherit company-tooltip-annotation :foreground "#c2f0c2"))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-common :foreground "#ff9d9d"))))
  '(company-tooltip-selection ((t (:extend t :background "#181522"))))
+ '(custom-comment ((t (:background "#181522" :foreground "#d1ccba"))))
  '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
  '(git-gutter:deleted ((t (:inherit default :foreground "#e80000" :weight bold))))
  '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
  '(helm-selection ((t (:inherit hl-line))))
  '(helm-source-header ((t (:extend t :background "#181522" :foreground "#b7b7ff" :weight bold :height 1.3))))
+ '(info-menu-star ((t (:foreground "#d87373"))))
+ '(info-node ((t (:foreground "#ffb733" :slant italic :weight bold))))
+ '(info-title-1 ((t (:foreground "#938760" :weight bold))))
+ '(info-title-2 ((t (:foreground "#bdb59b" :weight bold))))
+ '(info-title-3 ((t (:foreground "#bdb59b" :weight bold))))
+ '(info-title-4 ((t (:foreground "#e3cfcf" :weight bold))))
  '(isearch ((t (:background "lightslateblue" :foreground "black"))))
  '(isearch-group-1 ((t (:background "gainsboro" :foreground "black"))))
  '(isearch-group-2 ((t (:background "bisque" :foreground "black"))))
+ '(link ((t (:foreground "lightslateblue" :underline t))))
+ '(link-visited ((t (:inherit link :foreground "orchid"))))
  '(lsp-headerline-breadcrumb-path-face ((t (:background "#8585ff" :foreground "#231f32"))))
  '(lsp-headerline-breadcrumb-separator-face ((t (:background "#8585ff" :foreground "#231f32" :height 0.8))))
  '(lsp-headerline-breadcrumb-symbols-face ((t (:inherit font-lock-doc-face :background "#8055cc" :foreground "#231f32" :weight bold))))
  '(magit-blame-hash ((t (:foreground "#656500"))))
  '(magit-blame-highlight ((t (:extend t :foreground "#2a662a"))))
+ '(markdown-highlighting-face ((t (:background "salmon" :foreground "linen"))))
+ '(match ((t (:background "#8584ff" :foreground "#00006b"))))
+ '(minibuffer-prompt ((t (:background "#30304e" :foreground "lavender" :box (:line-width (1 . -1) :color "red" :style released-button) :weight bold))))
  '(org-block ((t (:inherit shadow :extend t :background "#181522"))))
  '(org-block-begin-line ((t (:inherit org-meta-line :extend t :background "#181522"))))
  '(org-code ((t (:inherit shadow :background "#181522"))))
@@ -124,7 +137,10 @@
  '(sml/outside-modified ((t (:inherit sml/not-modified :foreground "#820000"))))
  '(sml/prefix ((t (:inherit sml/global :foreground "#8585ff"))))
  '(sml/sudo ((t (:foreground "#7141c6"))))
+ '(treemacs-git-commit-diff-face ((t (:inherit 'warning))))
  '(vc-state-base ((t (:foreground "slategray"))))
+ '(warning ((t (:foreground "tomato" :weight bold))))
+ '(widget-field ((t (:extend t :background "#b7b7ff" :foreground "#181522"))))
  '(woman-bold ((t (:inherit font-lock-type-face))))
  '(woman-italic ((t (:inherit font-lock-keyword-face)))))
 
@@ -239,6 +255,8 @@
 			 :straight t
 			 :init (doom-modeline-mode 1)
 			 )
+(use-package multiple-cursors
+			 :straight t)
 
 ;; helm: http://tuhdo.github.io/helm-intro.html
 ;; also has compiling error
@@ -494,27 +512,34 @@
   (which-key-setup-side-window-right-bottom)
   (which-key-mode))
 
-;; set global keys
+;; set wonderful global keys
 (global-set-key (kbd "C-c b") 'magit-blame)
+(global-set-key (kbd "C-c c") 'customize)
 (global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
 (global-set-key (kbd "C-c f") 'lsp-format-buffer)
 (global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
+(global-set-key (kbd "C-c h") 'windmove-left)
+(global-set-key (kbd "C-c j") 'windmove-right)
 (global-set-key (kbd "C-c q") 'magit-blame-quit)
-(global-set-key (kbd "C-c t") 'treemac)
+(global-set-key (kbd "C-c l") 'tab-switcher)
+(global-set-key (kbd "C-c n") 'neotree-toggle)
+(global-set-key (kbd "C-c t") 'treemacs)
 (global-set-key (kbd "C-c u") 'untabify)
 (global-set-key (kbd "C-c k") 'kill-line)
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 (global-set-key (kbd "C-c (") 'indent-region)
 (global-set-key (kbd "C-c =") 'maximize-window)
-(global-set-key (kbd "C-M-.") 'xref-find-references)
+(global-set-key (kbd "C-c .") 'xref-find-references)
+(global-set-key (kbd "C-c <up>") 'windmove-up)
+(global-set-key (kbd "C-c <down>") 'windmove-down)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;; rebind global keys to emacs extensions keys
 (global-set-key (kbd "M-x") 'helm-M-x)
 
 
-;; java development environment
-;; install failure
-;;use-package  meghanada
+;; Java Development Environment
+;; Install Failure
+;;Use-Package  Meghanada
 ;; :straight t)
 ;;add-hook 'java-mode-hook
 ;;         (lambda ()
@@ -581,20 +606,435 @@
 
 
 ;;
-;; mode-line-format customization functions
+;; mode-line-format customization (start)
+;; functions
 ;;
+;;(defun mood-line--format (left right)
+;;  "Return a string of `window-width' length containing LEFT and RIGHT, aligned respectively."
+;;  (let ((reserve (length right)))
+;;	(concat left
+;;			" "
+;;			(propertize " "
+;;						'display `((space :align-to (- right ,reserve))))
+;;			right)))
+;;
+;;(defun mood-line-segment-position ()
+;;  "Displays the current cursor position in the mode-line."
+;;  (concat "%l:%c"
+;;          (when mood-line-show-cursor-point (propertize (format ":%d" (point)) 'face 'mood-line-unimportant))
+;;          (propertize " %p%%  " 'face 'mood-line-unimportant)))
+
+;; copy of mood-line (start)
+;;; mood-line.el --- A minimal mode-line inspired by doom-modeline -*- lexical-binding: t; -*-
+
+;; Author: Jessie Hildebrandt <jessieh.net>
+;; Homepage: https://gitlab.com/jessieh/mood-line
+;; Keywords: mode-line faces
+;; Version: 1.2.4
+;; Package-Requires: ((emacs "25.1"))
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+;;
+;; mood-line is a minimal mode-line configuration that aims to replicate
+;; some of the features of the doom-modeline package.
+;;
+;; Features offered:
+;; * Clean, minimal design
+;; * Anzu and multiple-cursors counter
+;; * Version control status indicator
+;; * Flycheck status indicator
+;; * Flymake support
+;; * Lightweight with no dependencies
+;;
+;; To enable mood-line:
+;; (mood-line-mode)
+
+;;; License:
+;;
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2, or
+;; (at your option) any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+
+;;; Code:
+
+;;
+;; Variable declarations
+;;
+
+(defvar flycheck-current-errors)
+(defvar flymake--mode-line-format)
+(defvar anzu--state)
+(defvar anzu--cached-count)
+(defvar anzu--overflow-p)
+(defvar anzu--current-position)
+(defvar anzu--total-matched)
+(defvar multiple-cursors-mode)
+
+;;
+;; Function prototypes
+;;
+
+(declare-function flycheck-count-errors "flycheck" (errors))
+(declare-function mc/num-cursors "multiple-cursors" ())
+
+;;
+;; Config
+;;
+
+(defgroup mood-line nil
+  "A minimal mode-line configuration inspired by doom-modeline."
+  :group 'mode-line)
+
+(defcustom mood-line-show-eol-style nil
+  "If t, the EOL style of the current buffer will be displayed in the mode-line."
+  :group 'mood-line
+  :type 'boolean)
+
+(defcustom mood-line-show-encoding-information nil
+  "If t, the encoding format of the current buffer will be displayed in the mode-line."
+  :group 'mood-line
+  :type 'boolean)
+
+(defcustom mood-line-show-cursor-point nil
+  "If t, the value of `point' will be displayed next to the cursor position in the mode-line."
+  :group 'mood-line
+  :type 'boolean)
+
+(defface mood-line-buffer-name
+  '((t (:inherit (mode-line-buffer-id))))
+  "Face used for major mode indicator in the mode-line."
+  :group 'mood-line)
+
+(defface mood-line-major-mode
+  '((t (:inherit (bold))))
+  "Face used for major mode indicator in the mode-line."
+  :group 'mood-line)
+
+(defface mood-line-status-neutral
+  '((t (:inherit (shadow))))
+  "Face used for neutral or inactive status indicators in the mode-line."
+  :group 'mood-line)
+
+(defface mood-line-status-info
+  '((t (:inherit (font-lock-keyword-face))))
+  "Face used for generic status indicators in the mode-line."
+  :group 'mood-line)
+
+(defface mood-line-status-success
+  '((t (:inherit (success))))
+  "Face used for success status indicators in the mode-line."
+  :group 'mood-line)
+
+(defface mood-line-status-warning
+  '((t (:inherit (warning))))
+  "Face for warning status indicators in the mode-line."
+  :group 'mood-line)
+
+(defface mood-line-status-error
+  '((t (:inherit (error))))
+  "Face for error stauts indicators in the mode-line."
+  :group 'mood-line)
+
+(defface mood-line-unimportant
+  '((t (:inherit (shadow))))
+  "Face used for less important mode-line elements."
+  :group 'mood-line)
+
+(defface mood-line-modified
+  '((t (:inherit (error))))
+  "Face used for the 'modified' indicator symbol in the mode-line."
+  :group 'mood-line)
+
+;;
+;; Helper functions
+;;
+
+(defun mood-line--string-trim-left (string)
+  "Remove whitespace at the beginning of STRING."
+  (if (string-match "\\`[ \t\n\r]+" string)
+      (replace-match "" t t string)
+    string))
+
+(defun mood-line--string-trim-right (string)
+  "Remove whitespace at the end of STRING."
+  (if (string-match "[ \t\n\r]+\\'" string)
+      (replace-match "" t t string)
+    string))
+
+(defun mood-line--string-trim (string)
+  "Remove whitespace at the beginning and end of STRING."
+  (mood-line--string-trim-left (mood-line--string-trim-right string)))
+
 (defun mood-line--format (left right)
   "Return a string of `window-width' length containing LEFT and RIGHT, aligned respectively."
   (let ((reserve (length right)))
-	(concat left
-			" "
-			(propertize " "
-						'display `((space :align-to (- right ,reserve))))
-			right)))
+    (concat left
+            " "
+            (propertize " "
+                        'display `((space :align-to (- right ,reserve))))
+            right)))
 
-(set-fontset-font t 'unicode (font-spec :family "all-the-icons") nil 'append)
+;;
+;; Update functions
+;;
+
+(defvar-local mood-line--vc-text nil)
+(defun mood-line--update-vc-segment (&rest _)
+  "Update `mood-line--vc-text' against the current VCS state."
+  (setq mood-line--vc-text
+        (when (and vc-mode buffer-file-name)
+          (let ((backend (vc-backend buffer-file-name))
+                (state (vc-state buffer-file-name (vc-backend buffer-file-name))))
+            (let ((face 'mode-line-neutral))
+              (concat (cond ((memq state '(edited added))
+                             (setq face 'mood-line-status-info)
+                             (propertize "+ " 'face face))
+                            ((eq state 'needs-merge)
+                             (setq face 'mood-line-status-warning)
+                             (propertize "⟷ " 'face face))
+                            ((eq state 'needs-update)
+                             (setq face 'mood-line-status-warning)
+                             (propertize "↑ " 'face face))
+                            ((memq state '(removed conflict unregistered))
+                             (setq face 'mood-line-status-error)
+                             (propertize "✖ " 'face face))
+                            (t
+                             (setq face 'mood-line-status-neutral)
+                             (propertize "✔ " 'face face)))
+                      (propertize (substring vc-mode (+ (if (eq backend 'Hg) 2 3) 2))
+                                  'face face
+                                  'mouse-face face)
+                      "  "))))))
+
+(defvar-local mood-line--flycheck-text nil)
+(defun mood-line--update-flycheck-segment (&optional status)
+  "Update `mood-line--flycheck-text' against the reported flycheck STATUS."
+  (setq mood-line--flycheck-text
+        (pcase status
+          ('finished (if flycheck-current-errors
+                         (let-alist (flycheck-count-errors flycheck-current-errors)
+                           (let ((sum (+ (or .error 0) (or .warning 0))))
+                             (propertize (concat "⚑ Issues: "
+                                                 (number-to-string sum)
+                                                 "  ")
+                                         'face (if .error
+                                                   'mood-line-status-error
+                                                 'mood-line-status-warning))))
+                       (propertize "✔ Good  " 'face 'mood-line-status-success)))
+          ('running (propertize "Δ Checking  " 'face 'mood-line-status-info))
+          ('errored (propertize "✖ Error  " 'face 'mood-line-status-error))
+          ('interrupted (propertize "⏸ Paused  " 'face 'mood-line-status-neutral))
+          ('no-checker ""))))
+
+;;
+;; Segments
+;;
+
+(defun mood-line-segment-modified ()
+  "Displays a color-coded buffer modification/read-only indicator in the mode-line."
+  (if (not (string-match-p "\\*.*\\*" (buffer-name)))
+      (if (buffer-modified-p)
+          (propertize "● " 'face 'mood-line-modified)
+        (if (and buffer-read-only (buffer-file-name))
+            (propertize "■ " 'face 'mood-line-unimportant)
+          "  "))
+    "  "))
+
+(defun mood-line-segment-buffer-name ()
+  "Displays the name of the current buffer in the mode-line."
+  (propertize "%b  " 'face 'mood-line-buffer-name))
+
+(defun mood-line-segment-anzu ()
+  "Displays color-coded anzu status information in the mode-line (if available)."
+  (when (and (boundp 'anzu--state) anzu--state)
+    (cond ((eq anzu--state 'replace-query)
+           (format #("Replace: %d  " 0 11 (face mood-line-status-warning)) anzu--cached-count))
+          (anzu--overflow-p
+           (format #("%d/%d+  " 0 3 (face mood-line-status-info) 3 6 (face mood-line-status-error)) anzu--current-position anzu--total-matched))
+          (t
+           (format #("%d/%d  " 0 5 (face mood-line-status-info)) anzu--current-position anzu--total-matched)))))
+
+(defun mood-line-segment-multiple-cursors ()
+  "Displays the number of active multiple-cursors in the mode-line (if available)."
+  (when (and (boundp 'multiple-cursors-mode) multiple-cursors-mode)
+    (concat "MC"
+            (format #("×%d  " 0 3 (face mood-line-status-warning)) (mc/num-cursors)))))
+
+(defun mood-line-segment-position ()
+  "Displays the current cursor position in the mode-line."
+  (concat "%l:%c"
+          (when mood-line-show-cursor-point (propertize (format ":%d" (point)) 'face 'mood-line-unimportant))
+          (propertize " %p%%  " 'face 'mood-line-unimportant)))
+
+(defun mood-line-segment-eol ()
+  "Displays the EOL style of the current buffer in the mode-line."
+  (when mood-line-show-eol-style
+    (pcase (coding-system-eol-type buffer-file-coding-system)
+      (0 "LF  ")
+      (1 "CRLF  ")
+      (2 "CR  "))))
+
+(defun mood-line-segment-encoding ()
+  "Displays the encoding and EOL style of the buffer in the mode-line."
+  (when mood-line-show-encoding-information
+    (concat (let ((sys (coding-system-plist buffer-file-coding-system)))
+              (cond ((memq (plist-get sys :category) '(coding-category-undecided coding-category-utf-8))
+                     "UTF-8")
+                    (t (upcase (symbol-name (plist-get sys :name))))))
+            "  ")))
+
+(defun mood-line-segment-vc ()
+  "Displays color-coded version control information in the mode-line."
+  mood-line--vc-text)
+
+(defun mood-line-segment-major-mode ()
+  "Displays the current major mode in the mode-line."
+  (concat (format-mode-line mode-name 'mood-line-major-mode) "  "))
+
+(defun mood-line-segment-misc-info ()
+  "Displays the current value of `mode-line-misc-info' in the mode-line."
+  (let ((misc-info (format-mode-line mode-line-misc-info 'mood-line-unimportant)))
+    (unless (string= (mood-line--string-trim misc-info) "")
+      (concat (mood-line--string-trim misc-info) "  "))))
+
+(defun mood-line-segment-flycheck ()
+  "Displays color-coded flycheck information in the mode-line (if available)."
+  mood-line--flycheck-text)
+
+(defun mood-line-segment-flymake ()
+  "Displays information about the current status of flymake in the mode-line (if available)."
+  (when (and (boundp 'flymake-mode) flymake-mode)
+    (concat (mood-line--string-trim (format-mode-line flymake--mode-line-format)) "  ")))
+
+(defun mood-line-segment-process ()
+  "Displays the current value of `mode-line-process' in the mode-line."
+  (let ((process-info (format-mode-line mode-line-process)))
+    (unless (string= (mood-line--string-trim process-info) "")
+      (concat (mood-line--string-trim process-info) "  "))))
+
+;;
+;; Activation function
+;;
+
+;; Store the default mode-line format
+(defvar mood-line--default-mode-line mode-line-format)
+
+;;;###autoload
+(define-minor-mode mood-line-mode
+  "Toggle mood-line on or off."
+  :group 'mood-line
+  :global t
+  :lighter nil
+  (if mood-line-mode
+      (progn
+
+        ;; Setup flycheck hooks
+        (add-hook 'flycheck-status-changed-functions #'mood-line--update-flycheck-segment)
+        (add-hook 'flycheck-mode-hook #'mood-line--update-flycheck-segment)
+
+        ;; Setup VC hooks
+        (add-hook 'find-file-hook #'mood-line--update-vc-segment)
+        (add-hook 'after-save-hook #'mood-line--update-vc-segment)
+        (advice-add #'vc-refresh-state :after #'mood-line--update-vc-segment)
+
+        ;; Set the new mode-line-format
+        (setq-default mode-line-format
+                      '((:eval
+                         (mood-line--format
+                          ;; Left
+                          (format-mode-line
+                           '(" "
+                             (:eval (mood-line-segment-modified))
+                             (:eval (mood-line-segment-buffer-name))
+                             (:eval (mood-line-segment-anzu))
+                             (:eval (mood-line-segment-multiple-cursors))
+                             (:eval (mood-line-segment-position))))
+
+                          ;; Right
+                          (format-mode-line
+                           '((:eval (mood-line-segment-eol))
+                             (:eval (mood-line-segment-encoding))
+                             (:eval (mood-line-segment-vc))
+                             (:eval (mood-line-segment-major-mode))
+                             (:eval (mood-line-segment-misc-info))
+                             (:eval (mood-line-segment-flycheck))
+                             (:eval (mood-line-segment-flymake))
+                             (:eval (mood-line-segment-process))
+                             " ")))))))
+    (progn
+
+      ;; Remove flycheck hooks
+      (remove-hook 'flycheck-status-changed-functions #'mood-line--update-flycheck-segment)
+      (remove-hook 'flycheck-mode-hook #'mood-line--update-flycheck-segment)
+
+      ;; Remove VC hooks
+      (remove-hook 'file-find-hook #'mood-line--update-vc-segment)
+      (remove-hook 'after-save-hook #'mood-line--update-vc-segment)
+      (advice-remove #'vc-refresh-state #'mood-line--update-vc-segment)
+
+      ;; Restore the original mode-line format
+      (setq-default mode-line-format mood-line--default-mode-line))))
+
+;;
+;; Provide mood-line
+;;
+
+(provide 'mood-line)
+
+;;; mood-line.el ends here
+
+;; copy of mood-line (end)
+
+;;reset mode-line-format
+(setq-default mode-line-format
+			  '((:eval
+				 (mood-line--format
+				  ;; left segment
+				  (format-mode-line
+				   '(""
+					 (:eval (mood-line-segment-position))
+					 (:eval (mood-line-segment-modified))
+					 (:eval (mood-line-segment-buffer-name))
+					 (:eval (mood-line-segment-anzu))))
+				  ;; right segment
+				  (format-mode-line
+					 (:eval (mood-line-segment-eol))
+					 (:eval (mood-line-segment-encoding))
+					 (:eval (mood-line-segment-vc))
+					 (:eval (mood-line-segment-major-mod))
+					 (:eval (mood-line-segment-misc-info))
+					 (:eval (mood-line-segment-checker-flycheck))
+					 (:eval (mood-line-segment-checker-flymake))
+					 (:eval (mood-line-segment-process))
+					 "")))))
 
 
+;; investigate fonts
+;;(set-fontset-font t 'unicode (font-spec :family "all-the-icons") nil 'append)
+;;(set-face-attribute 'default nil :font "SourceCodePro")
+;;(set-frame-font "Sourcecodepro" nil t)
+;;(face-remap-add-relative 'default :family "Arial" :height 140)
+;;(set-face-attribute 'default (selected-frame) :height 50)
+;;(all-the-icons-insert-icons-for 'alltheicon)
+;;(find-font (font-spec :name "Source Code Pro"))
+;;(set-face-font 'default "fontset-standard")
+
+;;
+;; mode-line-format customization (end)
+;;
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -632,6 +1072,7 @@
    '(" " " %l:%C(%p)"
 	 (vc-mode vc-mode)
 	 mode-line-modified mode-line-buffer-identification sml/pre-id-separator "(%I)"))
+ '(neo-smart-open t)
  '(nxml-child-indent 4)
  '(size-indication-mode t)
  '(sml/full-mode-string "  ")
