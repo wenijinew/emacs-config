@@ -91,6 +91,7 @@
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-common :foreground "#ff9d9d"))))
  '(company-tooltip-selection ((t (:extend t :background "#181522"))))
  '(custom-comment ((t (:background "#181522" :foreground "#d1ccba"))))
+ '(doom-modeline-project-dir ((t (:inherit (w-mode-line-head bold)))))
  '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
  '(git-gutter:deleted ((t (:inherit default :foreground "#e80000" :weight bold))))
  '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
@@ -137,6 +138,16 @@
  '(sml/outside-modified ((t (:inherit sml/not-modified :foreground "#820000"))))
  '(sml/prefix ((t (:inherit sml/global :foreground "#8585ff"))))
  '(sml/sudo ((t (:foreground "#7141c6"))))
+ '(tab-bar ((t (:inherit variable-pitch :background "black" :foreground "#8584ff"))))
+ '(tab-bar-tab-group-current ((t (:foreground "#8584ff" :box nil :weight bold))))
+ '(tab-bar-tab-group-inactive ((t (:foreground "#303030"))))
+ '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :foreground "#303030"))))
+ '(tab-bar-tab-ungrouped ((t (:background "#303030" :foreground "#62629c"))))
+ '(tab-line ((t (:inherit variable-pitch :background "#181522" :foreground "#62629c" :height 0.9))))
+ '(tab-line-highlight ((t (:background "#820000" :foreground "#ffff9d" :box (:line-width (1 . 1) :style released-button)))))
+ '(tab-line-tab-current ((t (:inherit mode-line-buffer-id))))
+ '(tab-line-tab-inactive ((t (:inherit tab-line-tab :foreground "#62629c"))))
+ '(tab-line-tab-modified ((t (:inherit w-mode-line-head-modified))))
  '(treemacs-git-commit-diff-face ((t (:inherit 'warning))))
  '(vc-state-base ((t (:foreground "slategray"))))
  '(w-mode-line-head ((t (:foreground "#8181b0"))))
@@ -149,35 +160,19 @@
  '(woman-italic ((t (:inherit font-lock-keyword-face)))))
 
 ;; tab-bar customization
-;;(tab-bar-mode 1)
+(tab-bar-mode 0)
 (setq tab-bar-close-button-show nil
 	  tab-bar-show 1
 	  tab-bar-tab-hints t
 	  tab-bar-new-tab-choice "~/.emacs.d/init.el"
-	  tab-bar-separator ""
+	  tab-bar-separator "  "
 	  tab-bar-button-margin '(5 . 2)
 	  )
 '(tab-bar ((t (:inherit mode-line))))
 
 ;; tab line mode customization
-;; (global-tab-line-mode t)
-;; (setq tab-line-new-button-show nil)  ;; do not show add-new button
-;; (setq tab-line-close-button-show nil)  ;; do not show close button
-;; (setq tab-line-separator " > ")
-;; ;; tab color settings
-;; (set-face-attribute 'tab-line nil ;; background behind tabs
-;;       :background "gray40"
-;;       :foreground "gray60" :distant-foreground "gray50"
-;;       :height 1.0 :box nil)
-;; (set-face-attribute 'tab-line-tab nil ;; active tab in another window
-;;       :inherit 'tab-line
-;;       :foreground "gray70" :background "gray90" :box nil)
-;; (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
-;;       :background "#b34cb3" :foreground "white" :box nil)
-;; (set-face-attribute 'tab-line-tab-inactive nil ;; inactive tab
-;;       :background "gray60" :foreground "black" :box nil)
-;; (set-face-attribute 'tab-line-highlight nil ;; mouseover
-;;       :background "white" :foreground 'unspecified)
+(global-tab-line-mode t)
+(setq tab-line-separator "  ")
 
 ;; -- ctags --
 (setq tags-file-name "~/.emacs.d/TAGS")
@@ -524,7 +519,7 @@
 (global-set-key (kbd "C-c h") 'windmove-left)
 (global-set-key (kbd "C-c j") 'windmove-right)
 (global-set-key (kbd "C-c q") 'magit-blame-quit)
-(global-set-key (kbd "C-c l") 'tab-switcher)
+(global-set-key (kbd "C-c r") 'tab-bar-close-tab)
 (global-set-key (kbd "C-c n") 'neotree-toggle)
 (global-set-key (kbd "C-c t") 'treemacs)
 (global-set-key (kbd "C-c u") 'untabify)
@@ -535,6 +530,8 @@
 (global-set-key (kbd "C-c .") 'xref-find-references)
 (global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key (kbd "C-c <down>") 'windmove-down)
+(global-set-key (kbd "M-n") 'tab-bar-new-tab)
+(global-set-key (kbd "M-RET") 'tab-next)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;; rebind global keys to emacs extensions keys
 (global-set-key (kbd "M-x") 'helm-M-x)
@@ -680,13 +677,15 @@
  '(delimit-columns-before "")
  '(display-fill-column-indicator t)
  '(display-fill-column-indicator-column t)
- '(doom-modeline-highlight-modified-buffer-name nil)
+ '(doom-modeline-highlight-modified-buffer-name t)
+ '(doom-modeline-mode t)
  '(flycheck-mode-line-prefix "  ")
  '(git-gutter:added-sign "▎")
  '(git-gutter:deleted-sign "▎")
  '(git-gutter:modified-sign "▎")
  '(global-display-fill-column-indicator-mode t)
  '(global-git-gutter-mode t)
+ '(global-tab-line-mode t)
  '(grep-command "grep --color=auto -nH --null -e ")
  '(grep-find-command
    '("find . -type f -exec grep --color=auto -nH --null -e  \\{\\} +" . 54))
@@ -736,8 +735,17 @@
  '(sml/shorten-modes nil)
  '(sml/show-remote nil)
  '(sml/vc-mode-show-backend t)
+ '(tab-bar-close-button-show nil)
  '(tab-bar-format
    '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator))
+ '(tab-bar-mode t)
+ '(tab-bar-new-tab-choice "~/.emacs.d/init.el")
+ '(tab-bar-show 1)
+ '(tab-bar-tab-hints t)
+ '(tab-line-close-button-show nil)
+ '(tab-line-new-button-show nil)
+ '(tab-line-switch-cycling t)
+ '(tab-line-tab-name-function 'tab-line-tab-name-buffer)
  '(tab-width 4)
  '(undo-no-redo t)
  '(warning-minimum-level :emergency))
@@ -900,3 +908,11 @@
 (provide 'init)
 ;;; init.el ends here
 
+;;
+;;(lsp-icons-all-the-icons-material-icon
+;; "chevron_right"
+;; 'lsp-headerline-breadcrumb-separator-face
+;; ">"
+;; 'headerline-breadcrumb)
+;;
+;;(all-the-icons-insert-icons-for 'material)
