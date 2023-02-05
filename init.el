@@ -510,6 +510,7 @@
   (which-key-mode))
 
 ;; set wonderful global keys
+(global-set-key (kbd "C-c a") 'lsp-execute-code-action)
 (global-set-key (kbd "C-c b") 'magit-blame)
 (global-set-key (kbd "C-c c") 'customize)
 (global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
@@ -525,17 +526,19 @@
 (global-set-key (kbd "C-c u") 'untabify)
 (global-set-key (kbd "C-c k") 'kill-line)
 (global-set-key (kbd "C-c w") 'whitespace-cleanup)
+(global-set-key (kbd "C-c z") 'undo-redo)
 (global-set-key (kbd "C-c (") 'indent-region)
 (global-set-key (kbd "C-c =") 'maximize-window)
 (global-set-key (kbd "C-c .") 'xref-find-references)
 (global-set-key (kbd "C-c <up>") 'windmove-up)
 (global-set-key (kbd "C-c <down>") 'windmove-down)
+
 (global-set-key (kbd "M-n") 'tab-bar-new-tab)
+(global-set-key (kbd "M-o") 'lsp-ui-imenu)
 (global-set-key (kbd "M-RET") 'tab-next)
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 ;; rebind global keys to emacs extensions keys
 (global-set-key (kbd "M-x") 'helm-M-x)
-
 
 ;; Java Development Environment
 ;; Install Failure
