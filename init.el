@@ -139,6 +139,10 @@
  '(sml/sudo ((t (:foreground "#7141c6"))))
  '(treemacs-git-commit-diff-face ((t (:inherit 'warning))))
  '(vc-state-base ((t (:foreground "slategray"))))
+ '(w-mode-line-head ((t (:foreground "#8181b0"))))
+ '(w-mode-line-head-modified ((t (:foreground "#d87373"))))
+ '(w-mode-line-tail ((t (:foreground "#8181b0"))))
+ '(w-mode-line-tail-modified ((t (:foreground "#d87373"))))
  '(warning ((t (:foreground "tomato" :weight bold))))
  '(widget-field ((t (:extend t :background "#b7b7ff" :foreground "#181522"))))
  '(woman-bold ((t (:inherit font-lock-type-face))))
@@ -250,11 +254,10 @@
 ;; doom-themes
 (use-package doom-themes
 			 :straight t)
-;; native-compiler-error
-;;(use-package doom-modeline
-;;			 :straight t
-;;			 :init (doom-modeline-mode 1)
-;;			 )
+(use-package doom-modeline
+			 :straight t
+			 :init (doom-modeline-mode 1)
+			 )
 (use-package multiple-cursors
 			 :straight t)
 
@@ -373,6 +376,7 @@
 ;;(use-package org-roam
 ;;  :straight (el-patch :type git :host github :repo "org-roam/org-roam"))
 (defun emc/org-mode-setup()
+  "Setup 'org-mode'."
   (variable-pitch-mode)
   (auto-fill-mode 0)
   (visual-line-mode 1))
@@ -486,11 +490,9 @@
 ;; mode line customization (packages: smart-mode-line, smart-mode-line-powerline-theme)
 (require 'smart-mode-line)
 (require 'smart-mode-line-dark-theme)
-;; powerline theme cannot work due to native compiling issue
-;;(setq powerline-arrow-shape 'curve)
-;;(setq powerline-default-separator-dir '(right . left))
-(setq sml/theme 'dark)
-;;(sml/setup)
+(use-package smart-mode-line-powerline-theme :straight t)
+(setq sml/theme 'powerline)
+;; (sml/setup)
 (use-package mood-line :straight t)
 (defadvice vc-mode-line (after me/vc-mode-line () activate)
 		   "Strip backend from the VC information."
@@ -678,6 +680,7 @@
  '(delimit-columns-before "")
  '(display-fill-column-indicator t)
  '(display-fill-column-indicator-column t)
+ '(doom-modeline-highlight-modified-buffer-name nil)
  '(flycheck-mode-line-prefix "  ")
  '(git-gutter:added-sign "▎")
  '(git-gutter:deleted-sign "▎")
@@ -700,10 +703,6 @@
    '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx4G" "-Xms100m"))
  '(lsp-lens-enable nil)
  '(mode-line-compact 'long)
-;; '(mode-line-format
-;;   '(" " " %l:%C(%p)"
-;;	 (vc-mode vc-mode)
-;;	 mode-line-modified mode-line-buffer-identification sml/pre-id-separator "(%I)" mode-line-buffer-identification))
  '(neo-smart-open t)
  '(nxml-child-indent 4)
  '(size-indication-mode t)
@@ -798,6 +797,12 @@
   :group 'w-mode-line-faces
   )
 
+(defface w-mode-line-head-modified
+  '((t (:inherit default :weight normal)))
+  "Face for head of w-mode-line."
+  :group 'w-mode-line-faces
+  )
+
 (defface w-mode-line-encoding
   '((t (:inherit default :weight normal)))
   "Face for encoding segment of w-mode-line."
@@ -805,6 +810,12 @@
   )
 
 (defface w-mode-line-tail
+  '((t (:inherit default :weight normal)))
+  "Face for encoding segment of w-mode-line."
+  :group 'w-mode-line-faces
+  )
+
+(defface w-mode-line-tail-modified
   '((t (:inherit default :weight normal)))
   "Face for encoding segment of w-mode-line."
   :group 'w-mode-line-faces
@@ -824,7 +835,10 @@
   "To return head segment of w-mode-line."
   (propertize
    w-mode-line-head-label
-   'face 'w-mode-line-head))
+   'face (doom-modeline-face
+		  (if (buffer-modified-p)
+			  'w-mode-line-head-modified 'w-mode-line-head)
+		  'w-mode-line-head )))
 
 (w-mode-line-seg-head)
 
@@ -832,7 +846,10 @@
   "To return tail segment of w-mode-line."
   (propertize
    w-mode-line-tail-label
-   'face 'w-mode-line-tail))
+   'face (doom-modeline-face
+		  (if (buffer-modified-p)
+			  'w-mode-line-tail-modified 'w-mode-line-tail)
+		  'w-mode-line-tail )))
 
 (w-mode-line-seg-tail)
 
@@ -849,22 +866,32 @@
 
 (defun w-mode-line()
   "Enable w-mode-line."
-  (setq mode-line-format
-		'((:eval
-		   (mood-line--format
-			(format-mode-line
-			 '(" "
-			   (:eval (w-mode-line-seg-head))
-			   mode-line-modified
+  (interactive  nil)
+  (setq-default mode-line-buffer-identification
+                sml/mode-line-buffer-identification)
+  (setq-default mode-line-format
+        '((:eval
+           (mood-line--format
+            (format-mode-line
+             '(" "
+               (:eval (w-mode-line-seg-head))
+			   (:eval (sml/generate-modified-status))
+			   (:eval (doom-modeline--buffer-name))
 			   (vc-mode vc-mode)
-			   mode-line-buffer-identification)
-			 )
+               (:eval (doom-modeline-segment--buffer-position))
+			   (:eval (doom-modeline-segment--buffer-size))
+			 ))
 
 			(format-mode-line
-			 '((:eval (w-mode-line-seg-encoding))
+			 '((:eval (doom-modeline-segment--checker))
+			   (:eval (doom-modeline-segment--debug))
+			   (:eval (doom-modeline-segment--repl))
+			   (:eval (doom-modeline-segment--lsp))
+			   (:eval (doom-modeline-segment--buffer-encoding))
+			   (:eval (doom-modeline-segment--major-mode))
 			   (:eval (w-mode-line-seg-tail))
-			   " ")))))))
-
+			   " "))))))
+  )
 (w-mode-line)
 
 ;;///////////////////////////////////////////////////////////////////////////////
