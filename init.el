@@ -12,6 +12,14 @@
 ;;; Code:
 (package-initialize)
 
+;; shell
+;;(setq explicit-shell-file-name "/usr/bin/zsh")
+;;(setq shell-file-name "zsh")
+;;(setq explicit-zsh-args '("--login" "--interactive"))
+;;(defun zsh-shell-mode-setup ()
+;;  (setq-local comint-process-echoes t))
+;;(add-hook 'shell-mode-hook #'zsh-shell-mode-setup)
+
 ;; basic options configuration
 ;; disable defatul startup messages, show scratch file instead
 (setq inhibit-startup-message t)
@@ -95,8 +103,14 @@
  '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
  '(git-gutter:deleted ((t (:inherit default :foreground "#e80000" :weight bold))))
  '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
+ '(helm-buffer-directory ((t (:inherit font-lock-doc-face))))
+ '(helm-ff-directory ((t (:inherit font-lock-doc-face))))
+ '(helm-ff-dotted-directory ((t (:extend t :foreground "turquoise"))))
+ '(helm-ff-file-extension ((t (:inherit font-lock-type-face))))
  '(helm-selection ((t (:inherit hl-line))))
  '(helm-source-header ((t (:extend t :background "#181522" :foreground "#b7b7ff" :weight bold :height 1.3))))
+ '(highlight-indentation-current-column-face ((t (:background "#181522"))))
+ '(highlight-indentation-face ((t (:background "#2e2942"))))
  '(info-menu-star ((t (:foreground "#d87373"))))
  '(info-node ((t (:foreground "#ffb733" :slant italic :weight bold))))
  '(info-title-1 ((t (:foreground "#938760" :weight bold))))
@@ -116,6 +130,13 @@
  '(markdown-highlighting-face ((t (:background "salmon" :foreground "linen"))))
  '(match ((t (:background "#8584ff" :foreground "#00006b"))))
  '(minibuffer-prompt ((t (:background "#30304e" :foreground "lavender" :box (:line-width (1 . -1) :color "red" :style released-button) :weight bold))))
+ '(neo-file-link-face ((t (:inherit header-line))))
+ '(neo-vc-conflict-face ((t (:foreground "#844a4a"))))
+ '(neo-vc-default-face ((t (:foreground "#62629c"))))
+ '(neo-vc-edited-face ((t (:foreground "#cc8400"))))
+ '(neo-vc-unlocked-changes-face ((t (:foreground "#ff9d9d"))))
+ '(neo-vc-up-to-date-face ((t (:foreground "#62629c"))))
+ '(neo-vc-user-face ((t (:foreground "#e80000" :slant italic))))
  '(org-block ((t (:inherit shadow :extend t :background "#181522"))))
  '(org-block-begin-line ((t (:inherit org-meta-line :extend t :background "#181522"))))
  '(org-code ((t (:inherit shadow :background "#181522"))))
@@ -138,7 +159,7 @@
  '(sml/outside-modified ((t (:inherit sml/not-modified :foreground "#820000"))))
  '(sml/prefix ((t (:inherit sml/global :foreground "#8585ff"))))
  '(sml/sudo ((t (:foreground "#7141c6"))))
- '(tab-bar ((t (:inherit variable-pitch :background "black" :foreground "#8584ff"))))
+ '(tab-bar ((t (:inherit variable-pitch :background "#080808" :foreground "#8584ff"))))
  '(tab-bar-tab-group-current ((t (:foreground "#8584ff" :box nil :weight bold))))
  '(tab-bar-tab-group-inactive ((t (:foreground "#303030"))))
  '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :foreground "#303030"))))
@@ -266,7 +287,7 @@
 ;; git
 ;; https://ianyepan.github.io/posts/emacs-git-gutter/
 (use-package git-gutter :straight t
-  :init (git-gutter-mode)
+  :init (global-git-gutter-mode t)
   :config
   (setq git-gutter:update-interval 0.02))
 (use-package git-gutter-fringe :straight t
@@ -281,8 +302,56 @@
 
 ;; -- python development environment
 ;; error in process sentinel: elpy-rpc--default-error-callback: peculiar error: "exited abnormally with code 1"
-;;(use-package elpy
-;;  :straight t)
+(use-package elpy
+    :straight t
+    :bind
+    (:map elpy-mode-map
+          ("C-M-n" . elpy-nav-forward-block)
+          ("C-M-p" . elpy-nav-backward-block))
+    :hook ((elpy-mode . flycheck-mode)
+           (elpy-mode . (lambda ()
+                          (set (make-local-variable 'company-backends)
+                               '((elpy-company-backend :with company-yasnippet))))))
+    :init
+    (elpy-enable)
+    :config
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    ; fix for MacOS, see https://github.com/jorgenschaefer/elpy/issues/1550
+    (setq elpy-shell-echo-output nil)
+    (setq elpy-rpc-python-command "python3")
+    (setq elpy-rpc-timeout 2))
+
+
+(use-package buftra
+    :straight (:host github :repo "humitos/buftra.el"))
+(use-package py-pyment
+    :straight (:host github :repo "humitos/py-cmd-buffer.el")
+    :config
+    (setq py-pyment-options '("--output=numpydoc")))
+(use-package py-isort
+    :straight (:host github :repo "humitos/py-cmd-buffer.el")
+    :hook (python-mode . py-isort-enable-on-save)
+    :config
+    (setq py-isort-options '("--lines=88" "-m=3" "-tc" "-fgw=0" "-ca")))
+(use-package py-autoflake
+    :straight (:host github :repo "humitos/py-cmd-buffer.el")
+    :hook (python-mode . py-autoflake-enable-on-save)
+    :config
+    (setq py-autoflake-options '("--expand-star-imports")))
+(use-package py-docformatter
+    :straight (:host github :repo "humitos/py-cmd-buffer.el")
+    :hook (python-mode . py-docformatter-enable-on-save)
+    :config
+    (setq py-docformatter-options '("--wrap-summaries=88" "--pre-summary-newline")))
+(use-package blacken
+    :straight t
+    :hook (python-mode . blacken-mode)
+    :config
+    (setq blacken-line-length '88))
+(use-package python-docstring
+    :straight t
+    :hook (python-mode . python-docstring-mode))
+
 (use-package flycheck
 			 :straight t
 			 :ensure t
@@ -291,8 +360,8 @@
 ;; fatal: unable to access 'https://codeberg.org/ideasman42/emacs-py-autopep8.git/
 ;;(use-package py-autopep8
 ;;  :straight t)
-(use-package blacken
-			 :straight t)
+;;(use-package blacken
+;;			 :straight t)
 ;; due to libgccjit.so: error: error invoking gcc driver, cannot work
 ;;(use-package ein
 ;;  :straight t)
@@ -517,6 +586,7 @@
 (global-set-key (kbd "C-c E") 'flycheck-list-errors)
 (global-set-key (kbd "C-c f") 'lsp-format-buffer)
 (global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
+(global-set-key (kbd "C-c g") 'emx/garbage-collect)
 (global-set-key (kbd "C-c h") 'windmove-left)
 (global-set-key (kbd "C-c j") 'windmove-right)
 (global-set-key (kbd "C-c q") 'magit-blame-quit)
@@ -566,8 +636,74 @@
 ;;
 ;; auto-completion
 ;;
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
+;;(require 'company)
+;;(add-hook 'after-init-hook 'global-company-mode)
+
+(use-package company
+  :straight t
+  :diminish company-mode
+  :init
+  (global-company-mode)
+  :config
+  ;; set default `company-backends'
+  (setq company-backends
+        '((company-files          ; files & directory
+           company-keywords       ; keywords
+           company-capf)  ; completion-at-point-functions
+          (company-abbrev company-dabbrev)
+          ))
+(use-package company-statistics
+    :straight t
+    :init
+    (company-statistics-mode))
+(use-package company-web
+    :straight t)
+(use-package company-try-hard
+    :straight t
+    :bind
+    (("C-<tab>" . company-try-hard)
+     :map company-active-map
+     ("C-<tab>" . company-try-hard)))
+(use-package company-quickhelp
+    :straight t
+    :config
+    (company-quickhelp-mode))
+)
+
+
+;; auto-completion for python with company-jedi
+;; jedi depends on parso which doesn't support python 3.11
+;;  File "/repo/egugwen/venv_v3.11.0/lib/python3.11/site-packages/jedi/api/__init__.py", line 184, in __init__
+;;    self._inference_state = InferenceState(
+;;                            ^^^^^^^^^^^^^^^
+;;  File "/repo/egugwen/venv_v3.11.0/lib/python3.11/site-packages/jedi/inference/__init__.py", line 91, in __init__
+;;    self.grammar = environment.get_grammar()
+;;                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+;;  File "/repo/egugwen/venv_v3.11.0/lib/python3.11/site-packages/jedi/cache.py", line 111, in wrapper
+;;    result = method(self, *args, **kwargs)
+;;             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+;;  File "/repo/egugwen/venv_v3.11.0/lib/python3.11/site-packages/jedi/api/environment.py", line 37, in get_grammar
+;;    return parso.load_grammar(version=version_string)
+;;           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+;;  File "/repo/egugwen/venv_v3.11.0/lib/python3.11/site-packages/parso/grammar.py", line 260, in load_grammar
+;;    return load_grammar(**kwargs)
+;;           ^^^^^^^^^^^^^^^^^^^^^^
+;;  File "/repo/egugwen/venv_v3.11.0/lib/python3.11/site-packages/parso/grammar.py", line 256, in load_grammar
+;;    raise NotImplementedError(message)
+;;NotImplementedError: Python version 3.11 is currently not supported.
+;;2023-02-06 14:36:33,285 CET - WARNING - pylsp_jsonrpc.endpoint - Received cancel notification for unknown message id 26
+;;2023-02-06 14:36:33,556 CET - WARNING - pylsp_jsonrpc.endpoint - Received cancel notification for unknown message id 28
+
+;;(use-package company-jedi
+;;  :straight t)
+;;(add-hook 'python-mode-hook (lambda() (add-to-list 'company-backends 'company-jedi)))
+
+(use-package projectile
+  :straight t
+  :config
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  )
 
 (use-package command-log-mode)
 (add-hook 'LaTeX-mode-hook 'command-log-mode)
@@ -576,7 +712,7 @@
   :straight t
   :hook (company-mode . company-box-mode))
 ;;
-;; tree-explorer
+;; Tree-Explorer
 ;;
 (use-package treemacs
   :straight t
@@ -596,7 +732,24 @@
 			 :straight t)
 
 (use-package neotree
-			 :straight t)
+  :straight t
+  :config
+  (setq neo-smart-open t)
+  (setq projectile-switch-project-action 'neotree-projectile-action))
+;;  (defun neotree-project-dir ()
+;;	"Open NeoTree using the git root."
+;;	(interactive)
+;;	(let ((project-dir (ffip-project-root))
+;;          (file-name (buffer-file-name)))
+;;      (if project-dir
+;;          (progn
+;;			(neotree-dir project-dir)
+;;			(neotree-find file-name))
+;;		(message "Could not find git project root."))))
+;;  (define-key map (kbd "C-c C-p") 'neotree-project-dir))
+
+
+
 
 (use-package term
 			 :commands term
@@ -692,6 +845,9 @@
  '(grep-command "grep --color=auto -nH --null -e ")
  '(grep-find-command
    '("find . -type f -exec grep --color=auto -nH --null -e  \\{\\} +" . 54))
+ '(helm-minibuffer-history-mode t)
+ '(helm-mode t)
+ '(highlight-indentation-blank-lines t)
  '(kill-whole-line t)
  '(lsp-java-completion-import-order ["java" "javax" "org" "com" "se"])
  '(lsp-java-configuration-maven-user-settings "/home/egugwen/.m2/settings.xml")
@@ -704,8 +860,10 @@
  '(lsp-java-vmargs
    '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx4G" "-Xms100m"))
  '(lsp-lens-enable nil)
+ '(lsp-treemacs-sync-mode t)
  '(mode-line-compact 'long)
  '(neo-smart-open t)
+ '(neo-vc-integration '(face char))
  '(nxml-child-indent 4)
  '(size-indication-mode t)
  '(sml/full-mode-string "  ")
@@ -740,9 +898,11 @@
  '(sml/vc-mode-show-backend t)
  '(tab-bar-close-button-show nil)
  '(tab-bar-format
-   '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator))
+   '(tab-bar-format-history tab-bar-format-tabs tab-bar-separator tab-bar-format-align-right))
+ '(tab-bar-history-mode t)
  '(tab-bar-mode t)
  '(tab-bar-new-tab-choice "~/.emacs.d/init.el")
+ '(tab-bar-select-tab-modifiers '(meta))
  '(tab-bar-show 1)
  '(tab-bar-tab-hints t)
  '(tab-line-close-button-show nil)
@@ -750,6 +910,18 @@
  '(tab-line-switch-cycling t)
  '(tab-line-tab-name-function 'tab-line-tab-name-buffer)
  '(tab-width 4)
+ '(treemacs--fringe-indicator-bitmap 'vertical-bar)
+ '(treemacs-collapse-dirs 3)
+ '(treemacs-filewatch-mode t)
+ '(treemacs-follow-after-init t)
+ '(treemacs-follow-mode t)
+ '(treemacs-fringe-indicator-mode t)
+ '(treemacs-git-mode t)
+ '(treemacs-project-follow-cleanup t)
+ '(treemacs-recenter-after-file-follow 'on-distance)
+ '(treemacs-recenter-after-tag-follow 'on-distance)
+ '(treemacs-select-when-already-in-treemacs 'next-or-back)
+ '(treemacs-workspace-switch-cleanup 'all)
  '(undo-no-redo t)
  '(warning-minimum-level :emergency))
 
@@ -770,7 +942,7 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; PART4: Performance Tuning
 ;;///////////////////////////////////////////////////////////////////////////////
-(defun ap/garbage-collect ()
+(defun emx/garbage-collect ()
   "Run `garbage-collect' and print stats about memory usage."
   (interactive)
   (message (cl-loop for (type size used free) in (garbage-collect)
@@ -780,6 +952,7 @@
 					for used = (file-size-human-readable used)
 					for free = (file-size-human-readable free)
 					concat (format "%s: %s + %s = %s\n" type used free total))))
+;; bind to C-c-g
 
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; PART5: Customized Mode Line
@@ -895,6 +1068,8 @@
 
 			(format-mode-line
 			 '((:eval (doom-modeline-segment--checker))
+			   (:eval (doom-modeline-segment--objed-state))
+			   (:eval (doom-modeline-segment--misc-info))
 			   (:eval (doom-modeline-segment--debug))
 			   (:eval (doom-modeline-segment--repl))
 			   (:eval (doom-modeline-segment--lsp))
