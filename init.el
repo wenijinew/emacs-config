@@ -443,6 +443,7 @@
   "Setup 'org-mode'."
   (variable-pitch-mode)
   (auto-fill-mode 0)
+  (company-mode nil)
   (visual-line-mode 1))
 (defun emc/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
@@ -514,7 +515,8 @@
 		(sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
 (use-package org-bullets
 			 :straight t
-			 :hook (org-mode . org-bullets-mode)
+			 :hook
+			 (org-mode . org-bullets-mode)
 			 :custom
 			 (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 (use-package visual-fill-column
@@ -642,8 +644,6 @@
 (use-package company
   :straight t
   :diminish company-mode
-  :init
-  (global-company-mode)
   :config
   ;; set default `company-backends'
   (setq company-backends
@@ -652,22 +652,24 @@
            company-capf)  ; completion-at-point-functions
           (company-abbrev company-dabbrev)
           ))
-(use-package company-statistics
+  (use-package company-statistics
     :straight t
     :init
     (company-statistics-mode))
-(use-package company-web
+  (use-package company-web
     :straight t)
-(use-package company-try-hard
+  (use-package company-try-hard
     :straight t
     :bind
     (("C-<tab>" . company-try-hard)
      :map company-active-map
      ("C-<tab>" . company-try-hard)))
-(use-package company-quickhelp
+  (use-package company-quickhelp
     :straight t
     :config
     (company-quickhelp-mode))
+  :hook
+  ((java-mode python-mode) . company-mode)
 )
 
 
@@ -910,12 +912,12 @@
  '(tab-line-switch-cycling t)
  '(tab-line-tab-name-function 'tab-line-tab-name-buffer)
  '(tab-width 4)
- '(treemacs--fringe-indicator-bitmap 'vertical-bar)
+ '(treemacs--fringe-indicator-bitmap 'treemacs--fringe-indicator-bitmap-default)
  '(treemacs-collapse-dirs 3)
  '(treemacs-filewatch-mode t)
  '(treemacs-follow-after-init t)
  '(treemacs-follow-mode t)
- '(treemacs-fringe-indicator-mode t)
+ '(treemacs-fringe-indicator-mode nil)
  '(treemacs-git-mode t)
  '(treemacs-project-follow-cleanup t)
  '(treemacs-recenter-after-file-follow 'on-distance)
