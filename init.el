@@ -68,17 +68,6 @@
 (set-face-attribute 'Man-overstrike nil :inherit font-lock-type-face :bold t)
 (set-face-attribute 'Man-underline nil :inherit font-lock-keyword-face :underline t)
 
-(set-fringe-mode '(100 . 0))
-;; make the left fringe 4 pixels wide and the right disappear
-;;(fringe-mode '(40 . 0))
-
-;; show cursorline
-(global-hl-line-mode 1)
-
-;;; -- show line number ---
-(column-number-mode)
-(global-display-line-numbers-mode 1)
-(set-face-attribute 'line-number-current-line nil :background "#231f32" :foreground "#ffb733")
 ;; disable line number in some modes
 (dolist (mode '(org-mode-hook
 				 term-mode-hook
@@ -86,12 +75,6 @@
 				 treemacs-mode-hook
 				 eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
-
-;; highlight matches parentheses
-(show-paren-mode 1)
-
-;; save session
-(desktop-save-mode 1)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -115,6 +98,7 @@
  '(helm-ff-file-extension ((t (:inherit font-lock-type-face))))
  '(helm-selection ((t (:inherit hl-line))))
  '(helm-source-header ((t (:extend t :background "#181522" :foreground "#b7b7ff" :weight bold :height 1.3))))
+ '(highlight-indent-guides-character-face ((t (:foreground "#2e2942"))))
  '(highlight-indentation-current-column-face ((t (:background "#181522"))))
  '(highlight-indentation-face ((t (:background "#2e2942"))))
  '(info-menu-star ((t (:foreground "#d87373"))))
@@ -126,6 +110,7 @@
  '(isearch ((t (:background "lightslateblue" :foreground "black"))))
  '(isearch-group-1 ((t (:background "gainsboro" :foreground "black"))))
  '(isearch-group-2 ((t (:background "bisque" :foreground "black"))))
+ '(line-number-current-line ((t (:inherit line-number :background "#231f32" :foreground "#ffb733"))))
  '(link ((t (:foreground "lightslateblue" :underline t))))
  '(link-visited ((t (:inherit link :foreground "orchid"))))
  '(lsp-headerline-breadcrumb-path-face ((t (:background "#8585ff" :foreground "#231f32"))))
@@ -843,12 +828,15 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ace-window-display-mode t)
+ '(column-number-mode t)
  '(command-log-mode-is-global t)
  '(company-show-quick-access t)
  '(custom-enabled-themes '(smart-mode-line-dark Hacker))
  '(custom-safe-themes
    '("b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
+ '(debug-on-error '(nil))
  '(delimit-columns-before "")
+ '(desktop-save-mode t)
  '(display-fill-column-indicator t)
  '(display-fill-column-indicator-column t)
  '(doom-modeline-highlight-modified-buffer-name t)
@@ -858,7 +846,9 @@
  '(git-gutter:deleted-sign "▎")
  '(git-gutter:modified-sign "▎")
  '(global-display-fill-column-indicator-mode t)
+ '(global-display-line-numbers-mode t)
  '(global-git-gutter-mode t)
+ '(global-hl-line-mode t)
  '(global-tab-line-mode t)
  '(grep-command "grep --color=auto -nH --null -e ")
  '(grep-find-command
@@ -885,6 +875,7 @@
  '(neo-vc-integration '(face char))
  '(nxml-child-indent 4)
  '(send-mail-function 'mailclient-send-it)
+ '(show-paren-mode t)
  '(size-indication-mode t)
  '(sml/full-mode-string "  ")
  '(sml/mode-width 'right)
