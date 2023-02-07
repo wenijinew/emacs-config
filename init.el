@@ -31,6 +31,7 @@
 (tooltip-mode -1)
 (menu-bar-mode -1)
 
+
 ;; auto-reload change from disk
 (global-auto-revert-mode t)
 (turn-on-auto-revert-mode)
@@ -48,10 +49,15 @@
 			(progn
 			  (setq fill-column 120)
 			  (setq tab-width 4)
+			  (auto-fill-mode)
 			  (setq indent-tabs-mode nil))
 			)
 		  )
-(add-hook 'python-mode-hook (lambda () (setq fill-column 79)))
+(add-hook 'python-mode-hook (
+							 lambda ()
+							 (progn
+							   (setq fill-column 79)
+							   (auto-fill-mode t))))
 (add-hook 'org-mode (lambda () (setq fill-column -1)))
 (add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
 ;; automatically switch to org-mode for .org files
@@ -284,6 +290,15 @@
   :init
   (helm-mode 1))
 
+;; highlight indention
+(use-package highlight-indent-guides
+  :straight t
+  :hook
+  (java-mode highlight-indent-guides-mode)
+  (emacs-lisp-mode highlight-indent-guides-mode)
+  (shell-script-mode highlight-indent-guides-mode)
+  (python-mode highlight-indent-guides-mode))
+
 ;; git
 ;; https://ianyepan.github.io/posts/emacs-git-gutter/
 (use-package git-gutter :straight t
@@ -332,7 +347,8 @@
     :straight (:host github :repo "humitos/py-cmd-buffer.el")
     :hook (python-mode . py-isort-enable-on-save)
     :config
-    (setq py-isort-options '("--lines=88" "-m=3" "-tc" "-fgw=0" "-ca")))
+;;    (setq py-isort-options '("--lines=88" "-m=3" "-tc" "-fgw=0" "-ca")))
+	(setq py-isort-options '("-m=3" "-tc" "-fgw=0" "-ca")))
 (use-package py-autoflake
     :straight (:host github :repo "humitos/py-cmd-buffer.el")
     :hook (python-mode . py-autoflake-enable-on-save)
@@ -849,6 +865,7 @@
    '("find . -type f -exec grep --color=auto -nH --null -e  \\{\\} +" . 54))
  '(helm-minibuffer-history-mode t)
  '(helm-mode t)
+ '(highlight-indent-guides-method 'character)
  '(highlight-indentation-blank-lines t)
  '(kill-whole-line t)
  '(lsp-java-completion-import-order ["java" "javax" "org" "com" "se"])
@@ -867,6 +884,7 @@
  '(neo-smart-open t)
  '(neo-vc-integration '(face char))
  '(nxml-child-indent 4)
+ '(send-mail-function 'mailclient-send-it)
  '(size-indication-mode t)
  '(sml/full-mode-string "  ")
  '(sml/mode-width 'right)
