@@ -1,15 +1,3 @@
-;;; package --- Summary"
-;;; Commentary:
-;; load Spacemacs's initialization file, "~" is equivalent to "$HOME"
-;; (load-file "/repo/egugwen/ws/.spacemacs.d/init.el")
-;; ///////////////////////////////////////////////////////////////////////////////
-;; PART1: Basic Configurations
-;; ///////////////////////////////////////////////////////////////////////////////
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-;;; Code:
 (package-initialize)
 
 ;; global switch
@@ -19,50 +7,17 @@
   (winner-mode)
   (global-tab-line-mode t)
   (setq tab-bar-separator "  "
+		tab-line-separator "  "
 		tab-bar-button-margin '(5 . 2)
 		tags-file-name "~/.emacs.d/TAGS"
 		mode-line-end-spaces nil)
-  ;;
-  ;; set wonderful global keys
-  ;;
-  (global-set-key (kbd "C-c a") 'lsp-execute-code-action)
-  (global-set-key (kbd "C-c b") 'magit-blame)
-  (global-set-key (kbd "C-c c") 'customize)
-  (global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
-  (global-set-key (kbd "C-c E") 'flycheck-list-errors)
-  (global-set-key (kbd "C-c f") 'lsp-format-buffer)
-  (global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
-  (global-set-key (kbd "C-c g") 'emx/garbage-collect)
-  (global-set-key (kbd "C-c h") 'windmove-left)
-  (global-set-key (kbd "C-c j") 'windmove-right)
-  (global-set-key (kbd "C-c q") 'magit-blame-quit)
-  (global-set-key (kbd "C-c r") 'tab-bar-close-tab)
-  (global-set-key (kbd "C-c n") 'neotree-toggle)
-  (global-set-key (kbd "C-c t") 'treemacs)
-  (global-set-key (kbd "C-c u") 'untabify)
-  (global-set-key (kbd "C-c k") 'kill-line)
-  (global-set-key (kbd "C-c w") 'whitespace-cleanup)
-  (global-set-key (kbd "C-c z") 'undo-redo)
-  (global-set-key (kbd "C-c (") 'indent-region)
-  (global-set-key (kbd "C-c =") 'maximize-window)
-  (global-set-key (kbd "C-c .") 'xref-find-references)
-  (global-set-key (kbd "C-c <up>") 'windmove-up)
-  (global-set-key (kbd "C-c <down>") 'windmove-down)
-
-  (global-set-key (kbd "M-n") 'tab-bar-new-tab)
-  (global-set-key (kbd "M-o") 'lsp-ui-imenu)
-  (global-set-key (kbd "M-RET") 'tab-next)
-  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-  ;; rebind global keys to emacs extensions keys
-  (global-set-key (kbd "M-x") 'helm-M-x)
   (set-display-table-slot standard-display-table
 						  'vertical-border
 						  (make-glyph-code ?│)))
 (global-switch)
-
-;;
-;; development environment setup
-;;
+;;///////////////////////////////////////////////////////////////////////////////
+;; Hooks for programming language modes and other modes
+;;///////////////////////////////////////////////////////////////////////////////
 (defvar prog-modes "shell-script java python")
 (defvar non-prog-modes "org term shell eshell treemacs neotree")
 (defun prog-env-hook()
@@ -95,149 +50,37 @@
 (setup-env prog-modes 'prog-env-hook)
 (setup-env non-prog-modes 'non-prog-env-hook)
 
-;;
-;; modes-customizations
-;;
-(defun modes-customization()
-  "Modes-customization.
-Display 'fill column' indicator and dynamically change 'fill-column' value with
-different modes."
-  (add-hook 'java-mode-hook
-			(lambda()
-			  (progn
-				(setq fill-column 120)
-				(setq indent-tabs-mode nil)
-				)
-			  ))
-  (add-hook 'org-mode (lambda () (setq fill-column -1)))
-  (add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
-)
-(modes-customization)
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(Man-overstrike ((t (:inherit font-lock-type-face :weight bold))))
- '(Man-underline ((t (:inherit font-lock-keyword-face :underline t))))
- '(company-template-field ((t (:background "#b7b7ff" :foreground "#181522"))))
- '(company-tooltip ((t (:background "#30304e"))))
- '(company-tooltip-annotation ((t (:foreground "#e3cfcf"))))
- '(company-tooltip-annotation-selection ((t (:inherit company-tooltip-annotation :foreground "#c2f0c2"))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-common :foreground "#ff9d9d"))))
- '(company-tooltip-selection ((t (:extend t :background "#181522"))))
- '(custom-comment ((t (:background "#181522" :foreground "#d1ccba"))))
- '(doom-modeline-project-dir ((t (:inherit (w-mode-line-head bold)))))
- '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
- '(git-gutter:deleted ((t (:inherit default :foreground "#e80000" :weight bold))))
- '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
- '(helm-buffer-directory ((t (:inherit font-lock-doc-face))))
- '(helm-ff-directory ((t (:inherit font-lock-doc-face))))
- '(helm-ff-dotted-directory ((t (:extend t :foreground "turquoise"))))
- '(helm-ff-file-extension ((t (:inherit font-lock-type-face))))
- '(helm-selection ((t (:inherit hl-line))))
- '(helm-source-header ((t (:extend t :background "#181522" :foreground "#b7b7ff" :weight bold :height 1.3))))
- '(highlight-indent-guides-character-face ((t (:foreground "#2e2942"))))
- '(highlight-indentation-current-column-face ((t (:background "#181522"))))
- '(highlight-indentation-face ((t (:background "#2e2942"))))
- '(info-menu-star ((t (:foreground "#d87373"))))
- '(info-node ((t (:foreground "#ffb733" :slant italic :weight bold))))
- '(info-title-1 ((t (:foreground "#938760" :weight bold))))
- '(info-title-2 ((t (:foreground "#bdb59b" :weight bold))))
- '(info-title-3 ((t (:foreground "#bdb59b" :weight bold))))
- '(info-title-4 ((t (:foreground "#e3cfcf" :weight bold))))
- '(isearch ((t (:background "lightslateblue" :foreground "black"))))
- '(isearch-group-1 ((t (:background "gainsboro" :foreground "black"))))
- '(isearch-group-2 ((t (:background "bisque" :foreground "black"))))
- '(line-number-current-line ((t (:inherit line-number :background "#231f32" :foreground "#ffb733"))))
- '(link ((t (:foreground "lightslateblue" :underline t))))
- '(link-visited ((t (:inherit link :foreground "orchid"))))
- '(lsp-headerline-breadcrumb-path-face ((t (:background "#8585ff" :foreground "#231f32"))))
- '(lsp-headerline-breadcrumb-separator-face ((t (:background "#8585ff" :foreground "#231f32" :height 0.8))))
- '(lsp-headerline-breadcrumb-symbols-face ((t (:inherit font-lock-doc-face :background "#8055cc" :foreground "#231f32" :weight bold))))
- '(magit-blame-hash ((t (:foreground "#656500"))))
- '(magit-blame-highlight ((t (:extend t :foreground "#2a662a"))))
- '(markdown-highlighting-face ((t (:background "salmon" :foreground "linen"))))
- '(match ((t (:background "#8584ff" :foreground "#00006b"))))
- '(minibuffer-prompt ((t (:background "#30304e" :foreground "lavender" :box (:line-width (1 . -1) :color "red" :style released-button) :weight bold))))
- '(neo-file-link-face ((t (:inherit header-line))))
- '(neo-vc-conflict-face ((t (:foreground "#844a4a"))))
- '(neo-vc-default-face ((t (:foreground "#62629c"))))
- '(neo-vc-edited-face ((t (:foreground "#cc8400"))))
- '(neo-vc-unlocked-changes-face ((t (:foreground "#ff9d9d"))))
- '(neo-vc-up-to-date-face ((t (:foreground "#62629c"))))
- '(neo-vc-user-face ((t (:foreground "#e80000" :slant italic))))
- '(org-block ((t (:inherit shadow :extend t :background "#181522"))))
- '(org-block-begin-line ((t (:inherit org-meta-line :extend t :background "#181522"))))
- '(org-code ((t (:inherit shadow :background "#181522"))))
- '(rainbow-delimiters-base-face ((t (:inherit default))))
- '(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face :foreground "#a8a8a8"))))
- '(rainbow-delimiters-depth-2-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffe4b3"))))
- '(rainbow-delimiters-depth-3-face ((t (:inherit rainbow-delimiters-base-face :foreground "#d1c0ba"))))
- '(rainbow-delimiters-depth-4-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffffb7"))))
- '(rainbow-delimiters-depth-5-face ((t (:inherit rainbow-delimiters-base-face :foreground "#e3cfcf"))))
- '(rainbow-delimiters-depth-6-face ((t (:inherit rainbow-delimiters-base-face :foreground "#c2f0c2"))))
- '(rainbow-delimiters-depth-7-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffd3d3"))))
- '(rainbow-delimiters-depth-8-face ((t (:inherit rainbow-delimiters-base-face :foreground "#8585ff"))))
- '(rainbow-delimiters-depth-9-face ((t (:inherit rainbow-delimiters-base-face :foreground "#b7ffff"))))
- '(sml/col-number ((t (:foreground "moccasin"))))
- '(sml/git ((t (:foreground "#84b384"))))
- '(sml/line-number ((t (:foreground "moccasin" :inverse-video nil))))
- '(sml/modes ((t (:inherit sml/prefix :foreground "#8585ff"))))
- '(sml/modified ((t (:inherit sml/not-modified :foreground "#d87373" :weight bold))))
- '(sml/not-modified ((t (:foreground "#a8ff51"))))
- '(sml/outside-modified ((t (:inherit sml/not-modified :foreground "#820000"))))
- '(sml/prefix ((t (:inherit sml/global :foreground "#8585ff"))))
- '(sml/sudo ((t (:foreground "#7141c6"))))
- '(tab-bar ((t (:inherit variable-pitch :background "#080808" :foreground "#8584ff"))))
- '(tab-bar-tab-group-current ((t (:foreground "#8584ff" :box nil :weight bold))))
- '(tab-bar-tab-group-inactive ((t (:foreground "#303030"))))
- '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :foreground "#303030"))))
- '(tab-bar-tab-ungrouped ((t (:background "#303030" :foreground "#62629c"))))
- '(tab-line ((t (:inherit variable-pitch :background "#181522" :foreground "#62629c" :height 0.9))))
- '(tab-line-highlight ((t (:background "#820000" :foreground "#ffff9d" :box (:line-width (1 . 1) :style released-button)))))
- '(tab-line-tab-current ((t (:inherit mode-line-buffer-id))))
- '(tab-line-tab-inactive ((t (:inherit tab-line-tab :foreground "#62629c"))))
- '(tab-line-tab-modified ((t (:inherit w-mode-line-head-modified))))
- '(treemacs-git-commit-diff-face ((t (:inherit 'warning))))
- '(vc-state-base ((t (:foreground "slategray"))))
- '(vertical-border ((t (:inherit mode-line-inactive :background "#231f32" :foreground "#74564c"))))
- '(w-mode-line-head ((t (:foreground "#8181b0"))))
- '(w-mode-line-head-modified ((t (:foreground "#d87373"))))
- '(w-mode-line-tail ((t (:foreground "#8181b0"))))
- '(w-mode-line-tail-modified ((t (:foreground "#d87373"))))
- '(warning ((t (:foreground "tomato" :weight bold))))
- '(widget-field ((t (:extend t :background "#b7b7ff" :foreground "#181522"))))
- '(woman-bold ((t (:inherit font-lock-type-face))))
- '(woman-italic ((t (:inherit font-lock-keyword-face)))))
 ;;///////////////////////////////////////////////////////////////////////////////
-;; PART2: Package Management
+;; Package Management
 ;;///////////////////////////////////////////////////////////////////////////////
-;; use-package
-(eval-when-compile
-  (add-to-list 'load-path "/repo/egugwen/github/use-package")
-  (require 'use-package))
-(setq use-package-always-ensure t)
-
-;; straight
-(defvar bootstrap-version)
-(let ((bootstrap-file
-		(expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-	  (bootstrap-version 6))
-  (unless (file-exists-p bootstrap-file)
-	(with-current-buffer
-	  (url-retrieve-synchronously
-		"https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-		'silent 'inhibit-cookies)
-	  (goto-char (point-max))
-	  (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-;; causeing problem: Debugger entered--Lisp error: (file-missing "/home/egugwen/.emacs.d/straight/build/el-patch/el-patch.el"
-;;(straight-use-package 'el-patch)
-
+(defun pkg-mgmt()
+  (require 'package)
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+						   ("org" . "https://orgmode.org/elpa/")
+						   ("elpa" . "https://elpa.gnu.org/packages/")))
+  (eval-when-compile
+	;; use-package
+	(add-to-list 'load-path "/repo/egugwen/github/use-package")
+	(require 'use-package)
+	;; straight
+	(defvar bootstrap-version)
+	(let ((bootstrap-file
+			(expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+		  (bootstrap-version 6))
+	  (unless (file-exists-p bootstrap-file)
+		(with-current-buffer
+		  (url-retrieve-synchronously
+			"https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+			'silent 'inhibit-cookies)
+		  (goto-char (point-max))
+		  (eval-print-last-sexp)))
+	  (load bootstrap-file nil 'nomessage))
+	)
+  (setq use-package-always-ensure t)
+  )
+(pkg-mgmt)
 ;;///////////////////////////////////////////////////////////////////////////////
-;; PART3: Package Installation and Configuration
+;; Install Packages
 ;;///////////////////////////////////////////////////////////////////////////////
 (use-package doom-themes
 			 :straight t)
@@ -254,15 +97,6 @@ different modes."
   (emacs-lisp-mode highlight-indent-guides-mode)
   (shell-script-mode highlight-indent-guides-mode)
   (python-mode highlight-indent-guides-mode))
-(use-package git-gutter :straight t
-  :init (global-git-gutter-mode t)
-  :config
-  (setq git-gutter:update-interval 0.02))
-(use-package git-gutter-fringe :straight t
-  :config
-  (define-fringe-bitmap 'git-gutter-fr:added [224] nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:modified [224] nil nil '(center repeated))
-  (define-fringe-bitmap 'git-gutter-fr:deleted [128 192 224 240] nil nil 'bottom))
 (use-package evil
 			 :straight t)
 (use-package elpy
@@ -315,18 +149,10 @@ different modes."
 			 :straight t
 			 :ensure t
 			 :init (global-flycheck-mode) (flycheck-display-error-at-point))
+(use-package yasnippet :straight t)
 (when (string-match "28." (emacs-version))
-  ;; based on json-mode, add function to beautify-json file content and bind to key C-c C-b
-  (defun beautify-json ()
-	(interactive)
-	(let ((b (if mark-active (min (point) (mark)) (point-min)))
-		  (e (if mark-active (max (point) (mark)) (point-max))))
-	  (shell-command-on-region b e
-							   "python -m json.tool" (current-buffer) t)))
-  (use-package json-mode
-			   :bind (("C-c C-b" . beautify-json))
-			   )
   (use-package ivy
+			   :straight t
 			   :diminish
 			   :bind (("C-s" . swiper)
 					  :map ivy-minibuffer-map
@@ -363,11 +189,63 @@ different modes."
 					  (java-mode . lsp)
 					  (lsp-mode . lsp-enable-which-key-integration))
 			   :commands lsp)
-  (use-package lsp-ui :straight t)
-  (use-package yasnippet :straight t))
-(use-package all-the-icons
+  (use-package lsp-ui :straight t))
+(use-package rainbow-delimiters
+  :straight t
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+  (add-hook 'java-mode-hook #'rainbow-delimiters-mode))
+(use-package which-key
+  :straight t
+  :init
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
+;; auto-completion
+(use-package company
+  :straight t
+  :diminish company-mode
+  :config
+  ;; set default `company-backends'
+  (setq company-backends
+		'((company-files          ; files & directory
+		   company-keywords       ; keywords
+		   company-capf)  ; completion-at-point-functions
+		  (company-abbrev company-dabbrev)
+		  ))
+  :hook
+  ((java-mode python-mode) . company-mode)
+)
+(use-package projectile
+  :straight t
+  :config
+  (projectile-mode +1)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+(use-package command-log-mode
+  :straight t
+  :hook (LaTeX-mode 'command-log-mode))
+(use-package treemacs
+  :straight t
+  :config
+  (treemacs-git-mode 'deferred))
+(use-package anzu
 			 :straight t)
-
+(use-package neotree
+  :straight t
+  :config
+  (setq neo-smart-open t)
+  (setq projectile-switch-project-action 'neotree-projectile-action))
+;; based on json-mode, add function to beautify-json file content and bind to key C-c C-b
+;; json-mode rely on yasnippet, so it needs to be end
+(defun beautify-json ()
+  (interactive)
+  (let ((b (if mark-active (min (point) (mark)) (point-min)))
+		(e (if mark-active (max (point) (mark)) (point-max))))
+	(shell-command-on-region b e
+							 "python -m json.tool" (current-buffer) t)))
+(use-package json-mode
+			 :straight t
+			 :bind (("C-c C-b" . beautify-json))
+			 )
 ;;
 ;; org mode
 ;;
@@ -455,75 +333,109 @@ different modes."
 			 :straight t
 			 :hook (org-mode . emc/org-mode-visual-fill))
 ;; org-mode ends here
-(use-package rainbow-delimiters
-  :straight t
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
-  (add-hook 'java-mode-hook #'rainbow-delimiters-mode))
-(use-package which-key
-  :straight t
-  :init
-  (which-key-setup-side-window-right-bottom)
-  (which-key-mode))
-;; auto-completion
-(use-package company
-  :straight t
-  :diminish company-mode
-  :config
-  ;; set default `company-backends'
-  (setq company-backends
-		'((company-files          ; files & directory
-		   company-keywords       ; keywords
-		   company-capf)  ; completion-at-point-functions
-		  (company-abbrev company-dabbrev)
-		  ))
-  (use-package company-statistics
-	:straight t
-	:init
-	(company-statistics-mode))
-  (use-package company-web
-	:straight t)
-  (use-package company-try-hard
-	:straight t
-	:bind
-	(("C-<tab>" . company-try-hard)
-	 :map company-active-map
-	 ("C-<tab>" . company-try-hard)))
-  (use-package company-quickhelp
-	:straight t
-	:config
-	(company-quickhelp-mode))
-  :hook
-  ((java-mode python-mode) . company-mode)
-)
-(use-package projectile
-  :straight t
-  :config
-  (projectile-mode +1)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-(use-package command-log-mode
-  :straight t
-  :hook (LaTeX-mode 'command-log-mode))
-(use-package company-box
-  :straight t
-  :hook (company-mode . company-box-mode))
-(use-package treemacs
-  :straight t
-  :config
-  (treemacs-git-mode 'deferred))
-(use-package anzu
-			 :straight t)
-(use-package all-the-icons-dired
-			 :straight t)
-(load "all-the-icons-dired.el")
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-(use-package treemacs-icons-dired
-			 :straight t)
-(use-package neotree
-  :straight t
-  :config
-  (setq neo-smart-open t)
-  (setq projectile-switch-project-action 'neotree-projectile-action))
+;;///////////////////////////////////////////////////////////////////////////////
+;; Customizations
+;;///////////////////////////////////////////////////////////////////////////////
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(Man-overstrike ((t (:inherit font-lock-type-face :weight bold))))
+ '(Man-underline ((t (:inherit font-lock-keyword-face :underline t))))
+ '(company-template-field ((t (:background "#b7b7ff" :foreground "#181522"))))
+ '(company-tooltip ((t (:background "#30304e"))))
+ '(company-tooltip-annotation ((t (:foreground "#e3cfcf"))))
+ '(company-tooltip-annotation-selection ((t (:inherit company-tooltip-annotation :foreground "#c2f0c2"))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-common :foreground "#ff9d9d"))))
+ '(company-tooltip-selection ((t (:extend t :background "#181522"))))
+ '(custom-comment ((t (:background "#181522" :foreground "#d1ccba"))))
+ '(doom-modeline-project-dir ((t (:inherit (w-mode-line-head bold)))))
+ '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
+ '(git-gutter:deleted ((t (:inherit default :foreground "#e80000" :weight bold))))
+ '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
+ '(helm-buffer-directory ((t (:inherit font-lock-doc-face))))
+ '(helm-ff-directory ((t (:inherit font-lock-doc-face))))
+ '(helm-ff-dotted-directory ((t (:extend t :foreground "turquoise"))))
+ '(helm-ff-file-extension ((t (:inherit font-lock-type-face))))
+ '(helm-selection ((t (:inherit hl-line))))
+ '(helm-source-header ((t (:extend t :background "#181522" :foreground "#b7b7ff" :weight bold :height 1.3))))
+ '(highlight-indent-guides-character-face ((t (:foreground "#2e2942"))))
+ '(highlight-indentation-current-column-face ((t (:background "#181522"))))
+ '(highlight-indentation-face ((t (:background "#2e2942"))))
+ '(hl-line ((t (:extend t :background "#30304e"))))
+ '(info-menu-star ((t (:foreground "#d87373"))))
+ '(info-node ((t (:foreground "#ffb733" :slant italic :weight bold))))
+ '(info-title-1 ((t (:foreground "#938760" :weight bold))))
+ '(info-title-2 ((t (:foreground "#bdb59b" :weight bold))))
+ '(info-title-3 ((t (:foreground "#bdb59b" :weight bold))))
+ '(info-title-4 ((t (:foreground "#e3cfcf" :weight bold))))
+ '(isearch ((t (:background "lightslateblue" :foreground "black"))))
+ '(isearch-group-1 ((t (:background "gainsboro" :foreground "black"))))
+ '(isearch-group-2 ((t (:background "bisque" :foreground "black"))))
+ '(line-number-current-line ((t (:inherit line-number :background "#231f32" :foreground "#ffb733"))))
+ '(link ((t (:foreground "lightslateblue" :underline t))))
+ '(link-visited ((t (:inherit link :foreground "orchid"))))
+ '(lsp-headerline-breadcrumb-path-face ((t (:background "#8585ff" :foreground "#231f32"))))
+ '(lsp-headerline-breadcrumb-separator-face ((t (:background "#8585ff" :foreground "#231f32" :height 0.8))))
+ '(lsp-headerline-breadcrumb-symbols-face ((t (:inherit font-lock-doc-face :background "#8055cc" :foreground "#231f32" :weight bold))))
+ '(magit-blame-hash ((t (:foreground "#656500"))))
+ '(magit-blame-highlight ((t (:extend t :foreground "#2a662a"))))
+ '(markdown-highlighting-face ((t (:background "salmon" :foreground "linen"))))
+ '(match ((t (:background "#8584ff" :foreground "#00006b"))))
+ '(minibuffer-prompt ((t (:background "#30304e" :foreground "lavender" :box (:line-width (1 . -1) :color "red" :style released-button) :weight bold))))
+ '(mode-line ((t (:background "#181522" :foreground "#62629c" :box (:line-width (1 . -1) :style released-button)))))
+ '(mode-line-inactive ((t (:inherit mode-line :background "#545454" :foreground "#a8a8a8" :box (:line-width (1 . -1) :color "grey75") :weight light))))
+ '(neo-file-link-face ((t (:inherit header-line))))
+ '(neo-vc-conflict-face ((t (:foreground "#844a4a"))))
+ '(neo-vc-default-face ((t (:foreground "#62629c"))))
+ '(neo-vc-edited-face ((t (:foreground "#cc8400"))))
+ '(neo-vc-unlocked-changes-face ((t (:foreground "#ff9d9d"))))
+ '(neo-vc-up-to-date-face ((t (:foreground "#62629c"))))
+ '(neo-vc-user-face ((t (:foreground "#e80000" :slant italic))))
+ '(org-block ((t (:inherit shadow :extend t :background "#181522"))))
+ '(org-block-begin-line ((t (:inherit org-meta-line :extend t :background "#181522"))))
+ '(org-code ((t (:inherit shadow :background "#181522"))))
+ '(rainbow-delimiters-base-face ((t (:inherit default))))
+ '(rainbow-delimiters-depth-1-face ((t (:inherit rainbow-delimiters-base-face :foreground "#a8a8a8"))))
+ '(rainbow-delimiters-depth-2-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffe4b3"))))
+ '(rainbow-delimiters-depth-3-face ((t (:inherit rainbow-delimiters-base-face :foreground "#d1c0ba"))))
+ '(rainbow-delimiters-depth-4-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffffb7"))))
+ '(rainbow-delimiters-depth-5-face ((t (:inherit rainbow-delimiters-base-face :foreground "#e3cfcf"))))
+ '(rainbow-delimiters-depth-6-face ((t (:inherit rainbow-delimiters-base-face :foreground "#c2f0c2"))))
+ '(rainbow-delimiters-depth-7-face ((t (:inherit rainbow-delimiters-base-face :foreground "#ffd3d3"))))
+ '(rainbow-delimiters-depth-8-face ((t (:inherit rainbow-delimiters-base-face :foreground "#8585ff"))))
+ '(rainbow-delimiters-depth-9-face ((t (:inherit rainbow-delimiters-base-face :foreground "#b7ffff"))))
+ '(sml/col-number ((t (:foreground "moccasin"))))
+ '(sml/git ((t (:foreground "#84b384"))))
+ '(sml/line-number ((t (:foreground "moccasin" :inverse-video nil))))
+ '(sml/modes ((t (:inherit sml/prefix :foreground "#8585ff"))))
+ '(sml/modified ((t (:inherit sml/not-modified :foreground "#d87373" :weight bold))))
+ '(sml/not-modified ((t (:foreground "#a8ff51"))))
+ '(sml/outside-modified ((t (:inherit sml/not-modified :foreground "#820000"))))
+ '(sml/prefix ((t (:inherit sml/global :foreground "#8585ff"))))
+ '(sml/sudo ((t (:foreground "#7141c6"))))
+ '(tab-bar ((t (:inherit variable-pitch :background "#080808" :foreground "#8584ff"))))
+ '(tab-bar-tab-group-current ((t (:foreground "#8584ff" :box nil :weight bold))))
+ '(tab-bar-tab-group-inactive ((t (:foreground "#303030"))))
+ '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :foreground "#303030"))))
+ '(tab-bar-tab-ungrouped ((t (:background "#303030" :foreground "#62629c"))))
+ '(tab-line ((t (:inherit variable-pitch :background "#181522" :foreground "#62629c" :height 0.9))))
+ '(tab-line-highlight ((t (:background "#820000" :foreground "#ffff9d" :box (:line-width (1 . 1) :style released-button)))))
+ '(tab-line-tab-current ((t (:inherit mode-line-buffer-id))))
+ '(tab-line-tab-inactive ((t (:inherit tab-line-tab :foreground "#62629c"))))
+ '(tab-line-tab-modified ((t (:inherit w-mode-line-head-modified))))
+ '(treemacs-git-commit-diff-face ((t (:inherit 'warning))))
+ '(vc-state-base ((t (:foreground "slategray"))))
+ '(vertical-border ((t (:inherit mode-line-inactive :background "#231f32" :foreground "#74564c"))))
+ '(w-mode-line-head ((t (:foreground "#8181b0"))))
+ '(w-mode-line-head-modified ((t (:foreground "#d87373"))))
+ '(w-mode-line-tail ((t (:foreground "#8181b0"))))
+ '(w-mode-line-tail-modified ((t (:foreground "#d87373"))))
+ '(warning ((t (:foreground "tomato" :weight bold))))
+ '(widget-field ((t (:extend t :background "#b7b7ff" :foreground "#181522"))))
+ '(woman-bold ((t (:inherit font-lock-type-face))))
+ '(woman-italic ((t (:inherit font-lock-keyword-face)))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -534,9 +446,9 @@ different modes."
  '(column-number-mode t)
  '(command-log-mode-is-global t)
  '(company-show-quick-access t)
- '(custom-enabled-themes '(smart-mode-line-dark Hacker))
+ '(custom-enabled-themes '(smart-mode-line-dark))
  '(custom-safe-themes
-   '("b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
+   '("a687c49ab637fb934e2676c782a891de0f2f0a0599e34b18471fcab9d27c1119" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
  '(debug-on-error '(nil))
  '(delimit-columns-before "")
  '(desktop-save-mode t)
@@ -648,33 +560,26 @@ different modes."
  '(undo-no-redo t)
  '(warning-minimum-level :emergency))
 ;;///////////////////////////////////////////////////////////////////////////////
-;; PART4: Performance Tuning
+;; Customized Theme
 ;;///////////////////////////////////////////////////////////////////////////////
-(defun emx/garbage-collect ()
-  "Run `garbage-collect' and print stats about memory usage."
-  (interactive)
-  (message (cl-loop for (type size used free) in (garbage-collect)
-					for used = (* used size)
-					for free = (* (or free 0) size)
-					for total = (file-size-human-readable (+ used free))
-					for used = (file-size-human-readable used)
-					for free = (file-size-human-readable free)
-					concat (format "%s: %s + %s = %s\n" type used free total))))
-;; bind to C-c-g
-
+(load-theme 'hacker)
 ;;///////////////////////////////////////////////////////////////////////////////
-;; PART5: Customized Mode Line
+;; Customized Mode Line
 ;;///////////////////////////////////////////////////////////////////////////////
-(use-package doom-modeline
-  :straight t
-  (require 'smart-mode-line)
-  (require 'smart-mode-line-dark-theme)
-  (use-package mood-line :straight t)
+(defun install-mode-line-pkgs()
+  (use-package doom-modeline
+	:straight t)
+  (use-package smart-mode-line
+	:straight t)
+  (use-package mood-line
+	:straight t)
   (defadvice vc-mode-line (after me/vc-mode-line () activate)
 	"Strip backend from the VC information."
 	(when (stringp vc-mode)
 	  (let ((vc-text (replace-regexp-in-string "^ Git." "  " vc-mode)))
 		(setq vc-mode vc-text)))))
+(install-mode-line-pkgs)
+(defun customize-mode-line()
 (defgroup w-mode-line nil
   "I want to have a wonderful mode-line: w-mode-line.
 
@@ -683,6 +588,11 @@ different modes."
   2. right part: right part segments - tail label.
   The segments are separated by separator label."
   :group 'mode-line)
+
+(defgroup w-palette-faces nil
+  "Group for palette"
+  :group 'faces)
+
 
 (defgroup w-mode-line-faces nil
   "Yes, it includes all w-mode-line faces."
@@ -732,6 +642,8 @@ different modes."
   "String being used as head label of w-mode-line."
   :type 'string
   :group 'w-mode-line-labels)
+  )
+(customize-mode-line)
 
 (defun w-mode-line-seg-head()
   "To return head segment of w-mode-line."
@@ -754,17 +666,6 @@ different modes."
 		  'w-mode-line-tail )))
 
 (w-mode-line-seg-tail)
-
-(defun w-mode-line-seg-encoding()
-  "To return encoding segment."
-  (let*
-	((sys (coding-system-plist buffer-file-coding-system))
-	 (sym (plist-get sys :name)))
-  (propertize
-   (upcase (symbol-name sym))
-   'face 'font-lock-string-face)))
-
-(w-mode-line-seg-encoding)
 
 (defun w-mode-line()
   "Enable w-mode-line."
@@ -797,9 +698,40 @@ different modes."
 			   " "))))))
   )
 (w-mode-line)
+;;///////////////////////////////////////////////////////////////////////////////
+;; Set Global Keys
+;;///////////////////////////////////////////////////////////////////////////////
+(defun set-global-keys()
+  "To set global keys."
+  (global-set-key (kbd "C-c a") 'lsp-execute-code-action)
+  (global-set-key (kbd "C-c b") 'magit-blame)
+  (global-set-key (kbd "C-c c") 'customize)
+  (global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
+  (global-set-key (kbd "C-c E") 'flycheck-list-errors)
+  (global-set-key (kbd "C-c f") 'lsp-format-buffer)
+  (global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
+  (global-set-key (kbd "C-c g") 'emx/garbage-collect)
+  (global-set-key (kbd "C-c h") 'windmove-left)
+  (global-set-key (kbd "C-c j") 'windmove-right)
+  (global-set-key (kbd "C-c q") 'magit-blame-quit)
+  (global-set-key (kbd "C-c r") 'tab-bar-close-tab)
+  (global-set-key (kbd "C-c n") 'neotree-toggle)
+  (global-set-key (kbd "C-c t") 'treemacs)
+  (global-set-key (kbd "C-c u") 'untabify)
+  (global-set-key (kbd "C-c k") 'kill-line)
+  (global-set-key (kbd "C-c w") 'whitespace-cleanup)
+  (global-set-key (kbd "C-c z") 'undo-redo)
+  (global-set-key (kbd "C-c (") 'indent-region)
+  (global-set-key (kbd "C-c =") 'maximize-window)
+  (global-set-key (kbd "C-c .") 'xref-find-references)
+  (global-set-key (kbd "C-c <up>") 'windmove-up)
+  (global-set-key (kbd "C-c <down>") 'windmove-down)
 
-;;///////////////////////////////////////////////////////////////////////////////
-;; Ending
-;;///////////////////////////////////////////////////////////////////////////////
-(provide 'init)
-;;; init.el ends here
+  (global-set-key (kbd "M-n") 'tab-bar-new-tab)
+  (global-set-key (kbd "M-o") 'lsp-ui-imenu)
+  (global-set-key (kbd "M-RET") 'tab-next)
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+  ;; rebind global keys to emacs extensions keys
+  (global-set-key (kbd "M-x") 'helm-M-x)
+  )
+(set-global-keys)
