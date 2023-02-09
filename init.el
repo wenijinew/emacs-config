@@ -1,58 +1,23 @@
-(package-initialize)
+;;; init.el --- init configurations
 
-;; global switch
-(defun global-switch()
-  "Set global switch."
-  (turn-on-auto-revert-mode)
-  (winner-mode)
-  (global-tab-line-mode t)
-  (setq tab-bar-separator "  "
-		tab-line-separator "  "
-		tab-bar-button-margin '(5 . 2)
-		tags-file-name "~/.emacs.d/TAGS"
-		mode-line-end-spaces nil)
-  (set-display-table-slot standard-display-table
-						  'vertical-border
-						  (make-glyph-code ?│)))
-(global-switch)
-;;///////////////////////////////////////////////////////////////////////////////
-;; Hooks for programming language modes and other modes
-;;///////////////////////////////////////////////////////////////////////////////
-(defvar prog-modes "shell-script java python")
-(defvar non-prog-modes "org term shell eshell treemacs neotree")
-(defun prog-env-hook()
-  "Programming environment features."
-  (auto-fill-mode)
-  (global-display-fill-column-indicator-mode 1)
-  )
-(defun non-prog-env-hook()
-  "Non-programming environment features."
-  (display-line-numbers-mode 0))
+;;; Commentary:
+;;; configuration sections
+;;; 1) package management
+;;; 2) package installation
+;;; 3) customizations for faces and variables
+;;; 4) load theme
+;;; 5) customize mode line
+;;; 6) set global keys
+;;; 7) set special global switches by calling functions, set special variables
+;;; 8) common hooks for programming modes and non-programming modes
+;;; 9) non-common hooks
 
-(defun append-suffix (suffix phrases)
-  "Append SUFFIX to each of PHRASES."
-  (mapcar #'(lambda (phrase) (concat phrase suffix)) phrases))
-
-(defun symbols-from-strings (strings)
-  "Given a list of STRINGS, get their symbol values."
-  (mapcar #'intern strings))
-
-(defun multiple-mode-add-hook (modes hook)
-  "Given a list of x-mode-hook symbols in MODES, add the HOOK to them."
-  (mapc (lambda (mode) (add-hook mode hook)) modes))
-
-(defun setup-env (mode-names hook)
-  "Setup environment by adding HOOK to MODE-NAMES."
-  (let ((modes (symbols-from-strings
-				(append-suffix "-mode-hook" (split-string mode-names)))))
-	(multiple-mode-add-hook modes hook)))
-
-(setup-env prog-modes 'prog-env-hook)
-(setup-env non-prog-modes 'non-prog-env-hook)
+;;; Code:
 
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Package Management
 ;;///////////////////////////////////////////////////////////////////////////////
+(package-initialize)
 (defun pkg-mgmt()
   (require 'package)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
@@ -90,13 +55,6 @@
   :straight t
   :init
   (helm-mode 1))
-(use-package highlight-indent-guides
-  :straight t
-  :hook
-  (java-mode highlight-indent-guides-mode)
-  (emacs-lisp-mode highlight-indent-guides-mode)
-  (shell-script-mode highlight-indent-guides-mode)
-  (python-mode highlight-indent-guides-mode))
 (use-package evil
 			 :straight t)
 (use-package elpy
@@ -213,8 +171,9 @@
 		  (company-abbrev company-dabbrev)
 		  ))
   :hook
-  ((java-mode python-mode) . company-mode)
-)
+  ((java-mode python-mode emacs-lisp-mode shell-script-mode) . company-mode)
+  )
+
 (use-package projectile
   :straight t
   :config
@@ -360,7 +319,6 @@
  '(helm-ff-file-extension ((t (:inherit font-lock-type-face))))
  '(helm-selection ((t (:inherit hl-line))))
  '(helm-source-header ((t (:extend t :background "#181522" :foreground "#b7b7ff" :weight bold :height 1.3))))
- '(highlight-indent-guides-character-face ((t (:foreground "#2e2942"))))
  '(highlight-indentation-current-column-face ((t (:background "#181522"))))
  '(highlight-indentation-face ((t (:background "#2e2942"))))
  '(hl-line ((t (:extend t :background "#30304e"))))
@@ -446,16 +404,19 @@
  '(column-number-mode t)
  '(command-log-mode-is-global t)
  '(company-show-quick-access t)
+ '(company-tooltip-align-annotations t)
  '(custom-enabled-themes '(smart-mode-line-dark))
  '(custom-safe-themes
-   '("a687c49ab637fb934e2676c782a891de0f2f0a0599e34b18471fcab9d27c1119" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
+   '("abd2ad651d2d0feb3aa165536cff555308d17068bc9c73f020a9e7faadf0720b" "a687c49ab637fb934e2676c782a891de0f2f0a0599e34b18471fcab9d27c1119" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
  '(debug-on-error '(nil))
  '(delimit-columns-before "")
  '(desktop-save-mode t)
  '(display-fill-column-indicator t)
  '(display-fill-column-indicator-column t)
+ '(display-line-numbers-type 'relative)
  '(doom-modeline-highlight-modified-buffer-name t)
  '(doom-modeline-mode t)
+ '(elpy-rpc-ignored-buffer-size 204800)
  '(fill-column 79)
  '(flycheck-mode-line-prefix "  ")
  '(git-gutter:added-sign "▎")
@@ -472,21 +433,34 @@
    '("find . -type f -exec grep --color=auto -nH --null -e  \\{\\} +" . 54))
  '(helm-minibuffer-history-mode t)
  '(helm-mode t)
- '(highlight-indent-guides-method 'character)
  '(highlight-indentation-blank-lines t)
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
+ '(lsp-completion-show-detail nil)
+ '(lsp-java-autobuild-enabled nil)
+ '(lsp-java-code-generation-generate-comments t)
+ '(lsp-java-code-generation-hash-code-equals-use-instanceof t)
+ '(lsp-java-code-generation-to-string-code-style "STRING_FORMAT")
  '(lsp-java-completion-import-order ["java" "javax" "org" "com" "se"])
+ '(lsp-java-completion-max-results 10)
  '(lsp-java-configuration-maven-user-settings "/home/egugwen/.m2/settings.xml")
  '(lsp-java-configuration-runtimes [])
+ '(lsp-java-configuration-update-build-configuration "interactive")
+ '(lsp-java-content-provider-preferred nil)
+ '(lsp-java-dependency-package-representation "hierarchical")
  '(lsp-java-format-settings-profile "JCAT code formatter")
  '(lsp-java-format-settings-url
    "/repo/egugwen/dj/jcat-common-code-formatter/src/main/resources/jcat-code-formatter.xml")
  '(lsp-java-import-gradle-enabled nil)
+ '(lsp-java-max-concurrent-builds 2)
  '(lsp-java-save-actions-organize-imports t)
+ '(lsp-java-server-launch-mode "LightWeight")
+ '(lsp-java-theme "vscode")
  '(lsp-java-vmargs
    '("-XX:+UseParallelGC" "-XX:GCTimeRatio=4" "-XX:AdaptiveSizePolicyWeight=90" "-Dsun.zip.disableMemoryMapping=true" "-Xmx4G" "-Xms100m"))
+ '(lsp-keep-workspace-alive nil)
  '(lsp-lens-enable nil)
+ '(lsp-log-max 100)
  '(lsp-treemacs-sync-mode t)
  '(max-lisp-eval-depth 9999)
  '(max-specpdl-size 10)
@@ -558,11 +532,12 @@
  '(treemacs-select-when-already-in-treemacs 'next-or-back)
  '(treemacs-workspace-switch-cleanup 'all)
  '(undo-no-redo t)
- '(warning-minimum-level :emergency))
+ '(warning-minimum-level :emergency)
+ '(yas-global-mode t))
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Customized Theme
 ;;///////////////////////////////////////////////////////////////////////////////
-(load-theme 'hacker)
+(load-theme 'hacker-2023)
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Customized Mode Line
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -716,6 +691,7 @@
   (global-set-key (kbd "C-c q") 'magit-blame-quit)
   (global-set-key (kbd "C-c r") 'tab-bar-close-tab)
   (global-set-key (kbd "C-c n") 'neotree-toggle)
+  (global-set-key (kbd "C-c s") 'lsp-describe-session)
   (global-set-key (kbd "C-c t") 'treemacs)
   (global-set-key (kbd "C-c u") 'untabify)
   (global-set-key (kbd "C-c k") 'kill-line)
@@ -735,3 +711,77 @@
   (global-set-key (kbd "M-x") 'helm-M-x)
   )
 (set-global-keys)
+;;///////////////////////////////////////////////////////////////////////////////
+;; Set Global Switch
+;;///////////////////////////////////////////////////////////////////////////////
+;; global switch
+(defun global-switch()
+  "Set global switch."
+  (turn-on-auto-revert-mode)
+  (winner-mode)
+  (global-tab-line-mode t)
+  (highlight-indentation-mode)
+  (setq tab-bar-separator "  "
+		tab-line-separator "  "
+		tab-bar-button-margin '(5 . 2)
+		tags-file-name "~/.emacs.d/TAGS"
+		mode-line-end-spaces nil)
+  (set-display-table-slot standard-display-table
+						  'vertical-border
+						  (make-glyph-code ?│)))
+(global-switch)
+;;///////////////////////////////////////////////////////////////////////////////
+;; Hooks for programming language modes and other modes
+;;///////////////////////////////////////////////////////////////////////////////
+(defvar prog-modes "shell-script java python")
+(defvar non-prog-modes "org term shell eshell treemacs neotree")
+(defun prog-env-hook()
+  "Programming environment features."
+  (auto-fill-mode)
+  (global-display-fill-column-indicator-mode 1)
+  )
+(defun non-prog-env-hook()
+  "Non-programming environment features."
+  (display-line-numbers-mode t))
+
+(defun append-suffix (suffix phrases)
+  "Append SUFFIX to each of PHRASES."
+  (mapcar #'(lambda (phrase) (concat phrase suffix)) phrases))
+
+(defun symbols-from-strings (strings)
+  "Given a list of STRINGS, get their symbol values."
+  (mapcar #'intern strings))
+
+(defun multiple-mode-add-hook (modes hook)
+  "Given a list of x-mode-hook symbols in MODES, add the HOOK to them."
+  (mapc (lambda (mode) (add-hook mode hook)) modes))
+
+(defun setup-env (mode-names hook)
+  "Setup environment by adding HOOK to MODE-NAMES."
+  (let ((modes (symbols-from-strings
+				(append-suffix "-mode-hook" (split-string mode-names)))))
+	(multiple-mode-add-hook modes hook)))
+
+(setup-env prog-modes 'prog-env-hook)
+(setup-env non-prog-modes 'non-prog-env-hook)
+
+(defvar JAVA-FILL-COLUMN 120)
+
+(defun non-common-hooks()
+  "Modes-customization.
+Display 'fill column' indicator and dynamically change 'fill-column' value with
+different modes."
+  (add-hook 'java-mode-hook
+			(lambda()
+			  (progn
+				(setq fill-column JAVA-FILL-COLUMN)
+				(setq indent-tabs-mode nil)
+				)
+			  ))
+  (add-hook 'org-mode (lambda () (setq fill-column -1)))
+  (add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
+)
+(non-common-hooks)
+
+(provide 'init)
+;;; init.el ends here
