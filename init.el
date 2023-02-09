@@ -540,6 +540,7 @@
 (load-theme 'hacker-2023)
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Customized Mode Line
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/_0025_002dConstructs.html
 ;;///////////////////////////////////////////////////////////////////////////////
 (defun install-mode-line-pkgs()
   (use-package doom-modeline
@@ -548,11 +549,12 @@
 	:straight t)
   (use-package mood-line
 	:straight t)
-  (defadvice vc-mode-line (after me/vc-mode-line () activate)
-	"Strip backend from the VC information."
-	(when (stringp vc-mode)
-	  (let ((vc-text (replace-regexp-in-string "^ Git." "  " vc-mode)))
-		(setq vc-mode vc-text)))))
+;;  (defadvice vc-mode-line (after me/vc-mode-line () activate)
+;;	"Strip backend from the VC information."
+;;	(when (stringp vc-mode)
+;;	  (let ((vc-text (replace-regexp-in-string "^ Git." "  " vc-mode)))
+;;		(setq vc-mode vc-text))))
+  )
 (install-mode-line-pkgs)
 (defun customize-mode-line()
 (defgroup w-mode-line nil
@@ -642,6 +644,55 @@
 
 (w-mode-line-seg-tail)
 
+(defun w-mode-line-seg-buffer-file-name()
+  "To return buffer file name if only one window."
+  (if (window-full-width-p)
+	  (buffer-file-name))
+  )
+
+(w-mode-line-seg-buffer-file-name)
+
+(defvar-local w-mode-line-vcs-icon nil)
+(defun w-mode-line-set-vcs-icon(icon face)
+  "Show ICON on mode-line by FACE."
+  (propertize icon
+			  'face face))
+(defun w-mode-line-update-vcs-icon (&rest _)
+  "Update icon of vcs state in mode-line."
+  (setq w-mode-line-vcs-icon
+        (when (and vc-mode buffer-file-name)
+          (let* ((backend (vc-backend buffer-file-name))
+                 (state   (vc-state (file-local-name buffer-file-name) backend)))
+            (cond ((eq state 'unregistered)
+                   (w-mode-line-set-vcs-icon "U" "font-lock-comment-face"))
+                  ((eq state 'up-to-date)
+                   (w-mode-line-set-vcs-icon " " "success"))
+                  ((eq state 'edited)
+                   (w-mode-line-set-vcs-icon "" "mode-line-buffer-id"))
+                  ((eq state 'added)
+                   (w-mode-line-set-vcs-icon "" "font-lock-builtin-face"))
+                  ((memq state '(missing removed))
+                   (w-mode-line-set-vcs-icon "" "warning"))
+                  ((eq state 'conflict)
+                   (w-mode-line-set-vcs-icon "" "font-lock-warning-face"))
+                  ((eq state 'needs-update)
+                   (w-mode-line-set-vcs-icon "" "font-lock-variable-name-face"))
+                  ((eq state 'needs-merge)
+                   (w-mode-line-set-vcs-icon "" "separator-line"))
+                  ((eq state 'ignored)
+                   (w-mode-line-set-vcs-icon "◌" "font-lock-comment-face"))
+                  (t
+                   (w-mode-line-set-vcs-icon " " "vertical-border"))
+				  )))))
+(add-hook 'find-file-hook #'w-mode-line-update-vcs-icon)
+(add-hook 'after-save-hook #'w-mode-line-update-vcs-icon)
+(advice-add #'vc-refresh-state :after #'w-mode-line-update-vcs-icon)
+(defun w-mode-line-vcs()
+  "Show vcs."
+  (when-let ((icon w-mode-line-vcs-icon)
+			 (vc-text (replace-regexp-in-string "^ Git." "" vc-mode)))
+  (concat " " icon " " vc-text)))
+
 (defun w-mode-line()
   "Enable w-mode-line."
   (interactive  nil)
@@ -655,17 +706,16 @@
 			   (:eval (w-mode-line-seg-head))
 			   (:eval (sml/generate-modified-status))
 			   (:eval (doom-modeline--buffer-name))
-			   (vc-mode vc-mode)
+;;			   (vc-mode vc-mode)
+			   (:eval (w-mode-line-vcs))
 			   (:eval (doom-modeline-segment--buffer-position))
 			   (:eval (doom-modeline-segment--buffer-size))
-			 ))
+			   "%e"
+			   (:eval (w-mode-line-seg-buffer-file-name))
+			   ))
 
 			(format-mode-line
 			 '((:eval (doom-modeline-segment--checker))
-			   ;;(:eval (doom-modeline-segment--objed-state))
-			   ;;(:eval (doom-modeline-segment--misc-info))
-			   ;;(:eval (doom-modeline-segment--debug))
-			   ;;(:eval (doom-modeline-segment--repl))
 			   (:eval (doom-modeline-segment--lsp))
 			   (:eval (doom-modeline-segment--buffer-encoding))
 			   (:eval (doom-modeline-segment--major-mode))
