@@ -365,6 +365,7 @@
  '(rainbow-delimiters-depth-8-face ((t (:inherit rainbow-delimiters-base-face :foreground "#8585ff"))))
  '(rainbow-delimiters-depth-9-face ((t (:inherit rainbow-delimiters-base-face :foreground "#b7ffff"))))
  '(sml/col-number ((t (:foreground "moccasin"))))
+ '(sml/filename ((t (:inherit sml/global :foreground "#a8ff51" :weight bold))))
  '(sml/git ((t (:foreground "#84b384"))))
  '(sml/line-number ((t (:foreground "moccasin" :inverse-video nil))))
  '(sml/modes ((t (:inherit sml/prefix :foreground "#8585ff"))))
@@ -556,70 +557,82 @@
 ;;		(setq vc-mode vc-text))))
   )
 (install-mode-line-pkgs)
+
 (defun customize-mode-line()
-(defgroup w-mode-line nil
-  "I want to have a wonderful mode-line: w-mode-line.
+  "Customize mode line."
+  (defgroup w-mode-line nil
+	"I want to have a wonderful mode-line: w-mode-line.
 
   The w-mode-line consists of several segments:
   1. left part: head label - left part segments
   2. right part: right part segments - tail label.
   The segments are separated by separator label."
-  :group 'mode-line)
+	:group 'mode-line)
 
-(defgroup w-palette-faces nil
-  "Group for palette"
-  :group 'faces)
+  (defgroup w-palette-faces nil
+	"Group for palette"
+	:group 'faces)
 
 
-(defgroup w-mode-line-faces nil
-  "Yes, it includes all w-mode-line faces."
-  :group 'w-mode-line
-  :group 'faces)
+  (defgroup w-mode-line-faces nil
+	"Yes, it includes all w-mode-line faces."
+	:group 'w-mode-line
+	:group 'faces)
 
-(defgroup w-mode-line-labels '()
-  "Group for mode-line labels."
-  :group 'w-mode-line)
+  (defgroup w-mode-line-labels '()
+	"Group for mode-line labels."
+	:group 'w-mode-line)
 
-(defface w-mode-line-head
-  '((t (:inherit default :weight normal)))
-  "Face for head of w-mode-line."
-  :group 'w-mode-line-faces
-  )
 
-(defface w-mode-line-head-modified
-  '((t (:inherit default :weight normal)))
-  "Face for head of w-mode-line."
-  :group 'w-mode-line-faces
-  )
+  (defcustom w-mode-line-head-label "  "
+	"String being used as head label of w-mode-line."
+	:type 'string
+	:group 'w-mode-line-labels)
 
-(defface w-mode-line-encoding
-  '((t (:inherit default :weight normal)))
-  "Face for encoding segment of w-mode-line."
-  :group 'w-mode-line-faces
-  )
+  (defcustom w-mode-line-tail-label "  "
+	"String being used as head label of w-mode-line."
+	:type 'string
+	:group 'w-mode-line-labels)
 
-(defface w-mode-line-tail
-  '((t (:inherit default :weight normal)))
-  "Face for encoding segment of w-mode-line."
-  :group 'w-mode-line-faces
-  )
+  (defface w-mode-line-head
+	'((t (:inherit default :weight normal)))
+	"Face for head of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
-(defface w-mode-line-tail-modified
-  '((t (:inherit default :weight normal)))
-  "Face for encoding segment of w-mode-line."
-  :group 'w-mode-line-faces
-  )
+  (defface w-mode-line-head-modified
+	'((t (:inherit default :weight normal)))
+	"Face for head of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
-(defcustom w-mode-line-head-label "  "
-  "String being used as head label of w-mode-line."
-  :type 'string
-  :group 'w-mode-line-labels)
+  (defface w-mode-line-encoding
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
-(defcustom w-mode-line-tail-label "  "
-  "String being used as head label of w-mode-line."
-  :type 'string
-  :group 'w-mode-line-labels)
-  )
+  (defface w-mode-line-tail
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
+
+  (defface w-mode-line-tail-modified
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
+
+  ;;; palette faces
+  ;;; TODO: update docstring
+  (defface w-theme-green
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
+  
+  ) ;;; customize-mode-line fun ends here
 (customize-mode-line)
 
 (defun w-mode-line-seg-head()
@@ -668,7 +681,7 @@
                   ((eq state 'up-to-date)
                    (w-mode-line-set-vcs-icon " " "success"))
                   ((eq state 'edited)
-                   (w-mode-line-set-vcs-icon "" "mode-line-buffer-id"))
+                   (w-mode-line-set-vcs-icon "" "warning"))
                   ((eq state 'added)
                    (w-mode-line-set-vcs-icon "" "font-lock-builtin-face"))
                   ((memq state '(missing removed))
@@ -686,12 +699,14 @@
 				  )))))
 (add-hook 'find-file-hook #'w-mode-line-update-vcs-icon)
 (add-hook 'after-save-hook #'w-mode-line-update-vcs-icon)
+(add-hook 'window-state-change-hook #'w-mode-line-update-vcs-icon)
+
 (advice-add #'vc-refresh-state :after #'w-mode-line-update-vcs-icon)
 (defun w-mode-line-vcs()
   "Show vcs."
   (when-let ((icon w-mode-line-vcs-icon)
 			 (vc-text (replace-regexp-in-string "^ Git." "" vc-mode)))
-  (concat " " icon " " vc-text)))
+	(concat " (" vc-text " " icon ") ")))
 
 (defun w-mode-line()
   "Enable w-mode-line."
@@ -699,28 +714,28 @@
   (setq-default mode-line-buffer-identification
 				sml/mode-line-buffer-identification)
   (setq-default mode-line-format
-		'((:eval
-		   (mood-line--format
-			(format-mode-line
-			 '(" "
-			   (:eval (w-mode-line-seg-head))
-			   (:eval (sml/generate-modified-status))
-			   (:eval (doom-modeline--buffer-name))
-;;			   (vc-mode vc-mode)
-			   (:eval (w-mode-line-vcs))
-			   (:eval (doom-modeline-segment--buffer-position))
-			   (:eval (doom-modeline-segment--buffer-size))
-			   "%e"
-			   (:eval (w-mode-line-seg-buffer-file-name))
-			   ))
+				'((:eval
+				   (mood-line--format
+					(format-mode-line
+					 '(" "
+					   (:eval (w-mode-line-seg-head))
+					   (:eval (sml/generate-modified-status))
+					   (:eval (doom-modeline--buffer-name))
+					   ;;			   (vc-mode vc-mode)
+					   (:eval (w-mode-line-vcs))
+					   (:eval (doom-modeline-segment--buffer-position))
+					   (:eval (doom-modeline-segment--buffer-size))
+					   "%e"
+					   (:eval (w-mode-line-seg-buffer-file-name))
+					   ))
 
-			(format-mode-line
-			 '((:eval (doom-modeline-segment--checker))
-			   (:eval (doom-modeline-segment--lsp))
-			   (:eval (doom-modeline-segment--buffer-encoding))
-			   (:eval (doom-modeline-segment--major-mode))
-			   (:eval (w-mode-line-seg-tail))
-			   " "))))))
+					(format-mode-line
+					 '((:eval (doom-modeline-segment--checker))
+					   (:eval (doom-modeline-segment--lsp))
+					   (:eval (doom-modeline-segment--buffer-encoding))
+					   (:eval (doom-modeline-segment--major-mode))
+					   (:eval (w-mode-line-seg-tail))
+					   " "))))))
   )
 (w-mode-line)
 ;;///////////////////////////////////////////////////////////////////////////////
