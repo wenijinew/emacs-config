@@ -310,6 +310,7 @@
  '(company-tooltip-selection ((t (:extend t :background "#181522"))))
  '(custom-comment ((t (:background "#181522" :foreground "#d1ccba"))))
  '(doom-modeline-project-dir ((t (:inherit (w-mode-line-head bold)))))
+ '(error ((t (:foreground "tomato" :weight bold))))
  '(fill-column-indicator ((t (:inherit font-lock-comment-face))))
  '(git-gutter:deleted ((t (:inherit default :foreground "#e80000" :weight bold))))
  '(header-line ((t (:background "#8585ff" :foreground "#231f32" :inverse-video t :box (:line-width (1 . -1) :color "red" :style released-button)))))
@@ -391,7 +392,7 @@
  '(w-mode-line-head-modified ((t (:foreground "#d87373"))))
  '(w-mode-line-tail ((t (:foreground "#8181b0"))))
  '(w-mode-line-tail-modified ((t (:foreground "#d87373"))))
- '(warning ((t (:foreground "tomato" :weight bold))))
+ '(warning ((t (:foreground "gold" :weight bold))))
  '(widget-field ((t (:extend t :background "#b7b7ff" :foreground "#181522"))))
  '(woman-bold ((t (:inherit font-lock-type-face))))
  '(woman-italic ((t (:inherit font-lock-keyword-face)))))
@@ -420,6 +421,7 @@
  '(elpy-rpc-ignored-buffer-size 204800)
  '(fill-column 79)
  '(flycheck-mode-line-prefix "  ")
+ '(gc-cons-threshold 8000)
  '(git-gutter:added-sign "▎")
  '(git-gutter:deleted-sign "▎")
  '(git-gutter:modified-sign "▎")
@@ -788,6 +790,7 @@
   (highlight-indentation-mode)
   (setq tab-bar-separator "  "
 		tab-line-separator "  "
+		read-process-output-max 2000
 		tab-bar-button-margin '(5 . 2)
 		tags-file-name "~/.emacs.d/TAGS"
 		mode-line-end-spaces nil)
