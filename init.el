@@ -18,7 +18,7 @@
 ;; Package Management
 ;;///////////////////////////////////////////////////////////////////////////////
 (defvar USER_REPO_ROOT (getenv "USER_REPO_ROOT"))
-(defvar PHTHON_VIRTUAL_ENV_PATH (concat
+(defvar PYTHON_VIRTUAL_ENV_PATH (concat
 								 USER_REPO_ROOT
 								 (if (eq (substring USER_REPO_ROOT -1 nil) "/") "" "/")
 								 "venv_v"
@@ -78,7 +78,14 @@
    ;; sbt-supershell kills sbt-mode:  https://github.com/hvesalai/emacs-sbt-mode/issues/152
    (setq sbt:program-options '("-Dsbt.supershell=false")))
 (use-package lsp-metals
-  :straight t)
+  :straight t
+  :ensure t
+  :custom
+  ;; Metals claims to support range formatting by default but it supports range
+  ;; formatting of multiline strings only. You might want to disable it so that
+  ;; emacs can use indentation provided by scala-mode.
+  (lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
+  :hook (scala-mode . lsp))
 (use-package yaml-mode
   :straight t
   :config
@@ -105,7 +112,7 @@
 (use-package elpy
 	:straight t
 	:init
-;;	(pyvenv-activate PHTHON_VIRTUAL_ENV_PATH)
+;;	(pyvenv-activate PYTHON_VIRTUAL_ENV_PATH)
 	(pyvenv-activate ELPY_ENV_PATH)
 	(elpy-enable)
 	:config
@@ -192,7 +199,7 @@
 			   :hook (
 					  (python-mode . lsp)
 					  (java-mode . lsp)
-;;					  (scala-mode . lsp)
+					  (scala-mode . lsp)
 					  (lsp-mode . lsp-enable-which-key-integration)
                     )
 			   :commands lsp)
@@ -220,7 +227,7 @@
 		  (company-abbrev company-dabbrev)
 		  ))
   :hook
-  ((java-mode python-mode emacs-lisp-mode shell-script-mode) . company-mode)
+  ((java-mode python-mode emacs-lisp-mode shell-script-mode scala-mode) . company-mode)
   )
 (use-package projectile
   :straight t
@@ -462,8 +469,7 @@
  '(custom-enabled-themes '(smart-mode-line-dark))
  '(custom-safe-themes
    '("abd2ad651d2d0feb3aa165536cff555308d17068bc9c73f020a9e7faadf0720b" "a687c49ab637fb934e2676c782a891de0f2f0a0599e34b18471fcab9d27c1119" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
-;; NOTE: The below line will cause Emacs to be stuck when typing quotes. https://stackoverflow.com/questions/1406213/emacs-23-hangs-on-python-mode-when-typing-string-block
-;; '(debug-on-error t)
+ '(debug-on-error nil)
  '(delimit-columns-before "")
  '(desktop-save-mode nil)
  '(display-fill-column-indicator t)
@@ -471,6 +477,7 @@
  '(display-line-numbers-type 'relative)
  '(doom-modeline-highlight-modified-buffer-name t)
  '(doom-modeline-mode t)
+ '(elpy-eldoc-show-current-function nil)
  '(elpy-rpc-ignored-buffer-size 204800)
  '(fill-column 79)
  '(flycheck-mode-line-prefix "  ")
@@ -508,6 +515,9 @@
  '(lsp-java-format-settings-url
    (concat USER_REPO_ROOT "/dj/jcat-common-code-formatter/src/main/resources/jcat-code-formatter.xml"))
  '(lsp-java-import-gradle-enabled nil)
+ '(lsp-java-java-path "/app/vbuild/SLED12-x86_64/openjdk/latest/bin/java")
+ '(lsp-java-jdt-download-url
+   (concat "file:///" USER_REPO_ROOT "/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
  '(lsp-java-max-concurrent-builds 2)
  '(lsp-java-save-actions-organize-imports t)
  '(lsp-java-server-launch-mode "LightWeight")
@@ -518,6 +528,15 @@
  '(lsp-keymap-prefix "C-c l")
  '(lsp-lens-enable nil)
  '(lsp-log-max 100)
+ '(lsp-metals-ammonite-jvm-properties [])
+ '(lsp-metals-bloop-sbt-already-installed t)
+ '(lsp-metals-coursier-download-url
+   (concat "file:///" USER_REPO_ROOT "/bin/cs-x86_64-pc-linux-v2.1.0-RC6.gz"))
+ '(lsp-metals-enable-indent-on-paste t)
+ '(lsp-metals-java-home "/app/vbuild/SLED12-x86_64/openjdk/latest")
+ '(lsp-metals-sbt-script "/app/vbuild/RHEL7-x86_64/sbt/1.8.2/bin/sbt")
+ '(lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
+ '(lsp-metals-treeview-logging t)
  '(lsp-treemacs-sync-mode t)
  '(max-lisp-eval-depth 9999)
  '(max-specpdl-size 10)
@@ -530,6 +549,7 @@
  '(plantuml-indent-level 4)
  '(plantuml-jar-path
    "/app/vbuild/tools/plantuml/1.2022.5/lib/plantuml.1.2022.5.jar")
+ '(scala-indent:step 4)
  '(scroll-bar-mode nil)
  '(send-mail-function 'mailclient-send-it)
  '(show-paren-mode t)
