@@ -497,6 +497,10 @@
  '(helm-minibuffer-history-mode t)
  '(helm-mode t)
  '(highlight-indentation-blank-lines t)
+ '(ignored-local-variable-values
+   '((vc-prepare-patches-separately)
+	 (diff-add-log-use-relative-names . t)
+	 (vc-git-annotate-switches . "-w")))
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(lsp-completion-show-detail nil)
@@ -517,7 +521,7 @@
  '(lsp-java-import-gradle-enabled nil)
  '(lsp-java-java-path "/app/vbuild/SLED12-x86_64/openjdk/latest/bin/java")
  '(lsp-java-jdt-download-url
-   (concat "file:///" USER_REPO_ROOT "/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
+   (concat "file://" USER_REPO_ROOT "/ws/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
  '(lsp-java-max-concurrent-builds 2)
  '(lsp-java-save-actions-organize-imports t)
  '(lsp-java-server-launch-mode "LightWeight")
@@ -531,7 +535,7 @@
  '(lsp-metals-ammonite-jvm-properties [])
  '(lsp-metals-bloop-sbt-already-installed t)
  '(lsp-metals-coursier-download-url
-   (concat "file:///" USER_REPO_ROOT "/bin/cs-x86_64-pc-linux-v2.1.0-RC6.gz"))
+   (concat "file://" USER_REPO_ROOT "/ws/bin/cs-x86_64-pc-linux-v2.1.0-RC6.gz"))
  '(lsp-metals-enable-indent-on-paste t)
  '(lsp-metals-java-home "/app/vbuild/SLED12-x86_64/openjdk/latest")
  '(lsp-metals-sbt-script "/app/vbuild/RHEL7-x86_64/sbt/1.8.2/bin/sbt")
