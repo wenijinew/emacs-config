@@ -201,7 +201,7 @@
 					  (java-mode . lsp)
 					  (scala-mode . lsp)
 					  (lsp-mode . lsp-enable-which-key-integration)
-                    )
+					)
 			   :commands lsp)
   (use-package lsp-ui :straight t))
 (use-package rainbow-delimiters
@@ -466,7 +466,6 @@
  '(command-log-mode-is-global t)
  '(company-show-quick-access t)
  '(company-tooltip-align-annotations t)
- '(custom-enabled-themes '(smart-mode-line-dark))
  '(custom-safe-themes
    '("abd2ad651d2d0feb3aa165536cff555308d17068bc9c73f020a9e7faadf0720b" "a687c49ab637fb934e2676c782a891de0f2f0a0599e34b18471fcab9d27c1119" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
  '(debug-on-error nil)
@@ -542,6 +541,16 @@
  '(lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
  '(lsp-metals-treeview-logging t)
  '(lsp-treemacs-sync-mode t)
+ '(magit-auto-revert-mode t)
+ '(magit-blame-styles
+   '((headings
+	  (heading-format . "%-20a %C %s(%H)
+"))
+	 (highlight
+	  (highlight-face . magit-blame-highlight))
+	 (lines
+	  (show-lines . t)
+	  (show-message . t))))
  '(max-lisp-eval-depth 9999)
  '(max-specpdl-size 10)
  '(menu-bar-mode nil)
@@ -845,6 +854,7 @@
   (global-set-key (kbd "C-c t") 'treemacs)
   (global-set-key (kbd "C-c u") 'untabify)
   (global-set-key (kbd "C-c k") 'kill-line)
+  (global-set-key (kbd "C-c v") 'vc-annotate)
   (global-set-key (kbd "C-c w") 'whitespace-cleanup)
   (global-set-key (kbd "C-c z") 'undo-redo)
   (global-set-key (kbd "C-c (") 'indent-region)
@@ -923,6 +933,7 @@
 (setup-env non-prog-modes 'non-prog-env-hook)
 
 (defvar JAVA-FILL-COLUMN 120)
+(defvar PYTHON-FILL-COLUMN 79)
 
 (defun non-common-hooks()
   "Modes-customization.
@@ -935,6 +946,7 @@ different modes."
 				(setq indent-tabs-mode nil)
 				)
 			  ))
+  (add-hook 'python-mode (lambda () (setq fill-column PYTHON-FILL-COLUMN)))
   (add-hook 'org-mode (lambda () (setq fill-column -1)))
   (add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
 )
