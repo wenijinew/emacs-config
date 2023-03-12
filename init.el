@@ -17,6 +17,11 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Package Management
 ;;///////////////////////////////////////////////////////////////////////////////
+(defvar DEFAULT-FILL-COLUMN 79)
+
+;;///////////////////////////////////////////////////////////////////////////////
+;; Package Management
+;;///////////////////////////////////////////////////////////////////////////////
 (defvar USER_REPO_ROOT (getenv "USER_REPO_ROOT"))
 (defvar PYTHON_VIRTUAL_ENV_PATH (concat
 								 USER_REPO_ROOT
@@ -462,6 +467,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ace-window-display-mode t)
+ '(blacken-line-length 79)
  '(column-number-mode t)
  '(command-log-mode-is-global t)
  '(company-show-quick-access t)
@@ -479,6 +485,7 @@
  '(elpy-eldoc-show-current-function nil)
  '(elpy-rpc-ignored-buffer-size 204800)
  '(fill-column 79)
+ '(flycheck-flake8-maximum-line-length 79)
  '(flycheck-mode-line-prefix "  ")
  '(flycheck-yamllintrc (concat (getenv "HOME") "/.config/yamllint/config"))
  '(git-gutter:added-sign "▎")
@@ -487,6 +494,7 @@
  '(global-auto-revert-mode t)
  '(global-display-fill-column-indicator-mode t)
  '(global-display-line-numbers-mode t)
+ '(global-flycheck-mode t)
  '(global-git-gutter-mode t)
  '(global-hl-line-mode t)
  '(global-tab-line-mode t)
@@ -552,7 +560,7 @@
 	  (show-lines . t)
 	  (show-message . t))))
  '(max-lisp-eval-depth 9999)
- '(max-specpdl-size 10)
+ '(max-specpdl-size 3600)
  '(menu-bar-mode nil)
  '(mode-line-compact 'long)
  '(neo-smart-open t)
@@ -850,6 +858,7 @@
   (global-set-key (kbd "C-c q") 'magit-blame-quit)
   (global-set-key (kbd "C-c r") 'tab-bar-close-tab)
   (global-set-key (kbd "C-c n") 'neotree-toggle)
+  (global-set-key (kbd "C-c r") 'lsp-rename)
   (global-set-key (kbd "C-c s") 'lsp-describe-session)
   (global-set-key (kbd "C-c t") 'treemacs)
   (global-set-key (kbd "C-c u") 'untabify)
