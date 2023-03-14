@@ -896,8 +896,8 @@
   (global-tab-line-mode t)
   (set-face-attribute 'default (selected-frame) :height 200)
   (highlight-indentation-mode)
-  ;; how to make this work?
-  (add-to-list 'auto-mode-alist '("\\(?:.\\(?:\\(?:zsh\\|bash\\|csh\\|vim\\)rc\\)\\|modules\\)\\(?:\\.[^/]+\\)?\\'" . shell-script-mode))
+  ;; how to make this work? why .bash_aliases doesn't work
+  (add-to-list 'auto-mode-alist '("\\(?:.\\(?:\\(?:zsh\\|bash\\|csh\\|vim\\)\\(?:rc\\)?\\)\\|modules\\)\\(?:\\.[^/]+\\)?\\'" . shell-script-mode))
   (setq tab-bar-separator "  "
 		tab-line-separator "  "
 		tab-bar-button-margin '(5 . 2)
