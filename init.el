@@ -909,7 +909,7 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Hooks for programming language modes and other modes
 ;;///////////////////////////////////////////////////////////////////////////////
-(defvar prog-modes "shell-script java python")
+(defvar prog-modes "shell java python")
 (defvar non-prog-modes "org term shell eshell treemacs neotree")
 (defun prog-env-hook()
   "Programming environment features."
