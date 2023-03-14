@@ -809,6 +809,7 @@
 			 (vc-text (replace-regexp-in-string "^ Git." "" vc-mode)))
 	(concat " (" vc-text " " icon ") ")))
 
+;; TODO: Add Emacs version information on right-side of w-mode-line
 (defun w-mode-line()
   "Enable w-mode-line."
   (interactive  nil)
@@ -862,7 +863,7 @@
   (global-set-key (kbd "C-c s") 'lsp-describe-session)
   (global-set-key (kbd "C-c t") 'treemacs)
   (global-set-key (kbd "C-c u") 'untabify)
-  (global-set-key (kbd "C-c k") 'kill-line)
+  (global-set-key (kbd "C-c k") 'kill-whole-line)
   (global-set-key (kbd "C-c v") 'vc-annotate)
   (global-set-key (kbd "C-c w") 'whitespace-cleanup)
   (global-set-key (kbd "C-c z") 'undo-redo)
@@ -896,7 +897,7 @@
   (set-face-attribute 'default (selected-frame) :height 200)
   (highlight-indentation-mode)
   ;; how to make this work?
-  (add-to-list 'auto-mode-alist '("\\.zshrc\\.user'" . shell-script-mode))
+  (add-to-list 'auto-mode-alist '("\\(?:.\\(?:\\(?:zsh\\|bash\\|csh\\|vim\\)rc\\)\\|modules\\)\\(?:\\.[^/]+\\)?\\'" . shell-script-mode))
   (setq tab-bar-separator "  "
 		tab-line-separator "  "
 		tab-bar-button-margin '(5 . 2)
