@@ -232,7 +232,7 @@
 		  (company-abbrev company-dabbrev)
 		  ))
   :hook
-  ((java-mode python-mode emacs-lisp-mode shell-script-mode scala-mode) . company-mode)
+  ((java-mode python-mode emacs-lisp-mode shell-script-mode sh-mode scala-mode) . company-mode)
   )
 (use-package projectile
   :straight t
@@ -511,6 +511,7 @@
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(lsp-completion-show-detail nil)
+ '(lsp-file-watch-threshold 3000)
  '(lsp-java-autobuild-enabled nil)
  '(lsp-java-code-generation-generate-comments t)
  '(lsp-java-code-generation-hash-code-equals-use-instanceof t)
@@ -548,6 +549,7 @@
  '(lsp-metals-sbt-script "/app/vbuild/RHEL7-x86_64/sbt/1.8.2/bin/sbt")
  '(lsp-metals-server-args '("-J-Dmetals.allow-multiline-string-formatting=off"))
  '(lsp-metals-treeview-logging t)
+ '(lsp-pylsp-plugins-autopep8-enabled t)
  '(lsp-treemacs-sync-mode t)
  '(magit-auto-revert-mode t)
  '(magit-blame-styles
