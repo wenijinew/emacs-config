@@ -851,6 +851,7 @@
   (global-set-key (kbd "C-c b") 'magit-blame)
   ;;; C-c C-b bind to beautify-json
   (global-set-key (kbd "C-c c") 'customize)
+  (global-set-key (kbd "C-c d") 'kill-line)
   (global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
   (global-set-key (kbd "C-c E") 'flycheck-list-errors)
   (global-set-key (kbd "C-c f") 'lsp-format-buffer)
