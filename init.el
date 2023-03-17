@@ -59,6 +59,9 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Install Packages
 ;;///////////////////////////////////////////////////////////////////////////////
+(use-package all-the-icons
+  :straight t
+  :if (display-graphic-p))
 (use-package plantuml-mode
   :straight t)
 (use-package groovy-mode
@@ -283,78 +286,82 @@
         visual-fill-column-center-text t
         display-fill-column-indicator-column -1)
   (visual-fill-column-mode 1))
-(use-package org-mode
-  :straight t
-  :config
-  (org-indent-mode)
-  :hook (org-mode . emc/org-mode-setup))
-;; don't know why this cannot work with :config of use-package org-mode
-(setq org-agenda-custom-commands
-      '(("d" "Dashboard"
-         ((agenda "" ((org-deadline-warning-days 7)))
-          (todo "NEXT"
-                ((org-agenda-overriding-header "Next Tasks")))
-          (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+(defun emc/enable-org-mode()
+  ;;; enable org-mode
+  (use-package org-mode
+    :straight t
+    :config
+    (org-indent-mode)
+    :hook (org-mode . emc/org-mode-setup))
+  ;; don't know why this cannot work with :config of use-package org-mode
+  (setq org-agenda-custom-commands
+	'(("d" "Dashboard"
+           ((agenda "" ((org-deadline-warning-days 7)))
+            (todo "NEXT"
+                  ((org-agenda-overriding-header "Next Tasks")))
+            (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
 
-        ("n" "Next Tasks"
-         ((todo "NEXT"
-                ((org-agenda-overriding-header "Next Tasks")))))
+          ("n" "Next Tasks"
+           ((todo "NEXT"
+                  ((org-agenda-overriding-header "Next Tasks")))))
 
-        ("W" "Work Tasks" tags-todo "+work-email")
+          ("W" "Work Tasks" tags-todo "+work-email")
 
-        ;; Low-effort next actions
-        ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-         ((org-agenda-overriding-header "Low Effort Tasks")
-          (org-agenda-max-todos 20)
-          (org-agenda-files org-agenda-files)))
+          ;; Low-effort next actions
+          ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+           ((org-agenda-overriding-header "Low Effort Tasks")
+            (org-agenda-max-todos 20)
+            (org-agenda-files org-agenda-files)))
 
-        ("w" "Workflow Status"
-         ((todo "WAIT"
-                ((org-agenda-overriding-header "Waiting on External")
-                 (org-agenda-files org-agenda-files)))
-          (todo "REVIEW"
-                ((org-agenda-overriding-header "In Review")
-                 (org-agenda-files org-agenda-files)))
-          (todo "PLAN"
-                ((org-agenda-overriding-header "In Planning")
-                 (org-agenda-todo-list-sublevels nil)
-                 (org-agenda-files org-agenda-files)))
-          (todo "BACKLOG"
-                ((org-agenda-overriding-header "Project Backlog")
-                 (org-agenda-todo-list-sublevels nil)
-                 (org-agenda-files org-agenda-files)))
-          (todo "READY"
-                ((org-agenda-overriding-header "Ready for Work")
-                 (org-agenda-files org-agenda-files)))
-          (todo "ACTIVE"
-                ((org-agenda-overriding-header "Active Projects")
-                 (org-agenda-files org-agenda-files)))
-          (todo "COMPLETED"
-                ((org-agenda-overriding-header "Completed Projects")
-                 (org-agenda-files org-agenda-files)))
-          (todo "CANC"
-                ((org-agenda-overriding-header "Cancelled Projects")
-                 (org-agenda-files org-agenda-files)))))))
-(setq org-ellipsis " ▾"
-      org-agenda-files
-      ;;      '((substitute-in-file-name
-      ;;         "${DJ_REPO_ROOT}/redwood/resources/worknote/wnote.org"))
-      '(concat USER_REPO_ROOT "/dj/redwood/resources/worknote/wnote.org")
-      org-agenda-start-with-log-mode t
-      org-log-done 'time
-      org-log-into-drawer t
-      org-todo-keywordso
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-        (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
-(use-package org-bullets
-             :straight t
-             :hook
-             (org-mode . org-bullets-mode)
-             :custom
-             (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
-(use-package visual-fill-column
-             :straight t
-             :hook (org-mode . emc/org-mode-visual-fill))
+          ("w" "Workflow Status"
+           ((todo "WAIT"
+                  ((org-agenda-overriding-header "Waiting on External")
+                   (org-agenda-files org-agenda-files)))
+            (todo "REVIEW"
+                  ((org-agenda-overriding-header "In Review")
+                   (org-agenda-files org-agenda-files)))
+            (todo "PLAN"
+                  ((org-agenda-overriding-header "In Planning")
+                   (org-agenda-todo-list-sublevels nil)
+                   (org-agenda-files org-agenda-files)))
+            (todo "BACKLOG"
+                  ((org-agenda-overriding-header "Project Backlog")
+                   (org-agenda-todo-list-sublevels nil)
+                   (org-agenda-files org-agenda-files)))
+            (todo "READY"
+                  ((org-agenda-overriding-header "Ready for Work")
+                   (org-agenda-files org-agenda-files)))
+            (todo "ACTIVE"
+                  ((org-agenda-overriding-header "Active Projects")
+                   (org-agenda-files org-agenda-files)))
+            (todo "COMPLETED"
+                  ((org-agenda-overriding-header "Completed Projects")
+                   (org-agenda-files org-agenda-files)))
+            (todo "CANC"
+                  ((org-agenda-overriding-header "Cancelled Projects")
+                   (org-agenda-files org-agenda-files)))))))
+  (setq org-ellipsis " ▾"
+	org-agenda-files
+	;;      '((substitute-in-file-name
+	;;         "${DJ_REPO_ROOT}/redwood/resources/worknote/wnote.org"))
+	'(concat USER_REPO_ROOT "/dj/redwood/resources/worknote/wnote.org")
+	org-agenda-start-with-log-mode t
+	org-log-done 'time
+	org-log-into-drawer t
+	org-todo-keywordso
+	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+          (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+  (use-package org-bullets
+    :straight t
+    :hook
+    (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (use-package visual-fill-column
+    :straight t
+    :hook (org-mode . emc/org-mode-visual-fill))
+  )
+(if (not (equal system-type 'windows-nt)) (emc/enable-org-mode))
 ;; org-mode ends here
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Customizations
@@ -364,6 +371,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#231f32" :foreground "#b7b7ff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 203 :width normal :foundry "outline" :family "Hack Nerd Font"))))
  '(Man-overstrike ((t (:inherit font-lock-type-face :weight bold))))
  '(Man-underline ((t (:inherit font-lock-keyword-face :underline t))))
  '(company-template-field ((t (:background "#b7b7ff" :foreground "#181522"))))
@@ -407,7 +415,7 @@
  '(markdown-highlighting-face ((t (:background "salmon" :foreground "linen"))))
  '(match ((t (:background "#8584ff" :foreground "#00006b"))))
  '(minibuffer-prompt ((t (:background "#30304e" :foreground "lavender" :box (:line-width (1 . -1) :color "red" :style released-button) :weight bold))))
- '(mode-line ((t (:background "#181522" :foreground "#62629c" :box (:line-width (1 . -1) :style released-button)))))
+ '(mode-line ((t (:background "#181522" :foreground "#62629c" :box (:line-width (1 . -1) :style released-button) :family "Hack Nerd Font"))))
  '(mode-line-inactive ((t (:inherit mode-line :background "#545454" :foreground "#a8a8a8" :box (:line-width (1 . -1) :color "grey75") :weight light))))
  '(neo-file-link-face ((t (:inherit header-line))))
  '(neo-vc-conflict-face ((t (:foreground "#844a4a"))))
@@ -439,12 +447,12 @@
  '(sml/outside-modified ((t (:inherit sml/not-modified :foreground "#820000"))))
  '(sml/prefix ((t (:inherit sml/global :foreground "#8585ff"))))
  '(sml/sudo ((t (:foreground "#7141c6"))))
- '(tab-bar ((t (:inherit variable-pitch :background "#080808" :foreground "#8584ff"))))
+ '(tab-bar ((t (:inherit variable-pitch :background "#080808" :foreground "#8584ff" :family "Hack Nerd Font"))))
  '(tab-bar-tab-group-current ((t (:foreground "#8584ff" :box nil :weight bold))))
  '(tab-bar-tab-group-inactive ((t (:foreground "#303030"))))
  '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :foreground "#303030"))))
  '(tab-bar-tab-ungrouped ((t (:background "#303030" :foreground "#62629c"))))
- '(tab-line ((t (:inherit variable-pitch :background "#181522" :foreground "#62629c" :height 0.9))))
+ '(tab-line ((t (:inherit variable-pitch :background "#181522" :foreground "#62629c" :height 0.9 :family "Hack Nerd Font"))))
  '(tab-line-highlight ((t (:background "#820000" :foreground "#ffff9d" :box (:line-width (1 . 1) :style released-button)))))
  '(tab-line-tab-current ((t (:inherit mode-line-buffer-id))))
  '(tab-line-tab-inactive ((t (:inherit tab-line-tab :foreground "#62629c"))))
@@ -573,6 +581,7 @@
  '(plantuml-indent-level 4)
  '(plantuml-jar-path
    "/app/vbuild/tools/plantuml/1.2022.5/lib/plantuml.1.2022.5.jar")
+ '(ring-bell-function 'ignore)
  '(scala-indent:step 4)
  '(scroll-bar-mode nil)
  '(send-mail-function 'mailclient-send-it)
