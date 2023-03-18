@@ -59,6 +59,9 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Install Packages
 ;;///////////////////////////////////////////////////////////////////////////////
+(use-package all-the-icons
+  :straight t
+  :if (display-graphic-p))
 (use-package plantuml-mode
   :straight t)
 (use-package groovy-mode
@@ -69,7 +72,9 @@
   :straight t)
 (use-package scala-mode
   :straight t
-  :interpreter ("scala" . scala-mode))
+  :interpreter ("scala" . scala-mode)
+  :config
+  (add-to-list 'semantic-symref-filepattern-alist '(scala-mode "*.scala")))
 (use-package sbt-mode
   :straight t
   :commands sbt-start sbt-command
@@ -369,6 +374,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#231f32" :foreground "#b7b7ff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 203 :width normal :foundry "outline" :family "Hack Nerd Font"))))
  '(Man-overstrike ((t (:inherit font-lock-type-face :weight bold))))
  '(Man-underline ((t (:inherit font-lock-keyword-face :underline t))))
  '(company-template-field ((t (:background "#b7b7ff" :foreground "#181522"))))
@@ -377,6 +383,9 @@
  '(company-tooltip-annotation-selection ((t (:inherit company-tooltip-annotation :foreground "#c2f0c2"))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-common :foreground "#ff9d9d"))))
  '(company-tooltip-selection ((t (:extend t :background "#181522"))))
+ '(custom-button ((t (:background "slate gray" :foreground "black"))))
+ '(custom-button-mouse ((t (:background "slate gray" :foreground "black"))))
+ '(custom-button-pressed ((t (:background "slate gray" :foreground "black"))))
  '(custom-comment ((t (:background "#181522" :foreground "#d1ccba"))))
  '(doom-modeline-project-dir ((t (:inherit (w-mode-line-head bold)))))
  '(error ((t (:foreground "tomato" :weight bold))))
@@ -413,8 +422,8 @@
  '(markdown-highlighting-face ((t (:background "salmon" :foreground "linen"))))
  '(match ((t (:background "#8584ff" :foreground "#00006b"))))
  '(minibuffer-prompt ((t (:background "#30304e" :foreground "lavender" :box (:line-width (1 . -1) :color "red" :style released-button) :weight bold))))
- '(mode-line ((t (:background "#181522" :foreground "#62629c" :box (:line-width (1 . -1) :style released-button)))))
- '(mode-line-inactive ((t (:inherit mode-line :background "#545454" :foreground "#a8a8a8" :box (:line-width (1 . -1) :color "grey75") :weight light))))
+ '(mode-line ((t (:background "#181522" :foreground "#62629c" :family "Hack Nerd Font"))))
+ '(mode-line-inactive ((t (:inherit mode-line :background "#545454" :foreground "#a8a8a8" :weight light))))
  '(neo-file-link-face ((t (:inherit header-line))))
  '(neo-vc-conflict-face ((t (:foreground "#844a4a"))))
  '(neo-vc-default-face ((t (:foreground "#62629c"))))
@@ -445,19 +454,20 @@
  '(sml/outside-modified ((t (:inherit sml/not-modified :foreground "#820000"))))
  '(sml/prefix ((t (:inherit sml/global :foreground "#8585ff"))))
  '(sml/sudo ((t (:foreground "#7141c6"))))
- '(tab-bar ((t (:inherit variable-pitch :background "#080808" :foreground "#8584ff"))))
+ '(tab-bar ((t (:inherit variable-pitch :background "#080808" :foreground "#8584ff" :family "Hack Nerd Font"))))
  '(tab-bar-tab-group-current ((t (:foreground "#8584ff" :box nil :weight bold))))
  '(tab-bar-tab-group-inactive ((t (:foreground "#303030"))))
  '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :foreground "#303030"))))
  '(tab-bar-tab-ungrouped ((t (:background "#303030" :foreground "#62629c"))))
- '(tab-line ((t (:inherit variable-pitch :background "#181522" :foreground "#62629c" :height 0.9))))
+ '(tab-line ((t (:inherit variable-pitch :background "#181522" :foreground "#62629c" :height 0.9 :family "Hack Nerd Font"))))
  '(tab-line-highlight ((t (:background "#820000" :foreground "#ffff9d" :box (:line-width (1 . 1) :style released-button)))))
+ '(tab-line-tab ((t (:inherit tab-line))))
  '(tab-line-tab-current ((t (:inherit mode-line-buffer-id))))
  '(tab-line-tab-inactive ((t (:inherit tab-line-tab :foreground "#62629c"))))
  '(tab-line-tab-modified ((t (:inherit w-mode-line-head-modified))))
  '(treemacs-git-commit-diff-face ((t (:inherit 'warning))))
  '(vc-state-base ((t (:foreground "slategray"))))
- '(vertical-border ((t (:inherit mode-line-inactive :background "#231f32" :foreground "#74564c"))))
+ '(vertical-border ((t (:background "#231f32" :foreground "#74564c"))))
  '(w-mode-line-head ((t (:foreground "#8181b0"))))
  '(w-mode-line-head-modified ((t (:foreground "#d87373"))))
  '(w-mode-line-tail ((t (:foreground "#8181b0"))))
@@ -579,6 +589,7 @@
  '(plantuml-indent-level 4)
  '(plantuml-jar-path
    "/app/vbuild/tools/plantuml/1.2022.5/lib/plantuml.1.2022.5.jar")
+ '(ring-bell-function 'ignore)
  '(scala-indent:step 4)
  '(scroll-bar-mode nil)
  '(send-mail-function 'mailclient-send-it)
@@ -864,7 +875,6 @@
   (global-set-key (kbd "C-c E") 'flycheck-list-errors)
   (global-set-key (kbd "C-c f") 'lsp-format-buffer)
   (global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
-  (global-set-key (kbd "C-c g") 'emx/garbage-collect)
   (global-set-key (kbd "C-c h") 'windmove-left)
   (global-set-key (kbd "C-c j") 'windmove-right)
   (global-set-key (kbd "C-c q") 'magit-blame-quit)
