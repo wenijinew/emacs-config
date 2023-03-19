@@ -63,7 +63,9 @@
   :straight t
   :if (display-graphic-p))
 (use-package plantuml-mode
-  :straight t)
+  :straight t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.\\(?:pu\\|puml\\)\\'" . plantuml-mode)))
 (use-package groovy-mode
   :straight t
   :config
