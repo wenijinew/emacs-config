@@ -266,12 +266,18 @@
   (setq projectile-switch-project-action 'neotree-projectile-action))
 ;; based on json-mode, add function to beautify-json file content and bind to key C-c C-b
 ';; json-mode rely on yasnippet, so it needs to be end
-(defun beautify-json ()
+(defun beautify-json()
+  "Beautify-json buffer."
   (interactive)
   (let ((b (if mark-active (min (point) (mark)) (point-min)))
-        (e (if mark-active (max (point) (mark)) (point-max))))
-    (shell-command-on-region b e
-                             "python -m json.tool" (current-buffer) t)))
+		(e (if mark-active (max (point) (mark)) (point-max))))
+	(shell-command-on-region b e
+							 "python -m json.tool" (current-buffer) t)))
+
+(defun do-beautify-json()
+  "Do beautify-json only for json-mode."
+  (if (eq major-mode 'json-mode) (beautify-json)))
+(add-hook 'before-save-hook 'do-beautify-json)
 (use-package json-mode
              :straight t
              :bind (("C-c C-b" . beautify-json))
@@ -549,6 +555,7 @@
  '(lsp-java-java-path "/app/vbuild/SLED12-x86_64/openjdk/latest/bin/java")
  '(lsp-java-jdt-download-url
    (concat "file://" USER_REPO_ROOT "/ws/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
+ '(lsp-java-maven-download-sources t)
  '(lsp-java-max-concurrent-builds 2)
  '(lsp-java-save-actions-organize-imports t)
  '(lsp-java-server-launch-mode "LightWeight")
@@ -580,8 +587,8 @@
 	 (lines
 	  (show-lines . t)
 	  (show-message . t))))
- '(max-lisp-eval-depth 9999)
- '(max-specpdl-size 3600)
+ '(max-lisp-eval-depth 100000)
+ '(max-specpdl-size 4)
  '(menu-bar-mode nil)
  '(mode-line-compact 'long)
  '(neo-smart-open t)
@@ -922,6 +929,8 @@
   (highlight-indentation-mode)
   ;; how to make this work? why .bash_aliases doesn't work
   (add-to-list 'auto-mode-alist '("\\(?:.\\(?:\\(?:zsh\\|bash\\|csh\\|vim\\)\\(?:rc\\)?\\)\\|modules\\)\\(?:\\.[^/]+\\)?\\'" . shell-script-mode))
+  (add-to-list 'semantic-symref-filepattern-alist '(xml-mode "*.xml"))
+  (add-to-list 'semantic-symref-filepattern-alist '(nxml-mode "*.xml"))
   (setq tab-bar-separator "  "
         tab-line-separator "  "
         tab-bar-button-margin '(5 . 2)
@@ -935,15 +944,19 @@
 ;; Hooks for programming language modes and other modes
 ;;///////////////////////////////////////////////////////////////////////////////
 (defvar prog-modes "shell java python")
-(defvar non-prog-modes "org term shell eshell treemacs neotree")
+(defvar non-prog-modes "org term eshell treemacs neotree")
 (defun prog-env-hook()
   "Programming environment features."
+  (display-line-numbers-mode)
   (auto-fill-mode)
   (global-display-fill-column-indicator-mode 1)
+  (highlight-indentation-mode)
+  (show-trailing-whitespqace t)
   )
 (defun non-prog-env-hook()
   "Non-programming environment features."
-  (display-line-numbers-mode t))
+  (display-line-numbers-mode t)
+  (show-trailing-whitespqace nil))
 
 (defun append-suffix (suffix phrases)
   "Append SUFFIX to each of PHRASES."
