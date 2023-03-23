@@ -270,9 +270,9 @@
   "Beautify-json buffer."
   (interactive)
   (let ((b (if mark-active (min (point) (mark)) (point-min)))
-		(e (if mark-active (max (point) (mark)) (point-max))))
-	(shell-command-on-region b e
-							 "python -m json.tool" (current-buffer) t)))
+        (e (if mark-active (max (point) (mark)) (point-max))))
+    (shell-command-on-region b e
+                             "python -m json.tool" (current-buffer) t)))
 
 (defun do-beautify-json()
   "Do beautify-json only for json-mode."
@@ -282,6 +282,23 @@
              :straight t
              :bind (("C-c C-b" . beautify-json))
              )
+(defun clean-code-old()
+  "Untabify the whole buffer and cleanup whitespaces."
+  (interactive)
+  (progn
+    (mark-whole-buffer)
+    (whitespace-cleanup)
+    (let ((b (if mark-active (min (point) (mark)) (point-min)))
+          (e (if mark-active (max (point) (mark)) (point-max))))
+      (untabify b e)
+      )
+    )
+  )
+(defun clean-code()
+  "Untabify the whole buffer and cleanup whitespaces."
+  (interactive)
+  (whitespace-cleanup))
+(add-hook 'before-save-hook 'clean-code)
 ;;
 ;; org mode
 ;;
@@ -300,17 +317,17 @@
 (defun emc/enable-org-mode() "Enable ORG-MODE."
   ;;;install org-mode package
   (use-package org-mode
-	:straight t
-	:config
-	(org-indent-mode)
-	:hook (org-mode . emc/org-mode-setup))
+    :straight t
+    :config
+    (org-indent-mode)
+    :hook (org-mode . emc/org-mode-setup))
   ;; don't know why this cannot work with :config of use-package org-mode
   (setq org-agenda-custom-commands
-		'(("d" "Dashboard"
+        '(("d" "Dashboard"
            ((agenda "" ((org-deadline-warning-days 7)))
-			(todo "NEXT"
+            (todo "NEXT"
                   ((org-agenda-overriding-header "Next Tasks")))
-			(tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+            (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
 
           ("n" "Next Tasks"
            ((todo "NEXT"
@@ -321,46 +338,46 @@
           ;; Low-effort next actions
           ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
            ((org-agenda-overriding-header "Low Effort Tasks")
-			(org-agenda-max-todos 20)
-			(org-agenda-files org-agenda-files)))
+            (org-agenda-max-todos 20)
+            (org-agenda-files org-agenda-files)))
 
           ("w" "Workflow Status"
            ((todo "WAIT"
                   ((org-agenda-overriding-header "Waiting on External")
                    (org-agenda-files org-agenda-files)))
-			(todo "REVIEW"
+            (todo "REVIEW"
                   ((org-agenda-overriding-header "In Review")
                    (org-agenda-files org-agenda-files)))
-			(todo "PLAN"
+            (todo "PLAN"
                   ((org-agenda-overriding-header "In Planning")
                    (org-agenda-todo-list-sublevels nil)
                    (org-agenda-files org-agenda-files)))
-			(todo "BACKLOG"
+            (todo "BACKLOG"
                   ((org-agenda-overriding-header "Project Backlog")
                    (org-agenda-todo-list-sublevels nil)
                    (org-agenda-files org-agenda-files)))
-			(todo "READY"
+            (todo "READY"
                   ((org-agenda-overriding-header "Ready for Work")
                    (org-agenda-files org-agenda-files)))
-			(todo "ACTIVE"
+            (todo "ACTIVE"
                   ((org-agenda-overriding-header "Active Projects")
                    (org-agenda-files org-agenda-files)))
-			(todo "COMPLETED"
+            (todo "COMPLETED"
                   ((org-agenda-overriding-header "Completed Projects")
                    (org-agenda-files org-agenda-files)))
-			(todo "CANC"
+            (todo "CANC"
                   ((org-agenda-overriding-header "Cancelled Projects")
                    (org-agenda-files org-agenda-files)))))))
   (setq org-ellipsis " ▾"
-		org-agenda-files
-		;;      '((substitute-in-file-name
-		;;         "${DJ_REPO_ROOT}/redwood/resources/worknote/wnote.org"))
-		'(concat USER_REPO_ROOT "/dj/redwood/resources/worknote/wnote.org")
-		org-agenda-start-with-log-mode t
-		org-log-done 'time
-		org-log-into-drawer t
-		org-todo-keywordso
-		'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+        org-agenda-files
+        ;;      '((substitute-in-file-name
+        ;;         "${DJ_REPO_ROOT}/redwood/resources/worknote/wnote.org"))
+        '(concat USER_REPO_ROOT "/dj/redwood/resources/worknote/wnote.org")
+        org-agenda-start-with-log-mode t
+        org-log-done 'time
+        org-log-into-drawer t
+        org-todo-keywordso
+        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
           (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
   (use-package org-bullets
     :straight t
@@ -531,8 +548,8 @@
  '(highlight-indentation-blank-lines t)
  '(ignored-local-variable-values
    '((vc-prepare-patches-separately)
-	 (diff-add-log-use-relative-names . t)
-	 (vc-git-annotate-switches . "-w")))
+     (diff-add-log-use-relative-names . t)
+     (vc-git-annotate-switches . "-w")))
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(lsp-completion-show-detail nil)
@@ -580,13 +597,13 @@
  '(magit-auto-revert-mode t)
  '(magit-blame-styles
    '((headings
-	  (heading-format . "%-20a %C %s(%H)
+      (heading-format . "%-20a %C %s(%H)
 "))
-	 (highlight
-	  (highlight-face . magit-blame-highlight))
-	 (lines
-	  (show-lines . t)
-	  (show-message . t))))
+     (highlight
+      (highlight-face . magit-blame-highlight))
+     (lines
+      (show-lines . t)
+      (show-message . t))))
  '(max-lisp-eval-depth 100000)
  '(max-specpdl-size 4)
  '(menu-bar-mode nil)
@@ -615,21 +632,21 @@
  '(sml/pre-modes-separator " ")
  '(sml/prefix-face-list
    '((":SU:" sml/sudo)
-	 ("" sml/git)
-	 (sml/projectile-replacement-format sml/projectile)
-	 ("" sml/prefix)))
+     ("" sml/git)
+     (sml/projectile-replacement-format sml/projectile)
+     ("" sml/prefix)))
  '(sml/read-only-char "  ")
  '(sml/replacer-regexp-list
    '(("^~/org/" ":Org:")
-	 ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
-	 ("^~/\\.emacs\\.d/" ":ED:")
-	 ("^/sudo:.*:" ":SU:")
-	 ("^~/Documents/" ":Doc:")
-	 ("^~/Dropbox/" ":DB:")
-	 ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
-	 ("^~/[Gg]it/" ":Git:")
-	 ("^~/[Gg]it[Hh]ub/" ":Git:")
-	 ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
+     ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
+     ("^~/\\.emacs\\.d/" ":ED:")
+     ("^/sudo:.*:" ":SU:")
+     ("^~/Documents/" ":Doc:")
+     ("^~/Dropbox/" ":DB:")
+     ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
+     ("^~/[Gg]it/" ":Git:")
+     ("^~/[Gg]it[Hh]ub/" ":Git:")
+     ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
  '(sml/shorten-directory t)
  '(sml/shorten-mode-string "  ")
  '(sml/shorten-modes nil)
@@ -931,6 +948,7 @@
   (add-to-list 'auto-mode-alist '("\\(?:.\\(?:\\(?:zsh\\|bash\\|csh\\|vim\\)\\(?:rc\\)?\\)\\|modules\\)\\(?:\\.[^/]+\\)?\\'" . shell-script-mode))
   (add-to-list 'semantic-symref-filepattern-alist '(xml-mode "*.xml"))
   (add-to-list 'semantic-symref-filepattern-alist '(nxml-mode "*.xml"))
+  (add-to-list 'semantic-symref-filepattern-alist '(json-mode "*.json"))
   (setq tab-bar-separator "  "
         tab-line-separator "  "
         tab-bar-button-margin '(5 . 2)
