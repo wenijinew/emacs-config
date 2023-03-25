@@ -22,37 +22,41 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Package Management
 ;;///////////////////////////////////////////////////////////////////////////////
-(defvar USER_REPO_ROOT (getenv "USER_REPO_ROOT"))
-(defvar PYTHON_VIRTUAL_ENV_PATH (concat
-                                 USER_REPO_ROOT
-                                 (if (eq (substring USER_REPO_ROOT -1 nil) "/") "" "/")
-                                 "venv_v"
-                                 (getenv "PYTHON_VERSION")))
+(defvar semantic-symref-filepattern-alist (list))
+(defvar emx/USER_REPO_ROOT (getenv "USER_REPO_ROOT"))
+(defvar emx/GITHUB_REPO_ROOT (getenv "GITHUB_REPO_ROOT"))
+(defvar emx/PYTHON_VIRTUAL_ENV_PATH (concat
+								 emx/USER_REPO_ROOT
+								 (if (eq (substring emx/USER_REPO_ROOT -1 nil) "/") "" "/")
+								 "venv_v"
+								 (getenv "PYTHON_VERSION")))
 
 (package-initialize)
 (defun pkg-mgmt()
+  "Package management function."
   (require 'package)
   (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")))
+						   ("org" . "https://orgmode.org/elpa/")
+						   ("elpa" . "https://elpa.gnu.org/packages/")))
   (eval-when-compile
-    ;; use-package
-    (add-to-list 'load-path (concat USER_REPO_ROOT "/github/use-package"))
-    (require 'use-package)
-    ;; straight
-    (defvar bootstrap-version)
-    (let ((bootstrap-file
-            (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-          (bootstrap-version 6))
-      (unless (file-exists-p bootstrap-file)
-        (with-current-buffer
-          (url-retrieve-synchronously
-            "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
-            'silent 'inhibit-cookies)
-          (goto-char (point-max))
-          (eval-print-last-sexp)))
-      (load bootstrap-file nil 'nomessage))
-    )
+	(defvar emx/USER_REPO_ROOT (getenv "USER_REPO_ROOT"))
+	;; use-package
+	(add-to-list 'load-path (concat emx/USER_REPO_ROOT "/github/use-package"))
+	(require 'use-package)
+	;; straight
+	(defvar bootstrap-version)
+	(let ((bootstrap-file
+			(expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+		  (bootstrap-version 6))
+	  (unless (file-exists-p bootstrap-file)
+		(with-current-buffer
+		  (url-retrieve-synchronously
+			"https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+			'silent 'inhibit-cookies)
+		  (goto-char (point-max))
+		  (eval-print-last-sexp)))
+	  (load bootstrap-file nil 'nomessage))
+	)
   (setq use-package-always-ensure t)
   )
 (pkg-mgmt)
@@ -111,110 +115,110 @@
 ;;    (eval-after-load 'flycheck
 ;;      '(add-hook 'flycheck-mode-hook 'flycheck-yamllint-setup))))
 (use-package doom-themes
-             :straight t)
+			 :straight t)
 (use-package multiple-cursors
-             :straight t)
+			 :straight t)
 (use-package helm
   :straight t
   :init
   (helm-mode 1))
 (use-package evil
   :straight t)
-(defvar ELPY_ENV_PATH (expand-file-name "elpy/rpc-venv" user-emacs-directory))
+(defvar emx/ELPY_ENV_PATH (expand-file-name "elpy/rpc-venv" user-emacs-directory))
 (use-package elpy
-    :straight t
-    :init
-;;  (pyvenv-activate PYTHON_VIRTUAL_ENV_PATH)
-    (pyvenv-activate ELPY_ENV_PATH)
-    (elpy-enable)
-    :config
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (setq elpy-shell-echo-output nil)
-    (setq elpy-rpc-python-command "python3")
-    (setq elpy-rpc-timeout 2)
-    :hook ((elpy-mode . flycheck-mode)
-           (elpy-mode . (lambda ()
-                          (set (make-local-variable 'company-backends)
-                               '((elpy-company-backend :with company-yasnippet))))))
-    :bind
-    (:map elpy-mode-map
-          ("C-M-n" . elpy-nav-forward-block)
-          ("C-M-p" . elpy-nav-backward-block)))
+	:straight t
+	:init
+;;  (pyvenv-activate emx/PYTHON_VIRTUAL_ENV_PATH)
+	(pyvenv-activate emx/ELPY_ENV_PATH)
+	(elpy-enable)
+	:config
+	(setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+	(setq elpy-shell-echo-output nil)
+	(setq elpy-rpc-python-command "python3")
+	(setq elpy-rpc-timeout 2)
+	:hook ((elpy-mode . flycheck-mode)
+		   (elpy-mode . (lambda ()
+						  (set (make-local-variable 'company-backends)
+							   '((elpy-company-backend :with company-yasnippet))))))
+	:bind
+	(:map elpy-mode-map
+		  ("C-M-n" . elpy-nav-forward-block)
+		  ("C-M-p" . elpy-nav-backward-block)))
 (use-package buftra
-    :straight (:host github :repo "humitos/buftra.el"))
+	:straight (:host github :repo "humitos/buftra.el"))
 (use-package py-pyment
-    :straight (:host github :repo "humitos/py-cmd-buffer.el")
-    :config
-    (setq py-pyment-options '("--output=numpydoc")))
+	:straight (:host github :repo "humitos/py-cmd-buffer.el")
+	:config
+	(setq py-pyment-options '("--output=numpydoc")))
 (use-package py-isort
-    :straight (:host github :repo "humitos/py-cmd-buffer.el")
-    :hook (python-mode . py-isort-enable-on-save)
-    :config
-    (setq py-isort-options '("-m=3" "-tc" "-fgw=0" "-ca")))
+	:straight (:host github :repo "humitos/py-cmd-buffer.el")
+	:hook (python-mode . py-isort-enable-on-save)
+	:config
+	(setq py-isort-options '("-m=3" "-tc" "-fgw=0" "-ca")))
 (use-package py-autoflake
-    :straight (:host github :repo "humitos/py-cmd-buffer.el")
-    :hook (python-mode . py-autoflake-enable-on-save)
-    :config
-    (setq py-autoflake-options '("--expand-star-imports")))
+	:straight (:host github :repo "humitos/py-cmd-buffer.el")
+	:hook (python-mode . py-autoflake-enable-on-save)
+	:config
+	(setq py-autoflake-options '("--expand-star-imports")))
 (use-package py-docformatter
-    :straight (:host github :repo "humitos/py-cmd-buffer.el")
-    :hook (python-mode . py-docformatter-enable-on-save)
-    :config
-    (setq py-docformatter-options '("--wrap-summaries=88" "--pre-summary-newline")))
+	:straight (:host github :repo "humitos/py-cmd-buffer.el")
+	:hook (python-mode . py-docformatter-enable-on-save)
+	:config
+	(setq py-docformatter-options '("--wrap-summaries=88" "--pre-summary-newline")))
 (use-package blacken
-    :straight t
-    :hook (python-mode . blacken-mode)
-    :config
-    (setq blacken-line-length '88))
+	:straight t
+	:hook (python-mode . blacken-mode)
+	:config
+	(setq blacken-line-length '88))
 (use-package python-docstring
-    :straight t
-    :hook (python-mode . python-docstring-mode))
+	:straight t
+	:hook (python-mode . python-docstring-mode))
 
 (use-package flycheck
-             :straight t
-             :ensure t
-             :init (global-flycheck-mode) (flycheck-display-error-at-point))
+			 :straight t
+			 :ensure t
+			 :init (global-flycheck-mode) (flycheck-display-error-at-point))
 (use-package yasnippet :straight t)
 ;;; swiper need to be installed separately
 ;;; otherwise, "Autoloading file $HOME/.emacs.d/straight/build/ivy/ivy.elc failed to define function swiper" might happen.
 (use-package swiper :straight t)
 (when (string-match "28." (emacs-version))
   (use-package ivy
-               :straight t
-               :diminish
-               :bind (("C-s" . swiper)
-                      :map ivy-minibuffer-map
-                      ("TAB" . ivy-alt-done)
-                      ("C-l" . ivy-alt-done)
-                      ("C-j" . ivy-next-line)
-                      ("C-k" . ivy-previous-line)
-                      :map ivy-switch-buffer-map
-                      ("C-k" . ivy-previous-line)
-                      ("C-l" . ivy-done)
-                      ("C-d" . ivy-switch-buffer-kill)
-                      :map ivy-reverse-i-search-map
-                      ("C-k" . ivy-previous-line)
-                      ("C-d" . ivy-reverse-i-search-kill))
-               :config
-               (ivy-mode 1))
+			   :straight t
+			   :diminish
+			   :bind (("C-s" . swiper)
+					  :map ivy-minibuffer-map
+					  ("TAB" . ivy-alt-done)
+					  ("C-l" . ivy-alt-done)
+					  ("C-j" . ivy-next-line)
+					  ("C-k" . ivy-previous-line)
+					  :map ivy-switch-buffer-map
+					  ("C-k" . ivy-previous-line)
+					  ("C-l" . ivy-done)
+					  ("C-d" . ivy-switch-buffer-kill)
+					  :map ivy-reverse-i-search-map
+					  ("C-k" . ivy-previous-line)
+					  ("C-d" . ivy-reverse-i-search-kill))
+			   :config
+			   (ivy-mode 1))
   (use-package  lsp-java
-    :straight t)
+	:straight t)
   (use-package lsp-mode
-               :straight t
-               :config
-               (setq lsp-headerline-arrow
-                     #("" 0 1
-                       (face #1=(:family "Material Icons" :height 1.0 :inherit lsp-headerline-breadcrumb-separator-face)
-                             font-lock-face #1# display
-                             (raise 0.0)
-                             rear-nonsticky t)))
-               :hook (
-                      (python-mode . lsp)
-                      (java-mode . lsp)
-                      (scala-mode . lsp)
-                      (lsp-mode . lsp-enable-which-key-integration)
-                    )
-               :commands lsp)
+			   :straight t
+			   :config
+			   (setq lsp-headerline-arrow
+					 #("" 0 1
+					   (face #1=(:family "Material Icons" :height 1.0 :inherit lsp-headerline-breadcrumb-separator-face)
+							 font-lock-face #1# display
+							 (raise 0.0)
+							 rear-nonsticky t)))
+			   :hook (
+					  (python-mode . lsp)
+					  (java-mode . lsp)
+					  (scala-mode . lsp)
+					  (lsp-mode . lsp-enable-which-key-integration)
+					)
+			   :commands lsp)
   (use-package lsp-ui :straight t))
 (use-package rainbow-delimiters
   :straight t
@@ -233,11 +237,11 @@
   :config
   ;; set default `company-backends'
   (setq company-backends
-        '((company-files          ; files & directory
-           company-keywords       ; keywords
-           company-capf)  ; completion-at-point-functions
-          (company-abbrev company-dabbrev)
-          ))
+		'((company-files          ; files & directory
+		   company-keywords       ; keywords
+		   company-capf)  ; completion-at-point-functions
+		  (company-abbrev company-dabbrev)
+		  ))
   :hook
   ((java-mode python-mode emacs-lisp-mode shell-script-mode sh-mode scala-mode) . company-mode)
   )
@@ -254,7 +258,7 @@
   :config
   (treemacs-git-mode 'deferred))
 (use-package anzu
-             :straight t)
+			 :straight t)
 (use-package awesome-tab
   :straight t
   :config
@@ -270,29 +274,29 @@
   "Beautify-json buffer."
   (interactive)
   (let ((b (if mark-active (min (point) (mark)) (point-min)))
-        (e (if mark-active (max (point) (mark)) (point-max))))
-    (shell-command-on-region b e
-                             "python -m json.tool" (current-buffer) t)))
+		(e (if mark-active (max (point) (mark)) (point-max))))
+	(shell-command-on-region b e
+							 "python -m json.tool" (current-buffer) t)))
 
 (defun do-beautify-json()
   "Do beautify-json only for json-mode."
   (if (eq major-mode 'json-mode) (beautify-json)))
 (add-hook 'before-save-hook 'do-beautify-json)
 (use-package json-mode
-             :straight t
-             :bind (("C-c C-b" . beautify-json))
-             )
+			 :straight t
+			 :bind (("C-c C-b" . beautify-json))
+			 )
 (defun clean-code-old()
   "Untabify the whole buffer and cleanup whitespaces."
   (interactive)
   (progn
-    (mark-whole-buffer)
-    (whitespace-cleanup)
-    (let ((b (if mark-active (min (point) (mark)) (point-min)))
-          (e (if mark-active (max (point) (mark)) (point-max))))
-      (untabify b e)
-      )
-    )
+	(mark-whole-buffer)
+	(whitespace-cleanup)
+	(let ((b (if mark-active (min (point) (mark)) (point-min)))
+		  (e (if mark-active (max (point) (mark)) (point-max))))
+	  (untabify b e)
+	  )
+	)
   )
 (defun clean-code()
   "Untabify the whole buffer and cleanup whitespaces."
@@ -310,84 +314,84 @@
   (visual-line-mode 1))
 (defun emc/org-mode-visual-fill () "ORG-MODE Visual Fill."
   (setq visual-fill-column-width 100
-        visual-fill-column-center-text t
-        display-fill-column-indicator-column -1)
+		visual-fill-column-center-text t
+		display-fill-column-indicator-column -1)
   (visual-fill-column-mode 1))
 ;;; enable org-mode
 (defun emc/enable-org-mode() "Enable ORG-MODE."
   ;;;install org-mode package
   (use-package org-mode
-    :straight t
-    :config
-    (org-indent-mode)
-    :hook (org-mode . emc/org-mode-setup))
+	:straight t
+	:config
+	(org-indent-mode)
+	:hook (org-mode . emc/org-mode-setup))
   ;; don't know why this cannot work with :config of use-package org-mode
   (setq org-agenda-custom-commands
-        '(("d" "Dashboard"
-           ((agenda "" ((org-deadline-warning-days 7)))
-            (todo "NEXT"
-                  ((org-agenda-overriding-header "Next Tasks")))
-            (tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
+		'(("d" "Dashboard"
+		   ((agenda "" ((org-deadline-warning-days 7)))
+			(todo "NEXT"
+				  ((org-agenda-overriding-header "Next Tasks")))
+			(tags-todo "agenda/ACTIVE" ((org-agenda-overriding-header "Active Projects")))))
 
-          ("n" "Next Tasks"
-           ((todo "NEXT"
-                  ((org-agenda-overriding-header "Next Tasks")))))
+		  ("n" "Next Tasks"
+		   ((todo "NEXT"
+				  ((org-agenda-overriding-header "Next Tasks")))))
 
-          ("W" "Work Tasks" tags-todo "+work-email")
+		  ("W" "Work Tasks" tags-todo "+work-email")
 
-          ;; Low-effort next actions
-          ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
-           ((org-agenda-overriding-header "Low Effort Tasks")
-            (org-agenda-max-todos 20)
-            (org-agenda-files org-agenda-files)))
+		  ;; Low-effort next actions
+		  ("e" tags-todo "+TODO=\"NEXT\"+Effort<15&+Effort>0"
+		   ((org-agenda-overriding-header "Low Effort Tasks")
+			(org-agenda-max-todos 20)
+			(org-agenda-files org-agenda-files)))
 
-          ("w" "Workflow Status"
-           ((todo "WAIT"
-                  ((org-agenda-overriding-header "Waiting on External")
-                   (org-agenda-files org-agenda-files)))
-            (todo "REVIEW"
-                  ((org-agenda-overriding-header "In Review")
-                   (org-agenda-files org-agenda-files)))
-            (todo "PLAN"
-                  ((org-agenda-overriding-header "In Planning")
-                   (org-agenda-todo-list-sublevels nil)
-                   (org-agenda-files org-agenda-files)))
-            (todo "BACKLOG"
-                  ((org-agenda-overriding-header "Project Backlog")
-                   (org-agenda-todo-list-sublevels nil)
-                   (org-agenda-files org-agenda-files)))
-            (todo "READY"
-                  ((org-agenda-overriding-header "Ready for Work")
-                   (org-agenda-files org-agenda-files)))
-            (todo "ACTIVE"
-                  ((org-agenda-overriding-header "Active Projects")
-                   (org-agenda-files org-agenda-files)))
-            (todo "COMPLETED"
-                  ((org-agenda-overriding-header "Completed Projects")
-                   (org-agenda-files org-agenda-files)))
-            (todo "CANC"
-                  ((org-agenda-overriding-header "Cancelled Projects")
-                   (org-agenda-files org-agenda-files)))))))
+		  ("w" "Workflow Status"
+		   ((todo "WAIT"
+				  ((org-agenda-overriding-header "Waiting on External")
+				   (org-agenda-files org-agenda-files)))
+			(todo "REVIEW"
+				  ((org-agenda-overriding-header "In Review")
+				   (org-agenda-files org-agenda-files)))
+			(todo "PLAN"
+				  ((org-agenda-overriding-header "In Planning")
+				   (org-agenda-todo-list-sublevels nil)
+				   (org-agenda-files org-agenda-files)))
+			(todo "BACKLOG"
+				  ((org-agenda-overriding-header "Project Backlog")
+				   (org-agenda-todo-list-sublevels nil)
+				   (org-agenda-files org-agenda-files)))
+			(todo "READY"
+				  ((org-agenda-overriding-header "Ready for Work")
+				   (org-agenda-files org-agenda-files)))
+			(todo "ACTIVE"
+				  ((org-agenda-overriding-header "Active Projects")
+				   (org-agenda-files org-agenda-files)))
+			(todo "COMPLETED"
+				  ((org-agenda-overriding-header "Completed Projects")
+				   (org-agenda-files org-agenda-files)))
+			(todo "CANC"
+				  ((org-agenda-overriding-header "Cancelled Projects")
+				   (org-agenda-files org-agenda-files)))))))
   (setq org-ellipsis " ▾"
-        org-agenda-files
-        ;;      '((substitute-in-file-name
-        ;;         "${DJ_REPO_ROOT}/redwood/resources/worknote/wnote.org"))
-        '(concat USER_REPO_ROOT "/dj/redwood/resources/worknote/wnote.org")
-        org-agenda-start-with-log-mode t
-        org-log-done 'time
-        org-log-into-drawer t
-        org-todo-keywordso
-        '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-          (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+		org-agenda-files
+		;;      '((substitute-in-file-name
+		;;         "${DJ_REPO_ROOT}/redwood/resources/worknote/wnote.org"))
+		'(concat emx/USER_REPO_ROOT "/dj/redwood/resources/worknote/wnote.org")
+		org-agenda-start-with-log-mode t
+		org-log-done 'time
+		org-log-into-drawer t
+		org-todo-keywordso
+		'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
+		  (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
   (use-package org-bullets
-    :straight t
-    :hook
-    (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+	:straight t
+	:hook
+	(org-mode . org-bullets-mode)
+	:custom
+	(org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
   (use-package visual-fill-column
-    :straight t
-    :hook (org-mode . emc/org-mode-visual-fill))
+	:straight t
+	:hook (org-mode . emc/org-mode-visual-fill))
   )
 (if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
 ;; org-mode ends here
@@ -548,8 +552,8 @@
  '(highlight-indentation-blank-lines t)
  '(ignored-local-variable-values
    '((vc-prepare-patches-separately)
-     (diff-add-log-use-relative-names . t)
-     (vc-git-annotate-switches . "-w")))
+	 (diff-add-log-use-relative-names . t)
+	 (vc-git-annotate-switches . "-w")))
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(lsp-completion-show-detail nil)
@@ -567,11 +571,11 @@
  '(lsp-java-dependency-package-representation "hierarchical")
  '(lsp-java-format-settings-profile "JCAT code formatter")
  '(lsp-java-format-settings-url
-   (concat USER_REPO_ROOT "/dj/jcat-common-code-formatter/src/main/resources/jcat-code-formatter.xml"))
+   (concat emx/USER_REPO_ROOT "/dj/jcat-common-code-formatter/src/main/resources/jcat-code-formatter.xml"))
  '(lsp-java-import-gradle-enabled nil)
  '(lsp-java-java-path "/app/vbuild/SLED12-x86_64/openjdk/latest/bin/java")
  '(lsp-java-jdt-download-url
-   (concat "file://" USER_REPO_ROOT "/ws/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
+   (concat "file://" emx/USER_REPO_ROOT "/ws/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
  '(lsp-java-maven-download-sources t)
  '(lsp-java-max-concurrent-builds 2)
  '(lsp-java-save-actions-organize-imports t)
@@ -586,7 +590,7 @@
  '(lsp-metals-ammonite-jvm-properties [])
  '(lsp-metals-bloop-sbt-already-installed t)
  '(lsp-metals-coursier-download-url
-   (concat "file://" USER_REPO_ROOT "/ws/bin/cs-x86_64-pc-linux-v2.1.0-RC6.gz"))
+   (concat "file://" emx/USER_REPO_ROOT "/ws/bin/cs-x86_64-pc-linux-v2.1.0-RC6.gz"))
  '(lsp-metals-enable-indent-on-paste t)
  '(lsp-metals-java-home "/app/vbuild/SLED12-x86_64/openjdk/latest")
  '(lsp-metals-sbt-script "/app/vbuild/RHEL7-x86_64/sbt/1.8.2/bin/sbt")
@@ -597,13 +601,13 @@
  '(magit-auto-revert-mode t)
  '(magit-blame-styles
    '((headings
-      (heading-format . "%-20a %C %s(%H)
+	  (heading-format . "%-20a %C %s(%H)
 "))
-     (highlight
-      (highlight-face . magit-blame-highlight))
-     (lines
-      (show-lines . t)
-      (show-message . t))))
+	 (highlight
+	  (highlight-face . magit-blame-highlight))
+	 (lines
+	  (show-lines . t)
+	  (show-message . t))))
  '(max-lisp-eval-depth 100000)
  '(max-specpdl-size 4)
  '(menu-bar-mode nil)
@@ -632,21 +636,21 @@
  '(sml/pre-modes-separator " ")
  '(sml/prefix-face-list
    '((":SU:" sml/sudo)
-     ("" sml/git)
-     (sml/projectile-replacement-format sml/projectile)
-     ("" sml/prefix)))
+	 ("" sml/git)
+	 (sml/projectile-replacement-format sml/projectile)
+	 ("" sml/prefix)))
  '(sml/read-only-char "  ")
  '(sml/replacer-regexp-list
    '(("^~/org/" ":Org:")
-     ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
-     ("^~/\\.emacs\\.d/" ":ED:")
-     ("^/sudo:.*:" ":SU:")
-     ("^~/Documents/" ":Doc:")
-     ("^~/Dropbox/" ":DB:")
-     ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
-     ("^~/[Gg]it/" ":Git:")
-     ("^~/[Gg]it[Hh]ub/" ":Git:")
-     ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
+	 ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
+	 ("^~/\\.emacs\\.d/" ":ED:")
+	 ("^/sudo:.*:" ":SU:")
+	 ("^~/Documents/" ":Doc:")
+	 ("^~/Dropbox/" ":DB:")
+	 ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
+	 ("^~/[Gg]it/" ":Git:")
+	 ("^~/[Gg]it[Hh]ub/" ":Git:")
+	 ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
  '(sml/shorten-directory t)
  '(sml/shorten-mode-string "  ")
  '(sml/shorten-modes nil)
@@ -693,11 +697,11 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 (defun install-mode-line-pkgs()
   (use-package doom-modeline
-    :straight t)
+	:straight t)
   (use-package smart-mode-line
-    :straight t)
+	:straight t)
   (use-package mood-line
-    :straight t)
+	:straight t)
 ;;  (defadvice vc-mode-line (after me/vc-mode-line () activate)
 ;;  "Strip backend from the VC information."
 ;;  (when (stringp vc-mode)
@@ -709,76 +713,76 @@
 (defun customize-mode-line()
   "Customize mode line."
   (defgroup w-mode-line nil
-    "I want to have a wonderful mode-line: w-mode-line.
+	"I want to have a wonderful mode-line: w-mode-line.
 
   The w-mode-line consists of several segments:
   1. left part: head label - left part segments
   2. right part: right part segments - tail label.
   The segments are separated by separator label."
-    :group 'mode-line)
+	:group 'mode-line)
 
   (defgroup w-palette-faces nil
-    "Group for palette"
-    :group 'faces)
+	"Group for palette"
+	:group 'faces)
 
 
   (defgroup w-mode-line-faces nil
-    "Yes, it includes all w-mode-line faces."
-    :group 'w-mode-line
-    :group 'faces)
+	"Yes, it includes all w-mode-line faces."
+	:group 'w-mode-line
+	:group 'faces)
 
   (defgroup w-mode-line-labels '()
-    "Group for mode-line labels."
-    :group 'w-mode-line)
+	"Group for mode-line labels."
+	:group 'w-mode-line)
 
 
   (defcustom w-mode-line-head-label "  "
-    "String being used as head label of w-mode-line."
-    :type 'string
-    :group 'w-mode-line-labels)
+	"String being used as head label of w-mode-line."
+	:type 'string
+	:group 'w-mode-line-labels)
 
   (defcustom w-mode-line-tail-label "  "
-    "String being used as head label of w-mode-line."
-    :type 'string
-    :group 'w-mode-line-labels)
+	"String being used as head label of w-mode-line."
+	:type 'string
+	:group 'w-mode-line-labels)
 
   (defface w-mode-line-head
-    '((t (:inherit default :weight normal)))
-    "Face for head of w-mode-line."
-    :group 'w-mode-line-faces
-    )
+	'((t (:inherit default :weight normal)))
+	"Face for head of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
   (defface w-mode-line-head-modified
-    '((t (:inherit default :weight normal)))
-    "Face for head of w-mode-line."
-    :group 'w-mode-line-faces
-    )
+	'((t (:inherit default :weight normal)))
+	"Face for head of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
   (defface w-mode-line-encoding
-    '((t (:inherit default :weight normal)))
-    "Face for encoding segment of w-mode-line."
-    :group 'w-mode-line-faces
-    )
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
   (defface w-mode-line-tail
-    '((t (:inherit default :weight normal)))
-    "Face for encoding segment of w-mode-line."
-    :group 'w-mode-line-faces
-    )
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
   (defface w-mode-line-tail-modified
-    '((t (:inherit default :weight normal)))
-    "Face for encoding segment of w-mode-line."
-    :group 'w-mode-line-faces
-    )
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
   ;;; palette faces
   ;;; TODO: update docstring
   (defface w-theme-green
-    '((t (:inherit default :weight normal)))
-    "Face for encoding segment of w-mode-line."
-    :group 'w-mode-line-faces
-    )
+	'((t (:inherit default :weight normal)))
+	"Face for encoding segment of w-mode-line."
+	:group 'w-mode-line-faces
+	)
 
   ) ;;; customize-mode-line fun ends here
 (customize-mode-line)
@@ -788,9 +792,9 @@
   (propertize
    w-mode-line-head-label
    'face (doom-modeline-face
-          (if (buffer-modified-p)
-              'w-mode-line-head-modified 'w-mode-line-head)
-          'w-mode-line-head )))
+		  (if (buffer-modified-p)
+			  'w-mode-line-head-modified 'w-mode-line-head)
+		  'w-mode-line-head )))
 
 (w-mode-line-seg-head)
 
@@ -799,16 +803,16 @@
   (propertize
    w-mode-line-tail-label
    'face (doom-modeline-face
-          (if (buffer-modified-p)
-              'w-mode-line-tail-modified 'w-mode-line-tail)
-          'w-mode-line-tail )))
+		  (if (buffer-modified-p)
+			  'w-mode-line-tail-modified 'w-mode-line-tail)
+		  'w-mode-line-tail )))
 
 (w-mode-line-seg-tail)
 
 (defun w-mode-line-seg-buffer-file-name()
   "To return buffer file name if only one window."
   (if (window-full-width-p)
-      (buffer-file-name))
+	  (buffer-file-name))
   )
 
 (w-mode-line-seg-buffer-file-name)
@@ -817,34 +821,34 @@
 (defun w-mode-line-set-vcs-icon(icon face)
   "Show ICON on mode-line by FACE."
   (propertize icon
-              'face face))
+			  'face face))
 (defun w-mode-line-update-vcs-icon (&rest _)
   "Update icon of vcs state in mode-line."
   (setq w-mode-line-vcs-icon
-        (when (and vc-mode buffer-file-name)
-          (let* ((backend (vc-backend buffer-file-name))
-                 (state   (vc-state (file-local-name buffer-file-name) backend)))
-            (cond ((eq state 'unregistered)
-                   (w-mode-line-set-vcs-icon "U" "font-lock-comment-face"))
-                  ((eq state 'up-to-date)
-                   (w-mode-line-set-vcs-icon " " "success"))
-                  ((eq state 'edited)
-                   (w-mode-line-set-vcs-icon "" "warning"))
-                  ((eq state 'added)
-                   (w-mode-line-set-vcs-icon "" "font-lock-builtin-face"))
-                  ((memq state '(missing removed))
-                   (w-mode-line-set-vcs-icon "" "warning"))
-                  ((eq state 'conflict)
-                   (w-mode-line-set-vcs-icon "" "font-lock-warning-face"))
-                  ((eq state 'needs-update)
-                   (w-mode-line-set-vcs-icon "" "font-lock-variable-name-face"))
-                  ((eq state 'needs-merge)
-                   (w-mode-line-set-vcs-icon "" "separator-line"))
-                  ((eq state 'ignored)
-                   (w-mode-line-set-vcs-icon "◌" "font-lock-comment-face"))
-                  (t
-                   (w-mode-line-set-vcs-icon " " "vertical-border"))
-                  )))))
+		(when (and vc-mode buffer-file-name)
+		  (let* ((backend (vc-backend buffer-file-name))
+				 (state   (vc-state (file-local-name buffer-file-name) backend)))
+			(cond ((eq state 'unregistered)
+				   (w-mode-line-set-vcs-icon "U" "font-lock-comment-face"))
+				  ((eq state 'up-to-date)
+				   (w-mode-line-set-vcs-icon " " "success"))
+				  ((eq state 'edited)
+				   (w-mode-line-set-vcs-icon "" "warning"))
+				  ((eq state 'added)
+				   (w-mode-line-set-vcs-icon "" "font-lock-builtin-face"))
+				  ((memq state '(missing removed))
+				   (w-mode-line-set-vcs-icon "" "warning"))
+				  ((eq state 'conflict)
+				   (w-mode-line-set-vcs-icon "" "font-lock-warning-face"))
+				  ((eq state 'needs-update)
+				   (w-mode-line-set-vcs-icon "" "font-lock-variable-name-face"))
+				  ((eq state 'needs-merge)
+				   (w-mode-line-set-vcs-icon "" "separator-line"))
+				  ((eq state 'ignored)
+				   (w-mode-line-set-vcs-icon "◌" "font-lock-comment-face"))
+				  (t
+				   (w-mode-line-set-vcs-icon " " "vertical-border"))
+				  )))))
 (add-hook 'find-file-hook #'w-mode-line-update-vcs-icon)
 (add-hook 'after-save-hook #'w-mode-line-update-vcs-icon)
 (add-hook 'window-state-change-hook #'w-mode-line-update-vcs-icon)
@@ -853,38 +857,38 @@
 (defun w-mode-line-vcs()
   "Show vcs."
   (when-let ((icon w-mode-line-vcs-icon)
-             (vc-text (replace-regexp-in-string "^ Git." "" vc-mode)))
-    (concat " (" vc-text " " icon ") ")))
+			 (vc-text (replace-regexp-in-string "^ Git." "" vc-mode)))
+	(concat " (" vc-text " " icon ") ")))
 
 ;; TODO: Add Emacs version information on right-side of w-mode-line
 (defun w-mode-line()
   "Enable w-mode-line."
   (interactive  nil)
   (setq-default mode-line-buffer-identification
-                sml/mode-line-buffer-identification)
+				sml/mode-line-buffer-identification)
   (setq-default mode-line-format
-                '((:eval
-                   (mood-line--format
-                    (format-mode-line
-                     '(" "
-                       (:eval (w-mode-line-seg-head))
-                       (:eval (sml/generate-modified-status))
-                       (:eval (doom-modeline--buffer-name))
-                       ;;              (vc-mode vc-mode)
-                       (:eval (w-mode-line-vcs))
-                       (:eval (doom-modeline-segment--buffer-position))
-                       (:eval (doom-modeline-segment--buffer-size))
-                       "%e"
-                       (:eval (w-mode-line-seg-buffer-file-name))
-                       ))
+				'((:eval
+				   (mood-line--format
+					(format-mode-line
+					 '(" "
+					   (:eval (w-mode-line-seg-head))
+					   (:eval (sml/generate-modified-status))
+					   (:eval (doom-modeline--buffer-name))
+					   ;;              (vc-mode vc-mode)
+					   (:eval (w-mode-line-vcs))
+					   (:eval (doom-modeline-segment--buffer-position))
+					   (:eval (doom-modeline-segment--buffer-size))
+					   "%e"
+					   (:eval (w-mode-line-seg-buffer-file-name))
+					   ))
 
-                    (format-mode-line
-                     '((:eval (doom-modeline-segment--checker))
-                       (:eval (doom-modeline-segment--lsp))
-                       (:eval (doom-modeline-segment--buffer-encoding))
-                       (:eval (doom-modeline-segment--major-mode))
-                       (:eval (w-mode-line-seg-tail))
-                       " "))))))
+					(format-mode-line
+					 '((:eval (doom-modeline-segment--checker))
+					   (:eval (doom-modeline-segment--lsp))
+					   (:eval (doom-modeline-segment--buffer-encoding))
+					   (:eval (doom-modeline-segment--major-mode))
+					   (:eval (w-mode-line-seg-tail))
+					   " "))))))
   )
 (w-mode-line)
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -950,13 +954,14 @@
   (add-to-list 'semantic-symref-filepattern-alist '(nxml-mode "*.xml"))
   (add-to-list 'semantic-symref-filepattern-alist '(json-mode "*.json"))
   (setq tab-bar-separator "  "
-        tab-line-separator "  "
-        tab-bar-button-margin '(5 . 2)
-        tags-file-name "~/.emacs.d/TAGS"
-        mode-line-end-spaces nil)
+		tab-line-separator "  "
+		tab-bar-button-margin '(5 . 2)
+		tags-file-name "~/.emacs.d/TAGS"
+		custom-file (concat emx/GITHUB_REPO_ROOT "/emacs-config/custom.el")
+		mode-line-end-spaces nil)
   (set-display-table-slot standard-display-table
-                          'vertical-border
-                          (make-glyph-code ?│)))
+						  'vertical-border
+						  (make-glyph-code ?│)))
 (global-switch)
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Hooks for programming language modes and other modes
@@ -969,12 +974,12 @@
   (auto-fill-mode)
   (global-display-fill-column-indicator-mode 1)
   (highlight-indentation-mode)
-  (show-trailing-whitespqace t)
+  (setq show-trailing-whitespace t)
   )
 (defun non-prog-env-hook()
   "Non-programming environment features."
   (display-line-numbers-mode t)
-  (show-trailing-whitespqace nil))
+  (setq show-trailing-whitespace nil))
 
 (defun append-suffix (suffix phrases)
   "Append SUFFIX to each of PHRASES."
@@ -991,8 +996,8 @@
 (defun setup-env (mode-names hook)
   "Setup environment by adding HOOK to MODE-NAMES."
   (let ((modes (symbols-from-strings
-                (append-suffix "-mode-hook" (split-string mode-names)))))
-    (multiple-mode-add-hook modes hook)))
+				(append-suffix "-mode-hook" (split-string mode-names)))))
+	(multiple-mode-add-hook modes hook)))
 
 (setup-env prog-modes 'prog-env-hook)
 (setup-env non-prog-modes 'non-prog-env-hook)
@@ -1005,12 +1010,12 @@
 Display 'fill column' indicator and dynamically change 'fill-column' value with
 different modes."
   (add-hook 'java-mode-hook
-            (lambda()
-              (progn
-                (setq fill-column JAVA-FILL-COLUMN)
-                (setq indent-tabs-mode nil)
-                )
-              ))
+			(lambda()
+			  (progn
+				(setq fill-column JAVA-FILL-COLUMN)
+				(setq indent-tabs-mode nil)
+				)
+			  ))
   (add-hook 'python-mode (lambda () (setq fill-column PYTHON-FILL-COLUMN)))
   (add-hook 'org-mode (lambda () (setq fill-column -1)))
   (add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
