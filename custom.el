@@ -44,12 +44,13 @@
  '(highlight-indentation-blank-lines t)
  '(ignored-local-variable-values
    '((vc-prepare-patches-separately)
-	 (diff-add-log-use-relative-names . t)
-	 (vc-git-annotate-switches . "-w")))
+     (diff-add-log-use-relative-names . t)
+     (vc-git-annotate-switches . "-w")))
+ '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(lsp-completion-show-detail nil)
- '(lsp-file-watch-threshold 300000)
+ '(lsp-file-watch-threshold 3000)
  '(lsp-java-autobuild-enabled nil)
  '(lsp-java-code-generation-generate-comments t)
  '(lsp-java-code-generation-hash-code-equals-use-instanceof t)
@@ -93,13 +94,13 @@
  '(magit-auto-revert-mode t)
  '(magit-blame-styles
    '((headings
-	  (heading-format . "%-20a %C %s(%H)
+      (heading-format . "%-20a %C %s(%H)
 "))
-	 (highlight
-	  (highlight-face . magit-blame-highlight))
-	 (lines
-	  (show-lines . t)
-	  (show-message . t))))
+     (highlight
+      (highlight-face . magit-blame-highlight))
+     (lines
+      (show-lines . t)
+      (show-message . t))))
  '(max-lisp-eval-depth 100000)
  '(max-specpdl-size 4)
  '(menu-bar-mode nil)
@@ -128,21 +129,21 @@
  '(sml/pre-modes-separator " ")
  '(sml/prefix-face-list
    '((":SU:" sml/sudo)
-	 ("" sml/git)
-	 (sml/projectile-replacement-format sml/projectile)
-	 ("" sml/prefix)))
+     ("" sml/git)
+     (sml/projectile-replacement-format sml/projectile)
+     ("" sml/prefix)))
  '(sml/read-only-char "  ")
  '(sml/replacer-regexp-list
    '(("^~/org/" ":Org:")
-	 ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
-	 ("^~/\\.emacs\\.d/" ":ED:")
-	 ("^/sudo:.*:" ":SU:")
-	 ("^~/Documents/" ":Doc:")
-	 ("^~/Dropbox/" ":DB:")
-	 ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
-	 ("^~/[Gg]it/" ":Git:")
-	 ("^~/[Gg]it[Hh]ub/" ":Git:")
-	 ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
+     ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
+     ("^~/\\.emacs\\.d/" ":ED:")
+     ("^/sudo:.*:" ":SU:")
+     ("^~/Documents/" ":Doc:")
+     ("^~/Dropbox/" ":DB:")
+     ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
+     ("^~/[Gg]it/" ":Git:")
+     ("^~/[Gg]it[Hh]ub/" ":Git:")
+     ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
  '(sml/shorten-directory t)
  '(sml/shorten-mode-string "  ")
  '(sml/shorten-modes nil)
@@ -179,7 +180,7 @@
  '(undo-no-redo t)
  '(warning-minimum-level :emergency)
  '(whitespace-style
-   '(face trailing tabs spaces lines newline missing-newline-at-eof empty space-after-tab space-before-tab space-mark tab-mark newline-mark))
+   '(face trailing tabs spaces lines lines-tail newline missing-newline-at-eof empty indentation::tab indentation::space indentation big-indent space-after-tab::tab space-after-tab::space space-after-tab space-before-tab::tab space-before-tab::space space-before-tab space-mark tab-mark newline-mark))
  '(yas-global-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

@@ -63,6 +63,15 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Install Packages
 ;;///////////////////////////////////////////////////////////////////////////////
+;; cannot access chatgpt from team server
+(use-package gptel
+  :straight (gptel :type git :host github :repo "karthink/gptel"))
+(use-package markdown-mode
+  :straight t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown")
+  :bind (:map markdown-mode-map
+			  ("C-c C-e" . markdown-do)))
 (use-package all-the-icons
   :straight t
   :if (display-graphic-p))
@@ -959,6 +968,7 @@
 		tags-file-name "~/.emacs.d/TAGS"
 		custom-file (concat emx/GITHUB_REPO_ROOT "/emacs-config/custom.el")
 		mode-line-end-spaces nil)
+  (setq indent-tabs-mode nil)
   (set-display-table-slot standard-display-table
 						  'vertical-border
 						  (make-glyph-code ?│)))
