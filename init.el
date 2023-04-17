@@ -63,9 +63,18 @@
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Install Packages
 ;;///////////////////////////////////////////////////////////////////////////////
+;;(use-package tree-sitter-langs
+;;  :straight t)
+;;(use-package tree-sitter
+;;  :straight  t
+;;  :config
+;;  (require 'tree-sitter-langs)
+;;  (global-tree-sitter-mode)
+;;  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+(use-package rust-mode
+  :straight t)
 (use-package gptel
   :straight (gptel :type git :host github :repo "karthink/gptel"))
-
 (use-package markdown-mode
   :straight t
   :mode ("README\\.md\\'" . gfm-mode)
@@ -1029,6 +1038,7 @@ different modes."
   (add-hook 'python-mode (lambda () (setq fill-column PYTHON-FILL-COLUMN)))
   (add-hook 'org-mode (lambda () (setq fill-column -1)))
   (add-hook 'emacs-lisp-mode-hook (lambda() (setq fill-column -1)))
+  (add-hook 'rust-mode-hook (lambda() (prettify-symbols-mode)))
 )
 (non-common-hooks)
 

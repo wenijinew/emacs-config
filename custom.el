@@ -44,9 +44,8 @@
  '(highlight-indentation-blank-lines t)
  '(ignored-local-variable-values
    '((vc-prepare-patches-separately)
-     (diff-add-log-use-relative-names . t)
-     (vc-git-annotate-switches . "-w")))
- '(indent-tabs-mode nil)
+	 (diff-add-log-use-relative-names . t)
+	 (vc-git-annotate-switches . "-w")))
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(lsp-completion-show-detail nil)
@@ -94,13 +93,13 @@
  '(magit-auto-revert-mode t)
  '(magit-blame-styles
    '((headings
-      (heading-format . "%-20a %C %s(%H)
+	  (heading-format . "%-20a %C %s(%H)
 "))
-     (highlight
-      (highlight-face . magit-blame-highlight))
-     (lines
-      (show-lines . t)
-      (show-message . t))))
+	 (highlight
+	  (highlight-face . magit-blame-highlight))
+	 (lines
+	  (show-lines . t)
+	  (show-message . t))))
  '(max-lisp-eval-depth 100000)
  '(max-specpdl-size 4)
  '(menu-bar-mode nil)
@@ -113,6 +112,7 @@
  '(plantuml-jar-path
    "/app/vbuild/tools/plantuml/1.2022.5/lib/plantuml.1.2022.5.jar")
  '(ring-bell-function 'ignore)
+ '(rust-format-on-save t)
  '(scala-indent:step 4)
  '(scroll-bar-mode nil)
  '(send-mail-function 'mailclient-send-it)
@@ -129,21 +129,21 @@
  '(sml/pre-modes-separator " ")
  '(sml/prefix-face-list
    '((":SU:" sml/sudo)
-     ("" sml/git)
-     (sml/projectile-replacement-format sml/projectile)
-     ("" sml/prefix)))
+	 ("" sml/git)
+	 (sml/projectile-replacement-format sml/projectile)
+	 ("" sml/prefix)))
  '(sml/read-only-char "  ")
  '(sml/replacer-regexp-list
    '(("^~/org/" ":Org:")
-     ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
-     ("^~/\\.emacs\\.d/" ":ED:")
-     ("^/sudo:.*:" ":SU:")
-     ("^~/Documents/" ":Doc:")
-     ("^~/Dropbox/" ":DB:")
-     ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
-     ("^~/[Gg]it/" ":Git:")
-     ("^~/[Gg]it[Hh]ub/" ":Git:")
-     ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
+	 ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
+	 ("^~/\\.emacs\\.d/" ":ED:")
+	 ("^/sudo:.*:" ":SU:")
+	 ("^~/Documents/" ":Doc:")
+	 ("^~/Dropbox/" ":DB:")
+	 ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
+	 ("^~/[Gg]it/" ":Git:")
+	 ("^~/[Gg]it[Hh]ub/" ":Git:")
+	 ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
  '(sml/shorten-directory t)
  '(sml/shorten-mode-string "  ")
  '(sml/shorten-modes nil)
@@ -179,8 +179,6 @@
  '(treemacs-workspace-switch-cleanup 'all)
  '(undo-no-redo t)
  '(warning-minimum-level :emergency)
- '(whitespace-style
-   '(face trailing tabs spaces lines lines-tail newline missing-newline-at-eof empty indentation::tab indentation::space indentation big-indent space-after-tab::tab space-after-tab::space space-after-tab space-before-tab::tab space-before-tab::space space-before-tab space-mark tab-mark newline-mark))
  '(yas-global-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
