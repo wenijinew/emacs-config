@@ -187,7 +187,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :background "#231f32" :foreground "#b7b7ff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 203 :width normal :foundry "outline" :family "Hack Nerd Font"))))
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#231f32" :foreground "#b7b7ff" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 180 :width normal :foundry "outline" :family "Hack Nerd Font"))))
  '(Man-overstrike ((t (:inherit font-lock-type-face :weight bold))))
  '(Man-underline ((t (:inherit font-lock-keyword-face :underline t))))
  '(company-template-field ((t (:background "#b7b7ff" :foreground "#181522"))))
