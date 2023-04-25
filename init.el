@@ -74,8 +74,8 @@
 (use-package rust-mode
   :straight t)
 (require 'cl-lib)
-(use-package gptel
-  :straight (gptel :type git :host github :repo "karthink/gptel"))
+;;(use-package gptel
+;;  :straight (gptel :type git :host github :repo "karthink/gptel"))
 (use-package markdown-mode
   :straight t
   :mode ("README\\.md\\'" . gfm-mode)
@@ -288,7 +288,7 @@
   (setq neo-smart-open t)
   (setq projectile-switch-project-action 'neotree-projectile-action))
 ;; based on json-mode, add function to beautify-json file content and bind to key C-c C-b
-';; json-mode rely on yasnippet, so it needs to be end
+;; json-mode rely on yasnippet, so it needs to be end
 (defun beautify-json()
   "Beautify-json buffer."
   (interactive)
@@ -412,7 +412,7 @@
 	:straight t
 	:hook (org-mode . emc/org-mode-visual-fill))
   )
-(if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
+;;(if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
 ;; org-mode ends here
 
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -425,6 +425,7 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/_0025_002dConstructs.html
 ;;///////////////////////////////////////////////////////////////////////////////
 (defun install-mode-line-pkgs()
+  "Install mode-line dependency packages."
   (use-package doom-modeline
 	:straight t)
   (use-package smart-mode-line
@@ -619,7 +620,6 @@
 					   (:eval (w-mode-line-seg-tail))
 					   " "))))))
   )
-(w-mode-line)
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Set Global Keys
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -653,6 +653,8 @@
   (global-set-key (kbd "C-c .") 'xref-find-references)
   (global-set-key (kbd "C-c <up>") 'windmove-up)
   (global-set-key (kbd "C-c <down>") 'windmove-down)
+  (global-set-key (kbd "C-c C-n") 'global-line-numbers-mode)
+
 
   (global-set-key (kbd "M-n") 'tab-bar-new-tab)
   (global-set-key (kbd "M-o") 'lsp-ui-imenu)
@@ -754,5 +756,7 @@ different modes."
 )
 (non-common-hooks)
 
+;;; do mode-line at the last step to avoid conflict with custom configuration or overrided by custom configurations.
+(w-mode-line)
 (provide 'init)
 ;;; init.el ends here
