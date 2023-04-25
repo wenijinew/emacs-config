@@ -74,8 +74,8 @@
 (use-package rust-mode
   :straight t)
 (require 'cl-lib)
-(use-package gptel
-  :straight (gptel :type git :host github :repo "karthink/gptel"))
+;;(use-package gptel
+;;  :straight (gptel :type git :host github :repo "karthink/gptel"))
 (use-package markdown-mode
   :straight t
   :mode ("README\\.md\\'" . gfm-mode)
@@ -412,7 +412,9 @@
 	:straight t
 	:hook (org-mode . emc/org-mode-visual-fill))
   )
-(if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
+(when (or (string-match "27." (emacs-version) (string-match "28." (emacs-version))))
+  (if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
+  )
 ;; org-mode ends here
 
 ;;///////////////////////////////////////////////////////////////////////////////
