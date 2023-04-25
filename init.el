@@ -412,7 +412,9 @@
 	:straight t
 	:hook (org-mode . emc/org-mode-visual-fill))
   )
-;;(if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
+(when (or (string-match "27." (emacs-version) (string-match "28." (emacs-version))))
+  (if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
+  )
 ;; org-mode ends here
 
 ;;///////////////////////////////////////////////////////////////////////////////
