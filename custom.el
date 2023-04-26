@@ -65,6 +65,8 @@
  '(lsp-java-format-settings-url
    (concat emx/USER_REPO_ROOT "/dj/jcat-common-code-formatter/src/main/resources/jcat-code-formatter.xml"))
  '(lsp-java-import-gradle-enabled nil)
+ '(lsp-java-import-gradle-jvm-arguments [])
+ '(lsp-java-import-gradle-wrapper-enabled nil)
  '(lsp-java-java-path "/app/vbuild/SLED12-x86_64/openjdk/latest/bin/java")
  '(lsp-java-jdt-download-url
    (concat "file://" emx/USER_REPO_ROOT "/ws/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
