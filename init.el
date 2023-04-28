@@ -74,8 +74,8 @@
 (use-package rust-mode
   :straight t)
 (require 'cl-lib)
-(use-package gptel
-  :straight (gptel :type git :host github :repo "karthink/gptel"))
+;;(use-package gptel
+;;  :straight (gptel :type git :host github :repo "karthink/gptel"))
 (use-package markdown-mode
   :straight t
   :mode ("README\\.md\\'" . gfm-mode)
