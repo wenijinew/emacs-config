@@ -44,8 +44,9 @@
  '(highlight-indentation-blank-lines t)
  '(ignored-local-variable-values
    '((vc-prepare-patches-separately)
-	 (diff-add-log-use-relative-names . t)
-	 (vc-git-annotate-switches . "-w")))
+     (diff-add-log-use-relative-names . t)
+     (vc-git-annotate-switches . "-w")))
+ '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(kill-whole-line t)
  '(lsp-completion-show-detail nil)
@@ -65,6 +66,8 @@
  '(lsp-java-format-settings-url
    (concat emx/USER_REPO_ROOT "/dj/jcat-common-code-formatter/src/main/resources/jcat-code-formatter.xml"))
  '(lsp-java-import-gradle-enabled nil)
+ '(lsp-java-import-gradle-jvm-arguments [])
+ '(lsp-java-import-gradle-wrapper-enabled nil)
  '(lsp-java-java-path "/app/vbuild/SLED12-x86_64/openjdk/latest/bin/java")
  '(lsp-java-jdt-download-url
    (concat "file://" emx/USER_REPO_ROOT "/ws/bin/jdt-language-server-1.19.0-202301090450.tar.gz"))
@@ -93,13 +96,13 @@
  '(magit-auto-revert-mode t)
  '(magit-blame-styles
    '((headings
-	  (heading-format . "%-20a %C %s(%H)
+      (heading-format . "%-20a %C %s(%H)
 "))
-	 (highlight
-	  (highlight-face . magit-blame-highlight))
-	 (lines
-	  (show-lines . t)
-	  (show-message . t))))
+     (highlight
+      (highlight-face . magit-blame-highlight))
+     (lines
+      (show-lines . t)
+      (show-message . t))))
  '(max-lisp-eval-depth 100000)
  '(max-specpdl-size 4)
  '(menu-bar-mode nil)
@@ -129,21 +132,21 @@
  '(sml/pre-modes-separator " ")
  '(sml/prefix-face-list
    '((":SU:" sml/sudo)
-	 ("" sml/git)
-	 (sml/projectile-replacement-format sml/projectile)
-	 ("" sml/prefix)))
+     ("" sml/git)
+     (sml/projectile-replacement-format sml/projectile)
+     ("" sml/prefix)))
  '(sml/read-only-char "  ")
  '(sml/replacer-regexp-list
    '(("^~/org/" ":Org:")
-	 ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
-	 ("^~/\\.emacs\\.d/" ":ED:")
-	 ("^/sudo:.*:" ":SU:")
-	 ("^~/Documents/" ":Doc:")
-	 ("^~/Dropbox/" ":DB:")
-	 ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
-	 ("^~/[Gg]it/" ":Git:")
-	 ("^~/[Gg]it[Hh]ub/" ":Git:")
-	 ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
+     ("^~/\\.emacs\\.d/elpa/" ":ELPA:")
+     ("^~/\\.emacs\\.d/" ":ED:")
+     ("^/sudo:.*:" ":SU:")
+     ("^~/Documents/" ":Doc:")
+     ("^~/Dropbox/" ":DB:")
+     ("^:\\([^:]*\\):Documento?s/" ":\\1/Doc:")
+     ("^~/[Gg]it/" ":Git:")
+     ("^~/[Gg]it[Hh]ub/" ":Git:")
+     ("^~/[Gg]it\\([Hh]ub\\|\\)-?[Pp]rojects/" ":Git:")))
  '(sml/shorten-directory t)
  '(sml/shorten-mode-string "  ")
  '(sml/shorten-modes nil)
