@@ -631,6 +631,8 @@
 (defun set-global-keys()
   "To set global keys."
   (global-set-key (kbd "C-c a") 'lsp-execute-code-action)
+  ;; use C-c b as prefix for buffer
+  (global-set-key (kbd "C-c b r") 'revert-buffer)
   ;; use C-c m as prefix for magit
   (global-set-key (kbd "C-c m b") 'magit-blame)
   ;;; C-c C-b bind to beautify-json
