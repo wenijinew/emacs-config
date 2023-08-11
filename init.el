@@ -74,6 +74,7 @@
 (use-package rust-mode
   :straight t)
 (require 'cl-lib)
+(require 'compile)
 ;;(use-package gptel
 ;;  :straight (gptel :type git :host github :repo "karthink/gptel"))
 (use-package markdown-mode
@@ -411,19 +412,22 @@
   (use-package visual-fill-column
     :straight t
     :hook (org-mode . emc/org-mode-visual-fill))
-  )
-(when (or (string-match "27." (emacs-version) (string-match "28." (emacs-version))))
-  (if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
-  )
-(when (or (string-match "27." (emacs-version) (string-match "28." (emacs-version))))
-  (if (not (eq system-type 'windows-nt)) (emc/enable-org-mode))
-  )
+  ) ;; function enable-org-mode ends here
+(defvar emacs-version-list (version-to-list emacs-version))
+(defvar emacs-major-version (car emacs-version-list))
+(if (and (not (eq system-type 'windows-nt)) (>= emacs-major-version 27)) (emc/enable-org-mode) (message (concat "Org mode is not supported: " emacs-version " " (symbol-name system-type))))
 ;; org-mode ends here
 
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Customized Theme
 ;;///////////////////////////////////////////////////////////////////////////////
-(load-theme 'hacker-2023)
+;; by adding t at the end, to avlid asking "Loading a theme can run Lisp code.  Really load?"
+(load-theme 'hacker-2023 t)
+;; For emacsclient
+;;(add-hook 'after-make-frame-functions
+;;          (lambda (frame)
+;;            (with-selected-frame frame
+;;              (load-theme 'hacker-2023))))
 
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Customized Mode Line
@@ -625,6 +629,22 @@
                        (:eval (w-mode-line-seg-tail))
                        " "))))))
   )
+
+;;///////////////////////////////////////////////////////////////////////////////
+;; Customize compile-command
+;;///////////////////////////////////////////////////////////////////////////////
+;; Try to handle nmake and make in a clever way for c-mode
+(defun emake ()
+  "Check if there is any make file locally."
+  (let ((mak-file))
+    ;; Check if a .mak file exists in the current directory
+    (setq mak-file (car (directory-files default-directory nil "\\.mak$")))
+    (if mak-file
+        (concat "nmake /nologo -f " mak-file " CFG=\""
+                (file-name-sans-extension mak-file) " - Win32 Release\"")
+      (concat "make -k " (file-name-sans-extension (file-relative-name buffer-file-name)) ".o")
+      ))
+  )
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Set Global Keys
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -637,11 +657,13 @@
   (global-set-key (kbd "C-c m b") 'magit-blame)
   ;;; C-c C-b bind to beautify-json
   (global-set-key (kbd "C-c c") 'customize)
+  (global-set-key (kbd "C-c C") 'compile)
   (global-set-key (kbd "C-c d") 'kill-line)
   (global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
   (global-set-key (kbd "C-c E") 'flycheck-list-errors)
   (global-set-key (kbd "C-c f") 'lsp-format-buffer)
   (global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
+  (global-set-key (kbd "C-c g") 'grep-find)
   (global-set-key (kbd "C-c h") 'windmove-left)
   (global-set-key (kbd "C-c j") 'windmove-right)
   (global-set-key (kbd "C-c q") 'magit-blame-quit)
@@ -682,6 +704,12 @@
   ;; rebind global keys to emacs extensions keys
   (global-set-key (kbd "M-x") 'helm-M-x)
   (global-set-key (kbd "C-x c C-b") 'helm-mini)
+
+  ;; multiple-cursors
+  (global-set-key (kbd "C-c m e") 'mc/edit-lines)
+  (global-set-key (kbd "C-c m n") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-c m p") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
   )
 (set-global-keys)
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -693,6 +721,8 @@
   ;; https://github.com/jorgenschaefer/elpy/issues/1729
   (set-language-environment "UTF-8")
   (turn-on-auto-revert-mode)
+  (server-start)
+  (setq-default frame-restore-state-alist '((fullscreen . maximized)))
   (winner-mode)
   (global-tab-line-mode t)
   (set-face-attribute 'default (selected-frame) :height 200)
@@ -773,8 +803,10 @@ different modes."
   (add-hook 'rust-mode-hook (lambda() (prettify-symbols-mode)))
 )
 (non-common-hooks)
-
+(set (make-local-variable 'compile-command) (emake))
 ;;; do mode-line at the last step to avoid conflict with custom configuration or overrided by custom configurations.
 (w-mode-line)
+;;; make sure emacsclient uses w-mode-line
+;;;(add-hook 'after-make-frame-functions 'w-mode-line)
 (provide 'init)
 ;;; init.el ends here

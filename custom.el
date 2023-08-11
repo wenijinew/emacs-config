@@ -13,7 +13,8 @@
    '("abd2ad651d2d0feb3aa165536cff555308d17068bc9c73f020a9e7faadf0720b" "a687c49ab637fb934e2676c782a891de0f2f0a0599e34b18471fcab9d27c1119" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
  '(debug-on-error nil)
  '(delimit-columns-before "")
- '(desktop-save-mode nil)
+ '(desktop-restore-eager 10)
+ '(desktop-save-mode t)
  '(display-fill-column-indicator t)
  '(display-fill-column-indicator-column t)
  '(display-line-numbers-type 'relative)
@@ -114,6 +115,7 @@
  '(plantuml-indent-level 4)
  '(plantuml-jar-path
    "/app/vbuild/tools/plantuml/1.2022.5/lib/plantuml.1.2022.5.jar")
+ '(projectile-tags-file-name "~/.emacs.d/TAGS")
  '(ring-bell-function 'ignore)
  '(rust-format-on-save t)
  '(scala-indent:step 4)
