@@ -1,3 +1,6 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -11,6 +14,8 @@
  '(company-tooltip-align-annotations t)
  '(custom-safe-themes
    '("abd2ad651d2d0feb3aa165536cff555308d17068bc9c73f020a9e7faadf0720b" "a687c49ab637fb934e2676c782a891de0f2f0a0599e34b18471fcab9d27c1119" "b9e9ba5aeedcc5ba8be99f1cc9301f6679912910ff92fdf7980929c2fc83ab4d" "1084e940e1529866da525e07800656de811e23a569962506ffb00f007699386d" "05bf0101e1cc26c47c94fffc7275886a12c2b7fd5b47286672897e9f5ddcc4b2" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" default))
+ ;; set it as nil by default, otherwise it might cause stuck when typing docstring in python file
+ ;; https://stackoverflow.com/a/75666045/21025178
  '(debug-on-error nil)
  '(delimit-columns-before "")
  '(desktop-restore-eager 10)
@@ -292,3 +297,5 @@
  '(widget-field ((t (:extend t :background "#b7b7ff" :foreground "#181522"))))
  '(woman-bold ((t (:inherit font-lock-type-face))))
  '(woman-italic ((t (:inherit font-lock-keyword-face)))))
+(provide 'custom)
+;;; custom.el ends here
