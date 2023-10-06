@@ -634,17 +634,17 @@
 ;; Customize compile-command
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Try to handle nmake and make in a clever way for c-mode
-(defun emake ()
-  "Check if there is any make file locally."
-  (let ((mak-file))
-    ;; Check if a .mak file exists in the current directory
-    (setq mak-file (car (directory-files default-directory nil "\\.mak$")))
-    (if mak-file
-        (concat "nmake /nologo -f " mak-file " CFG=\""
-                (file-name-sans-extension mak-file) " - Win32 Release\"")
-      (concat "make -k " (file-name-sans-extension (file-relative-name buffer-file-name)) ".o")
-      ))
-  )
+;;(defun emake ()
+;;  "Check if there is any make file locally."
+;;  (let ((mak-file))
+;;    ;; Check if a .mak file exists in the current directory
+;;    (setq mak-file (car (directory-files default-directory nil "\\.mak$")))
+;;    (if mak-file
+;;        (concat "nmake /nologo -f " mak-file " CFG=\""
+;;                (file-name-sans-extension mak-file) " - Win32 Release\"")
+;;      (concat "make -k " (file-name-sans-extension (file-relative-name buffer-file-name)) ".o")
+;;      ))
+;;  )
 ;;///////////////////////////////////////////////////////////////////////////////
 ;; Set Global Keys
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -659,20 +659,28 @@
   (global-set-key (kbd "C-c c") 'customize)
   (global-set-key (kbd "C-c C") 'compile)
   (global-set-key (kbd "C-c d") 'kill-line)
-  (global-set-key (kbd "C-c e") 'lsp-treemacs-errors-list)
-  (global-set-key (kbd "C-c E") 'flycheck-list-errors)
-  (global-set-key (kbd "C-c f") 'lsp-format-buffer)
-  (global-set-key (kbd "C-c F") 'lsp-java-organize-imports)
   (global-set-key (kbd "C-c g") 'grep-find)
   (global-set-key (kbd "C-c h") 'windmove-left)
   (global-set-key (kbd "C-c j") 'windmove-right)
   (global-set-key (kbd "C-c q") 'magit-blame-quit)
   (global-set-key (kbd "C-c r") 'tab-bar-close-tab)
   (global-set-key (kbd "C-c n") 'neotree-toggle)
-  (global-set-key (kbd "C-c r") 'lsp-rename)
+
+
+  ;; macro - r: record, R: stop record or run recorded macro
+  (global-set-key (kbd "C-c m r") 'kmacro-start-macro-or-insert-counter)
+  (global-set-key (kbd "C-c m R") 'kmacro-end-or-call-macro)
+
 
   ;; use C-c l as prefix for lsp commands
-  (global-set-key (kbd "C-c l d s") 'lsp-describe-session)
+  (global-set-key (kbd "C-c l r") 'lsp-rename)
+  (global-set-key (kbd "C-c l u") 'upcase)
+  (global-set-key (kbd "C-c l d") 'downcase-dwim)
+  (global-set-key (kbd "C-c l s") 'lsp-describe-session)
+  (global-set-key (kbd "C-c l e") 'lsp-treemacs-errors-list)
+  (global-set-key (kbd "C-c l E") 'flycheck-list-errors)
+  (global-set-key (kbd "C-c l f") 'lsp-format-buffer)
+  (global-set-key (kbd "C-c l F") 'lsp-java-organize-imports)
 
   ;; use C-c s as prefix for smerge commands
   (global-set-key (kbd "C-c s p") 'smerge-prev)
@@ -693,7 +701,8 @@
   (global-set-key (kbd "C-c .") 'xref-find-references)
   (global-set-key (kbd "C-c <up>") 'windmove-up)
   (global-set-key (kbd "C-c <down>") 'windmove-down)
-  (global-set-key (kbd "C-c C-n") 'global-line-numbers-mode)
+  (global-set-key (kbd "C-c l n") 'linum-mode)
+  (global-set-key (kbd "C-c l N") 'display-line-numbers-mode)
 
 
   (global-set-key (kbd "M-n") 'tab-bar-new-tab)
@@ -710,6 +719,7 @@
   (global-set-key (kbd "C-c m n") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-c m p") 'mc/mark-previous-like-this)
   (global-set-key (kbd "C-c m a") 'mc/mark-all-like-this)
+  (global-set-key (kbd "C-c m r") 'mc/mark-all-in-region-regexp)
   )
 (set-global-keys)
 ;;///////////////////////////////////////////////////////////////////////////////
@@ -721,6 +731,7 @@
   ;; https://github.com/jorgenschaefer/elpy/issues/1729
   (set-language-environment "UTF-8")
   (turn-on-auto-revert-mode)
+  (line-number-mode 1)
   (server-start)
   (setq-default frame-restore-state-alist '((fullscreen . maximized)))
   (winner-mode)
@@ -751,6 +762,7 @@
 (defvar non-prog-modes "org term eshell treemacs neotree")
 (defun prog-env-hook()
   "Programming environment features."
+  (linum-mode)
   (display-line-numbers-mode)
   (auto-fill-mode)
   (global-display-fill-column-indicator-mode 1)
@@ -759,7 +771,6 @@
   )
 (defun non-prog-env-hook()
   "Non-programming environment features."
-  (display-line-numbers-mode t)
   (setq show-trailing-whitespace nil))
 
 (defun append-suffix (suffix phrases)
@@ -803,7 +814,7 @@ different modes."
   (add-hook 'rust-mode-hook (lambda() (prettify-symbols-mode)))
 )
 (non-common-hooks)
-(set (make-local-variable 'compile-command) (emake))
+;; (set (make-local-variable 'compile-command) (emake))
 ;;; do mode-line at the last step to avoid conflict with custom configuration or overrided by custom configurations.
 (w-mode-line)
 ;;; make sure emacsclient uses w-mode-line
